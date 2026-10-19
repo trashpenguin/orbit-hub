@@ -27,6 +27,12 @@ Before inviting testers, deploy `index.html` from a static HTTPS origin and veri
 
 The interface uses inline HTML, CSS, and JavaScript and does not fetch fonts, analytics, or profile data from third parties.
 
+The interface font files in `dist/fonts/` are Switzer from [Fontshare](https://www.fontshare.com/fonts/switzer), subject to the [Fontshare license](https://www.fontshare.com/licenses/sil-ofl).
+
+## GitHub Pages
+
+The repository serves the `dist/` folder with GitHub Pages. After publishing, open the Pages URL in desktop Chrome or Edge over HTTPS; WebHID requires a supported browser and the user must select the device in the browser chooser. This static site does not add a backend or send profile data to GitHub.
+
 ## Reverse-engineering notes
 
 REA was used against the installed Logitech G HUB 39.1.2 Electron package. Static analysis recovered parts of the renderer IPC surface, but did not establish G HUB's device-write protocol or a browser-accessible equivalent. Orbit implements the documented HID++ features described above; it does not connect to G HUB's local service.
