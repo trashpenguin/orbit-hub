@@ -13,7 +13,7 @@ There is no account or app server. Profiles are stored in local browser storage 
 - Logitech G502 HERO over HID++: device detection and DPI reading were verified in this development environment.
 - DPI apply and restore require an explicit confirmation each time. The browser session keeps the starting DPI for restore.
 - RGB effects are offered only when the connected device reports the relevant HID++ feature and zones. Some models report write acceptance without supporting readback, so successful response does not independently verify the visible lighting result.
-- Button assignments and onboard profiles are local notes only. Orbit does not send button assignments to the mouse.
+- Button assignments remain local. A read-only probe checks whether the connected device reports HID++ 0x8100 onboard profiles and reads the feature info response. This does not prove the profile data layout, integrity checks, button command IDs, or a safe write and does not send assignments to the mouse.
 - Other Logitech models and receiver/Bluetooth combinations are not certified. Device support is feature based and must be checked against each model before making compatibility claims.
 
 ## Profile files
@@ -22,7 +22,7 @@ Orbit imports only `orbit-profile-v1` JSON files with validated fields, supporte
 
 ## Public test checklist
 
-Before inviting testers, deploy `index.html` from a static HTTPS origin and verify that the hosting policy permits WebHID for its own origin. Start with a supported mouse, approve the browser device chooser, test reading DPI, then test any write only after reviewing the app's confirmation prompt. Use exported profile copies for reports. Do not promise universal Logitech compatibility or hardware button remapping.
+Before inviting testers, deploy `index.html` from a static HTTPS origin and verify that the hosting policy permits WebHID for its own origin. Start with a supported mouse and approve the browser device chooser. Hardware assignment writes remain disabled until a real device profile can be read, parsed, preserved, updated, and verified through readback. Do not promise universal Logitech compatibility or hardware button remapping.
 
 The interface uses inline HTML, CSS, and JavaScript and does not fetch fonts, analytics, or profile data from third parties.
 
