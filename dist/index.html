@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#dfe3de">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-a2LJzdvcpj6wSaiVQxizRgJIXoiv39qzY8Yg9ftzMR4='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-NP8GO/vr2sa1qP5qRUCTAG1QXhx+Bvz69KX5n86B+XU='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="A browser-based calibration bench for Logitech mouse DPI, local profiles, and feature-detected LIGHTSYNC controls.">
   <title>Orbit HUB | Mouse calibration</title>
   <style>
@@ -565,6 +565,13 @@
       if(setBaseline&&hidpp.previousDpi===null)hidpp.previousDpi=value;
       hidpp.currentDpi=value;render();return value;
     }
+    function flattenHidCollections(collections,result=[]){for(const collection of collections||[]){result.push(collection);flattenHidCollections(collection.children,result)}return result}
+    function hidppReportIds(device){
+      const vendorCollections=flattenHidCollections(device.collections).filter(c=>c.usagePage>=0xff00);
+      const inputs=new Set(vendorCollections.flatMap(c=>c.inputReports.map(r=>r.reportId)));
+      const outputs=new Set(vendorCollections.flatMap(c=>c.outputReports.map(r=>r.reportId)));
+      return [0x10,0x11].filter(id=>inputs.has(id)&&outputs.has(id));
+    }
     async function connectDevice(device=null){
       if(!window.isSecureContext||!navigator.hid){lastConnectError='WebHID needs Chrome or Edge on HTTPS or localhost';render();toast(lastConnectError);return}
       if(connectingDevice)return;connectingDevice=true;lastConnectError='' ;render();
@@ -573,9 +580,8 @@
         let d=device;
         if(!d){const devices=await navigator.hid.requestDevice({filters:[{vendorId:0x046d}]});if(!devices.length){lastConnectError='No mouse selected. Choose your Logitech device and click Connect in the browser prompt.';return}d=devices.find(x=>x.vendorId===0x046d)}
         candidate=d;if(!d)throw Error('Choose a Logitech USB or wireless receiver device');
-        const reportCollections=d.collections.filter(c=>c.usagePage>=0xff00);
-        const reportIds=[0x10,0x11].filter(id=>reportCollections.some(c=>c.outputReports.some(r=>r.reportId===id)&&c.inputReports.some(r=>r.reportId===id)));
-        if(!reportIds.length)throw Error('This Logitech device does not expose a matching HID++ input/output report pair');
+        const reportIds=hidppReportIds(d);
+        if(!reportIds.length){const reportSummary=flattenHidCollections(d.collections).filter(c=>c.usagePage>=0xff00).map(c=>`0x${c.usagePage.toString(16)} in[${c.inputReports.map(r=>'0x'+r.reportId.toString(16)).join(',')}] out[${c.outputReports.map(r=>'0x'+r.reportId.toString(16)).join(',')}]`).join('; ');throw Error(`The selected Logitech interface${d.productName?' for '+d.productName:''} has no matching HID++ report pair. ${reportSummary||'No vendor HID collection was exposed to this browser.'} If this mouse exposes another Logitech interface, select that entry in the browser chooser.`)}
         if(hidDevice&&hidDevice!==d&&hidDevice.opened)await hidDevice.close();
         if(!d.opened)await d.open();hidDevice=d;hidpp={deviceIndex:0xff,reportId:reportIds[0],dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
         state.connectedName=d.productName||'Logitech mouse';state.connectedVendorId=d.vendorId;state.connectedProductId=d.productId;
@@ -605,7 +611,7 @@
         toast(capabilities.length?state.connectedName+' connected · '+capabilities.join(' and ')+' ready':state.connectedName+' connected · no supported hardware controls reported');
       }catch(e){if(candidate?.opened){try{await candidate.close()}catch{}}if(hidDevice){try{await hidDevice.close()}catch{};hidDevice=null}hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};lastConnectError=e.message||'Could not connect to the mouse';render();toast(lastConnectError)}finally{connectingDevice=false;render()}
     }
-    function hasHidppReports(device){return device.collections.some(c=>c.usagePage>=0xff00&&[0x10,0x11].some(id=>c.outputReports.some(r=>r.reportId===id)&&c.inputReports.some(r=>r.reportId===id)))}
+    function hasHidppReports(device){return hidppReportIds(device).length>0}
     async function autoDetectDevice(){
       if(!window.isSecureContext||!navigator.hid?.getDevices)return;
       try{
