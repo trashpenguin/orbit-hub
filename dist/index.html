@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0f11">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-P3oSQHKQ/XKsIlcgxGXifD4FzlYAC/g7Nfhic2iF7wc='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-uHY0bHm/sYXZbqjFycNS68ktGwWF8miPChcb+NdH3U4='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="An install-free browser mouse workspace for local profiles, DPI, and supported RGB lighting controls.">
   <title>Orbit HUB — Online mouse studio</title>
   <style>
@@ -159,7 +159,7 @@
           </div>
           <div>
             <section class="panel profile-panel"><div class="panel-head"><div><h2 class="panel-title">Active profile</h2><div class="panel-help">Settings follow the selected profile.</div></div><button class="btn small subtle" data-go="profiles">Change</button></div><div class="profile-art"><div class="game-mark" id="profileArtLabel">DESKTOP</div></div><div class="profile-name" id="profileName">Desktop</div><div class="profile-detail" id="profileDetail">Desktop profile · Browser saved</div><hr class="panel-divider"><div class="row"><div><div class="switch-copy">Pin in Orbit</div><div class="switch-sub">Keep this setup selected in this browser</div></div><input id="persistentSwitch" class="switch" type="checkbox" aria-label="Pin active profile in Orbit"></div><div class="callout"><strong>Local profile data</strong><br>Profiles stay in this browser and are not uploaded. Hardware support varies by model. Button assignments are saved here but are not sent to the mouse.</div></section>
-            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Connect a mouse</h2><div class="panel-help">Use USB, a LIGHTSPEED receiver, or Bluetooth HID++.</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note" id="webhidGuidance" role="status">Connect from desktop Chrome or Edge on this HTTPS page. The browser asks you to choose a Logitech device.</p><div class="setup-flow" id="setupFlow"><div class="setup-step" id="setupBrowser"><strong>1 · Browser</strong><span>Checking WebHID support</span></div><div class="setup-step" id="setupConnect"><strong>2 · Connect</strong><span>Choose your mouse in the browser prompt</span></div><div class="setup-step" id="setupFeatures"><strong>3 · Check controls</strong><span>Orbit checks reported features</span></div></div><div class="capability-grid" aria-label="Mouse feature support"><div class="capability"><span class="capability-label">DPI</span><span class="capability-value" id="capDpi">Waiting for connection</span></div><div class="capability"><span class="capability-label">Lighting</span><span class="capability-value" id="capLighting">Waiting for connection</span></div><div class="capability"><span class="capability-label">Button profiles</span><span class="capability-value" id="capButtons">Not checked</span></div><div class="capability"><span class="capability-label">Model support</span><span class="capability-value" id="capModel">G502 HERO tested in this build</span></div></div><div class="foot-note" id="deviceDetails" role="status" aria-live="polite" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
+            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Connect a mouse</h2><div class="panel-help">Use USB or a supported LIGHTSPEED receiver. Bluetooth availability varies by browser and device.</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note" id="webhidGuidance" role="status">Connect from desktop Chrome or Edge on this HTTPS page. The browser asks you to choose a Logitech device.</p><div class="setup-flow" id="setupFlow"><div class="setup-step" id="setupBrowser"><strong>1 · Browser</strong><span>Checking WebHID support</span></div><div class="setup-step" id="setupConnect"><strong>2 · Connect</strong><span>Choose your mouse in the browser prompt</span></div><div class="setup-step" id="setupFeatures"><strong>3 · Check controls</strong><span>Orbit checks reported features</span></div></div><div class="capability-grid" aria-label="Mouse feature support"><div class="capability"><span class="capability-label">DPI</span><span class="capability-value" id="capDpi">Waiting for connection</span></div><div class="capability"><span class="capability-label">Lighting</span><span class="capability-value" id="capLighting">Waiting for connection</span></div><div class="capability"><span class="capability-label">Button profiles</span><span class="capability-value" id="capButtons">Not checked</span></div><div class="capability"><span class="capability-label">Model support</span><span class="capability-value" id="capModel">G502 HERO tested in this build</span></div></div><div class="foot-note" id="deviceDetails" role="status" aria-live="polite" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
           </div>
         </div>
       </section>
@@ -356,15 +356,24 @@
         if(!d){const devices=await navigator.hid.requestDevice({filters:[{vendorId:0x046d}]});if(!devices.length){lastConnectError='No mouse selected. Choose your Logitech device and click Connect in the browser prompt.';return}d=devices.find(x=>x.vendorId===0x046d)}
         candidate=d;if(!d)throw Error('Choose a Logitech USB or wireless receiver device');
         const reportCollections=d.collections.filter(c=>c.usagePage>=0xff00);
-        const reportIds=[0x11,0x10].filter(id=>reportCollections.some(c=>c.outputReports.some(r=>r.reportId===id)&&c.inputReports.some(r=>r.reportId===id)));
+        const reportIds=[0x10,0x11].filter(id=>reportCollections.some(c=>c.outputReports.some(r=>r.reportId===id)&&c.inputReports.some(r=>r.reportId===id)));
         if(!reportIds.length)throw Error('This Logitech device does not expose a matching HID++ input/output report pair');
         if(hidDevice&&hidDevice!==d&&hidDevice.opened)await hidDevice.close();
         if(!d.opened)await d.open();hidDevice=d;hidpp={deviceIndex:0xff,reportId:reportIds[0],dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
         state.connectedName=d.productName||'Logitech mouse';state.connectedVendorId=d.vendorId;state.connectedProductId=d.productId;
         let featureIndex=0;const probeErrors=[];
-        for(const deviceIndex of [0xff,1,2,3,4,5,6]){
-          hidpp.deviceIndex=deviceIndex;
-          try{let feature=await hidppCall(0,0,[0x22,0x01,0]);featureIndex=feature[3];if(!featureIndex){feature=await hidppCall(0,0,[0x80,0x70,0]);featureIndex=feature[3]}if(featureIndex)break}catch(e){probeErrors.push('slot 0x'+deviceIndex.toString(16)+': '+e.message)}
+        for(const reportId of reportIds){
+          if(featureIndex)break;
+          hidpp.reportId=reportId;
+          for(const deviceIndex of [0xff,1,2,3,4,5,6]){
+            hidpp.deviceIndex=deviceIndex;
+            try{
+              const dpiFeature=await hidppCall(0,0,[0x22,0x01,0]);
+              featureIndex=dpiFeature[3];
+              if(!featureIndex){const lightingFeature=await hidppCall(0,0,[0x80,0x70,0]);featureIndex=lightingFeature[3]}
+              if(featureIndex)break;
+            }catch(e){probeErrors.push('report 0x'+reportId.toString(16)+' slot 0x'+deviceIndex.toString(16)+': '+e.message)}
+          }
         }
         if(featureIndex){
           hidpp.deviceIndex=hidpp.deviceIndex??0xff;
@@ -373,7 +382,7 @@
             if(hidpp.dpiFeature){const countReply=await hidppCall(hidpp.dpiFeature,0,[0,0,0]);if(countReply[3]){const listReply=await hidppCall(hidpp.dpiFeature,1,[0,0,0]);hidpp.supportedDpi=decodeDpiList(listReply);if(hidpp.supportedDpi.length)await readMouseDpi(true)}}
           }catch{hidpp.dpiFeature=null;hidpp.supportedDpi=[];hidpp.currentDpi=null}
           await discoverOnboardProfiles();await discoverMouseLighting();
-        }else{hidpp.featuresProbed=true;setLightingStatus('No DPI or RGB feature found on slots 0xFF or 0x01–0x06.'+(probeErrors.length?' Last probe: '+probeErrors.at(-1):''))}
+        }else{hidpp.featuresProbed=true;setLightingStatus('No supported DPI or RGB feature found after checking advertised HID++ short and long reports on slots 0xFF and 0x01–0x06.'+(probeErrors.length?' Last probe: '+probeErrors.at(-1):''))}
         lastConnectError='';render();
         const capabilities=[hidpp.supportedDpi.length?'DPI':'',hidpp.ledZones.length?'lighting':''].filter(Boolean);
         toast(capabilities.length?state.connectedName+' connected · '+capabilities.join(' and ')+' ready':state.connectedName+' connected · no supported hardware controls reported');

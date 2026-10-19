@@ -4,14 +4,14 @@ Orbit HUB is an install-free browser prototype for local mouse profiles, DPI con
 
 ## Run it
 
-Serve this folder from an HTTPS static host. `localhost` is suitable for development; a public deployment must use HTTPS for WebHID. Open the page in desktop Chrome or Edge and select **Add Logitech device** once to grant browser access. The browser remembers that permission for this site. Firefox, Safari, mobile browsers, and restricted browser contexts may not provide WebHID, so device controls will not be available there.
+Serve this folder from an HTTPS static host. `localhost` is suitable for development; a public deployment must use HTTPS for WebHID. Open the page in desktop Chrome or Edge and select **Add Logitech device** once to grant browser access. USB and supported LIGHTSPEED receivers are the intended connection paths; Bluetooth exposure depends on the browser and device. The browser remembers that permission for this site. Firefox, Safari, mobile browsers, and restricted browser contexts may not provide WebHID, so device controls will not be available there.
 
 There is no account or app server. Profiles are stored in local browser storage and are not uploaded. They do not sync between browsers or devices. Export a JSON backup before clearing browser data or moving to another browser.
 
 ## Tested scope
 
-- Logitech G502 HERO over HID++: device detection and DPI reading were verified in this development environment.
-- The connection panel gives a three-step browser setup and reports DPI, lighting, and onboard-profile features after a successful connection. Connection errors remain visible until another attempt.
+- Logitech G502 HERO over HID++: device detection and DPI reading were verified in the development environment. This is a single-model check, not a compatibility guarantee.
+- The connection panel gives a three-step browser setup, checks both advertised HID++ short and long report types, and reports DPI, lighting, and onboard-profile features after a successful connection. Connection errors remain visible until another attempt.
 - DPI apply and restore require an explicit confirmation each time. The browser session keeps the starting DPI for restore.
 - RGB effects are offered only when the connected device reports the relevant HID++ feature and zones. Some models report write acceptance without supporting readback, so successful response does not independently verify the visible lighting result.
 - Button assignments remain local. A read-only probe checks whether the connected device reports HID++ 0x8100 onboard profiles and reads the feature info response. This does not prove the profile data layout, integrity checks, button command IDs, or a safe write and does not send assignments to the mouse.
