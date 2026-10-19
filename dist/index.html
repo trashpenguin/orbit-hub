@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0f11">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-YyU8FO4DSEdkpzFAxmTixv8J7u/Yd7UP9GgPbgvCH/Q='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-P3oSQHKQ/XKsIlcgxGXifD4FzlYAC/g7Nfhic2iF7wc='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="An install-free browser mouse workspace for local profiles, DPI, and supported RGB lighting controls.">
   <title>Orbit HUB — Online mouse studio</title>
   <style>
@@ -230,6 +230,7 @@
       $('#browserSupportNote').textContent=navigator.hid?'Local profiles · no account required':'Mouse controls need Chrome or Edge on HTTPS';
       const connectedNow=!!hidDevice?.opened,browserReady=!!navigator.hid&&window.isSecureContext;
       $('#webhidGuidance').textContent=!window.isSecureContext?'Open this site over HTTPS to use mouse controls.':!navigator.hid?'WebHID is unavailable. Use desktop Chrome or Edge.':connectingDevice?'Waiting for your device choice in the browser prompt.':connectedNow?'Mouse connected. Check the feature results below.':'Click Add Logitech device, choose your mouse, then click Connect in the browser prompt.';
+      $('#setupBrowser').querySelector('span').textContent=!window.isSecureContext?'Use HTTPS':navigator.hid?'WebHID ready':'WebHID unavailable in this browser';
       $('#setupBrowser').classList.toggle('complete',browserReady);$('#setupBrowser').classList.toggle('current',!browserReady);
       $('#setupConnect').classList.toggle('complete',connectedNow);$('#setupConnect').classList.toggle('current',browserReady&&!connectedNow);
       $('#setupFeatures').classList.toggle('complete',connectedNow&&hidpp.featuresProbed);$('#setupFeatures').classList.toggle('current',connectedNow&&!hidpp.featuresProbed);
