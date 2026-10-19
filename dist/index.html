@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0f11">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-a5F5XU6wBac+7vPhAhH0JiJ4xQOweN80BVhSsPf4GLU='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-enicZUGMvY/bFb92OubzS8A85w4q7AhJlQxTbigmDRw='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="An install-free browser mouse workspace for local profiles, DPI, and supported RGB lighting controls.">
   <title>Orbit HUB — Online mouse studio</title>
   <style>
@@ -216,15 +216,15 @@
     if(!state.profiles.some(x=>x.id===state.activeProfileId))state.activeProfileId=state.profiles[0].id;
     if(!state.persistent)state.activeProfileId=state.defaultProfileId;
     try{localStorage.setItem('orbit-config-v1',JSON.stringify(state))}catch{}
-    let activePage='studio',modalAction=null,toastTimer,connectingDevice=false;
+    let activePage='studio',modalAction=null,toastTimer,connectingDevice=false,lastConnectError='';
     let hidDevice=null,hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,ledZones:[],lightingReadback:false,supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
     const profile=()=>state.profiles.find(x=>x.id===state.activeProfileId)||state.profiles[0];
     const persistState=()=>{try{localStorage.setItem('orbit-config-v1',JSON.stringify(state));return true}catch{return false}};
     const save=(message='Saved in this browser')=>{const stored=persistState();render();toast(stored?message:'Could not save in this browser. Export your profile to keep a copy.')};
     const toast=message=>{const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2300)};
     const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    function render(){const p=profile();const device=state.connectedName||'';const ids=Number.isInteger(state.connectedVendorId)&&Number.isInteger(state.connectedProductId)?`USB ID ${state.connectedVendorId.toString(16).padStart(4,'0').toUpperCase()}:${state.connectedProductId.toString(16).padStart(4,'0').toUpperCase()} · HID++ report 0x${(hidpp.reportId??0x10).toString(16)} · slot 0x${(hidpp.deviceIndex??0xff).toString(16)}`:'No device IDs saved';$('#sideDevice').textContent=device||'Profile workspace';$('#sideState').textContent=hidDevice?.opened?'Device connected':device?'Last device selected':'No device connected';$('#sideTag').textContent=hidDevice?.opened?'HID++':'LOCAL';$('#deviceTitle').textContent=device||'Your devices';$('#deviceDetails').textContent=device?ids:'No hardware selected. You can still edit, save, and export profiles.';$('#activeProfileTag').textContent=p.name;$('#profileName').textContent=p.name;$('#profileArtLabel').textContent=p.game||p.name.toUpperCase();$('#profileDetail').textContent=(p.id==='desktop'?'Desktop profile':'Game profile')+' · Browser saved';$('#persistentSwitch').checked=!!state.persistent;$('#assignmentProfile').textContent=p.name;
-      const assignmentStatus=$('#hardwareAssignmentStatus');if(assignmentStatus)assignmentStatus.textContent=!hidDevice?.opened?'Connect a Logitech mouse to check whether it exposes onboard button profiles.':hidpp.onboardProfilesFeature?'Onboard profile feature found (HID++ 0x8100). Read-only detection only; profile format must be verified before hardware writes.':'This mouse did not report onboard profiles (HID++ 0x8100); assignments remain local.';
+    function render(){const p=profile();const device=state.connectedName||'';const ids=Number.isInteger(state.connectedVendorId)&&Number.isInteger(state.connectedProductId)?`USB ID ${state.connectedVendorId.toString(16).padStart(4,'0').toUpperCase()}:${state.connectedProductId.toString(16).padStart(4,'0').toUpperCase()} · HID++ report 0x${(hidpp.reportId??0x10).toString(16)} · slot 0x${(hidpp.deviceIndex??0xff).toString(16)}`:'No device IDs saved';$('#sideDevice').textContent=device||'Profile workspace';$('#sideState').textContent=hidDevice?.opened?'Device connected':device?'Last device selected':'No device connected';$('#sideTag').textContent=hidDevice?.opened?'HID++':'LOCAL';$('#deviceTitle').textContent=device||'Your devices';$('#deviceDetails').textContent=device?ids:lastConnectError?'Connection failed: '+lastConnectError:'No hardware selected. You can still edit, save, and export profiles.';$('#activeProfileTag').textContent=p.name;$('#profileName').textContent=p.name;$('#profileArtLabel').textContent=p.game||p.name.toUpperCase();$('#profileDetail').textContent=(p.id==='desktop'?'Desktop profile':'Game profile')+' · Browser saved';$('#persistentSwitch').checked=!!state.persistent;$('#assignmentProfile').textContent=p.name;
+      const assignmentStatus=$('#hardwareAssignmentStatus');if(assignmentStatus)assignmentStatus.textContent=!hidDevice?.opened?(lastConnectError?'Connection failed: '+lastConnectError:'Connect a Logitech mouse to check whether it exposes onboard button profiles.'):hidpp.onboardProfilesFeature?'Onboard profile feature found (HID++ 0x8100). Read-only detection only; profile format must be verified before hardware writes.':'This mouse did not report onboard profiles (HID++ 0x8100); assignments remain local.';
       $('#browserSupportNote').textContent=navigator.hid?'Local profiles · no account required':'Mouse controls need Chrome or Edge on HTTPS';
       $('#dpiInput').value=p.dpi;$('#dpiSlider').value=p.dpi;$('#stageList').innerHTML=p.stages.map((v,i)=>`<button class="stage ${v===p.dpi?'active':''}" data-stage="${v}" aria-pressed="${v===p.dpi}"><div class="stage-value">${v.toLocaleString()}</div><div class="stage-caption">Stage ${i+1}${v===p.dpi?' · active':''}</div></button>`).join('');
       $('#effectSummary').textContent=`${p.effect} · ${p.color}`;$('#brightnessSummary').textContent=`${p.brightness}%`;$('#lightBeam').style.background=beam(p);$('#bigLightBeam').style.background=beam(p);$('#bigLightBeam').style.opacity=Math.max(.15,p.brightness/100);$('#lightColor').value=p.color;$('#brightness').value=p.brightness;$('#brightnessValue').textContent=p.brightness+'%';$('#lightingSpeed').value=p.speed;$$('[data-effect]').forEach(b=>b.classList.toggle('selected',b.dataset.effect===p.effect));
@@ -334,7 +334,7 @@
       hidpp.currentDpi=value;render();return value;
     }
     async function connectDevice(device=null){
-      if(!window.isSecureContext||!navigator.hid){toast('WebHID needs Chrome or Edge on HTTPS or localhost');return}
+      if(!window.isSecureContext||!navigator.hid){lastConnectError='WebHID needs Chrome or Edge on HTTPS or localhost';render();toast(lastConnectError);return}
       if(connectingDevice)return;connectingDevice=true;
       let candidate=null;
       try{
@@ -361,9 +361,9 @@
           await discoverOnboardProfiles();await discoverMouseLighting();
         }else setLightingStatus('No DPI or RGB feature found on slots 0xFF or 0x01–0x06.'+(probeErrors.length?' Last probe: '+probeErrors.at(-1):''));
         render();
-        const capabilities=[hidpp.supportedDpi.length?'DPI':'',hidpp.ledZones.length?'lighting':''].filter(Boolean);
+        lastConnectError='';const capabilities=[hidpp.supportedDpi.length?'DPI':'',hidpp.ledZones.length?'lighting':''].filter(Boolean);
         toast(capabilities.length?state.connectedName+' connected · '+capabilities.join(' and ')+' ready':state.connectedName+' connected · no supported hardware controls reported');
-      }catch(e){if(candidate?.opened){try{await candidate.close()}catch{}}if(hidDevice){try{await hidDevice.close()}catch{};hidDevice=null}hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};render();toast(e.message||'Could not connect to the mouse')}finally{connectingDevice=false}
+      }catch(e){if(candidate?.opened){try{await candidate.close()}catch{}}if(hidDevice){try{await hidDevice.close()}catch{};hidDevice=null}hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};lastConnectError=e.message||'Could not connect to the mouse';render();toast(lastConnectError)}finally{connectingDevice=false}
     }
     function hasHidppReports(device){return device.collections.some(c=>c.usagePage>=0xff00&&[0x10,0x11].some(id=>c.outputReports.some(r=>r.reportId===id)&&c.inputReports.some(r=>r.reportId===id)))}
     async function autoDetectDevice(){
