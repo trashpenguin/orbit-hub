@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0f11">
+  <meta name="description" content="An install-free browser mouse workspace for local profiles, DPI, and supported RGB lighting controls.">
+  <title>Orbit HUB — Online mouse studio</title>
+  <style>
+    :root{--bg:#0d0f11;--panel:#151719;--panel-2:#1b1e20;--panel-3:#232628;--line:#2c3032;--text:#f2f4f4;--muted:#a1a7a9;--blue:#a4d92a;--blue-2:#82bd00;--amber:#d7e7b0;--green:#9bdc21;--red:#ff7f80;--radius:12px;--shadow:0 20px 55px #0008}
+    *{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:radial-gradient(ellipse at 52% -18%,#29334a 0,transparent 42%),var(--bg);color:var(--text);font:14px/1.5 'DM Sans',sans-serif;min-height:100vh}button,input,select{font:inherit}button{color:inherit;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:3px}.shell{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr)}.sidebar{background:#121820e8;border-right:1px solid var(--line);padding:27px 17px 20px;display:flex;flex-direction:column;gap:30px}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brand-mark{height:34px;width:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#7cb8ff,#397ce0);color:#10141b;font:700 18px 'Space Grotesk';box-shadow:0 7px 20px #397ce044}.brand-name{font:700 17px 'Space Grotesk';letter-spacing:.01em}.brand-caption{color:var(--muted);font-size:11px;margin-top:1px}.nav-label{color:#697889;text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:700;padding:0 12px;margin-bottom:9px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;text-align:left;display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;color:#a7b4c2;font-weight:600;transition:background .15s,color .15s}.nav button:hover{background:#202935;color:var(--text)}.nav button.active{background:#233449;color:#dcecff;box-shadow:inset 2px 0 var(--blue)}.nav-icon{width:18px;height:18px;display:grid;place-items:center;color:currentColor}.nav-icon svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.device-card{margin-top:auto;background:linear-gradient(150deg,#202d3c,#171d26);border:1px solid #344355;border-radius:14px;padding:14px}.device-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.dot{width:7px;height:7px;background:#667687;border-radius:50%;display:inline-block;margin-right:7px}.device-state{font-size:11px;color:var(--muted)}.tag{font-size:10px;color:var(--amber);background:#4a3820;border:1px solid #73552c;padding:3px 7px;border-radius:20px;font-weight:700}.device-name{font:600 13px 'Space Grotesk';margin-bottom:4px}.device-type{color:var(--muted);font-size:11px}.side-foot{font-size:10px;color:#697889;line-height:1.5;padding:0 8px}.main{min-width:0;padding:29px clamp(20px,4vw,58px) 54px;max-width:1600px;width:100%;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:31px;gap:15px}.crumb{color:var(--muted);font-size:12px}.top-actions{display:flex;align-items:center;gap:10px}.browser-note{display:flex;align-items:center;gap:7px;color:#b9c5d2;font-size:11px;padding:7px 11px;border:1px solid var(--line);border-radius:9px;background:#171d26}.browser-note svg{width:14px;height:14px;stroke:var(--green);fill:none;stroke-width:1.7}.btn{border:1px solid var(--line);background:#202833;padding:9px 13px;border-radius:9px;font-weight:600;font-size:12px;transition:transform .15s,background .15s,border-color .15s}.btn:hover{background:#2a3644;border-color:#46576a}.btn:active{transform:translateY(1px)}.btn.primary{background:var(--blue-2);border-color:var(--blue-2);color:white}.btn.primary:hover{background:#4d90f2}.btn.subtle{background:transparent}.btn.small{padding:7px 10px;font-size:11px}.page{display:none}.page.active{display:block;animation:show .18s ease-out}@keyframes show{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}}.page-heading{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;gap:20px}.overline{font-size:10px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}.page-title{font:600 clamp(27px,3vw,37px)/1.1 'Space Grotesk',sans-serif;letter-spacing:-.04em;margin:0}.page-subtitle{color:var(--muted);margin:9px 0 0;max-width:570px}.device-heading{display:flex;align-items:center;gap:15px}.device-visual{width:53px;height:53px;display:grid;place-items:center;border-radius:15px;background:#222d39;border:1px solid #3a4858;color:#aec7e7}.device-visual svg{width:38px;height:38px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.heading-actions{display:flex;gap:9px}.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.85fr);gap:17px;align-items:start}.panel{background:linear-gradient(155deg,#1b232d,#171d26 62%);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.panel-pad{padding:21px}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px}.panel-title{font:600 16px 'Space Grotesk';margin:0}.panel-help{font-size:12px;color:var(--muted);margin-top:5px}.mini-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#8d9bab;font-weight:700}.dpi-panel{overflow:hidden;position:relative}.dpi-panel:after{content:"";position:absolute;width:280px;height:210px;right:-50px;top:-110px;background:#397ce012;filter:blur(15px);pointer-events:none}.dpi-body{position:relative;z-index:1}.dpi-current{display:flex;align-items:flex-end;gap:10px;margin:24px 0 21px}.dpi-number{font:600 clamp(48px,6vw,70px)/.9 'Space Grotesk';letter-spacing:-.06em;color:#f7f9fc}.dpi-unit{color:var(--muted);font-size:13px;margin-bottom:5px}.dpi-range{width:100%;accent-color:var(--blue);height:5px;cursor:pointer}.range-labels{display:flex;justify-content:space-between;color:#718091;font-size:10px;margin-top:7px}.stages{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.stage{min-width:78px;flex:1;background:#202833;border:1px solid #33404e;border-radius:10px;padding:10px 11px;text-align:left;transition:border .15s,background .15s}.stage:hover{border-color:#566a81}.stage.active{border-color:var(--amber);background:#30291f;box-shadow:inset 0 0 0 1px #ffc66e22}.stage-value{font:600 14px 'Space Grotesk'}.stage-caption{font-size:10px;color:var(--muted);margin-top:3px}.panel-divider{border:0;border-top:1px solid var(--line);margin:19px 0}.panel-foot{display:flex;justify-content:space-between;align-items:center;gap:10px}.foot-note{font-size:11px;color:var(--muted)}.profile-panel{padding:21px;position:relative;overflow:hidden}.profile-panel:before{content:"";position:absolute;width:230px;height:230px;top:-130px;right:-95px;border-radius:50%;background:radial-gradient(circle,#35527755,transparent 68%)}.profile-panel>*{position:relative}.profile-art{height:124px;border-radius:12px;background:linear-gradient(120deg,#27384c,#263044 48%,#382d28);display:flex;align-items:flex-end;padding:15px;margin:17px 0;overflow:hidden;position:relative}.profile-art:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;right:15px;top:-95px;border:1px solid #ffffff14;box-shadow:0 0 0 18px #ffffff07,0 0 0 38px #ffffff05}.game-mark{font:700 22px 'Space Grotesk';letter-spacing:.03em}.profile-name{font:600 16px 'Space Grotesk';margin-bottom:4px}.profile-detail{font-size:11px;color:var(--muted)}.row{display:flex;justify-content:space-between;align-items:center;gap:13px}.switch{appearance:none;width:35px;height:20px;background:#394653;border-radius:20px;position:relative;cursor:pointer;transition:background .2s;flex:none}.switch:before{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;background:#cbd4dd;border-radius:50%;transition:transform .2s}.switch:checked{background:#397ce0}.switch:checked:before{transform:translateX(15px);background:white}.switch-copy{font-size:12px;font-weight:600}.switch-sub{font-size:10px;color:var(--muted);margin-top:2px}.section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:17px}.lighting-preview{height:88px;border-radius:11px;background:linear-gradient(100deg,#243342,#202b37);position:relative;overflow:hidden;display:grid;place-items:center;margin:15px 0}.light-beam{height:3px;width:65%;background:linear-gradient(90deg,#69a8ff,#9a7cff,#ffc66e);box-shadow:0 0 14px #69a8ff;transform:rotate(-7deg);border-radius:9px}.effect-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.effect-select,.select{background:#202833;color:var(--text);border:1px solid #364351;border-radius:8px;padding:9px 11px;min-width:120px}.swatches{display:flex;gap:8px;margin-top:14px}.swatch{width:22px;height:22px;border-radius:50%;border:2px solid #171d26;box-shadow:0 0 0 1px #566372;cursor:pointer}.swatch.selected{box-shadow:0 0 0 2px var(--text)}.assign-list{display:grid;gap:9px;margin-top:15px}.assign-row{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;background:#202833;border:1px solid #303c49;border-radius:9px;gap:10px}.key-pill{font:600 10px 'Space Grotesk';color:#d2deea;background:#313d4a;border-radius:6px;padding:5px 7px;min-width:34px;text-align:center}.assign-name{font-size:11px;color:#d9e1ea;flex:1}.assign-type{font-size:10px;color:var(--muted)}.callout{margin-top:16px;padding:12px 14px;border-radius:10px;background:#18283a;border:1px solid #2c4c70;color:#b8cce4;font-size:11px;line-height:1.5}.callout strong{color:#e6f1ff}.profile-toolbar{display:flex;gap:9px;align-items:center}.profile-list{display:grid;gap:10px}.profile-card{display:grid;grid-template-columns:45px 1fr auto;gap:13px;align-items:center;padding:15px;background:#1e2732;border:1px solid #2f3b49;border-radius:12px}.profile-card.selected{border-color:#548dd0;background:#1e2b3a}.profile-icon{width:43px;height:43px;border-radius:12px;background:#293747;display:grid;place-items:center;font:700 12px 'Space Grotesk';color:#c9ddf4}.profile-title{font:600 14px 'Space Grotesk'}.profile-meta{font-size:11px;color:var(--muted);margin-top:3px}.profile-actions{display:flex;gap:7px}.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.setting{display:grid;gap:7px}.setting label{font-size:11px;color:#b9c6d4;font-weight:600}.setting input[type=text],.setting input[type=number],.setting select{background:#202833;border:1px solid #364351;border-radius:8px;color:var(--text);padding:10px 11px;width:100%}.lighting-controls{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.color-large{width:100%;height:48px;border:1px solid #48586a;background:transparent;border-radius:9px;padding:4px;cursor:pointer}.lighting-mode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.mode-option{border:1px solid #364351;background:#202833;border-radius:9px;padding:10px 7px;text-align:center;font-size:11px}.mode-option.selected{border-color:var(--blue);background:#1e3146;color:#deedff}.app-toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#edf2f7;color:#17202b;font-size:12px;font-weight:700;padding:11px 16px;border-radius:9px;box-shadow:0 9px 30px #05080d70;transition:.2s;z-index:20}.app-toast.show{opacity:1;transform:translate(-50%,0)}.empty-note{border:1px dashed #384655;border-radius:12px;padding:22px;color:var(--muted);text-align:center;font-size:12px}.modal-backdrop{display:none;position:fixed;inset:0;background:#05080dbb;z-index:15;place-items:center;padding:20px}.modal-backdrop.open{display:grid}.modal{width:min(440px,100%);background:#1a222c;border:1px solid #364351;border-radius:15px;padding:22px;box-shadow:var(--shadow)}.modal h2{font:600 18px 'Space Grotesk';margin:0 0 7px}.modal p{color:var(--muted);font-size:12px;margin:0 0 18px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.connection-status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}.connection-status .dot{margin:0}.connected .dot{background:var(--green);box-shadow:0 0 0 4px #66d2a01e}.profile-tag{font-size:10px;color:#c1d5ea;background:#2a3b4d;padding:5px 8px;border-radius:7px}
+    @media(max-width:980px){.shell{grid-template-columns:210px minmax(0,1fr)}.main{padding:24px 22px 42px}.layout{grid-template-columns:minmax(0,1.35fr) minmax(245px,.8fr)}}
+    @media(max-width:760px){.shell{display:block}.sidebar{position:sticky;top:0;z-index:5;height:auto;padding:10px 13px;border-right:0;border-bottom:1px solid var(--line);display:flex;flex-direction:row;align-items:center;gap:15px;background:#121820f5;backdrop-filter:blur(12px)}.brand{padding:0}.brand-caption,.device-card,.side-foot,.nav-label{display:none}.nav-wrap{flex:1;overflow:auto}.nav{display:flex;justify-content:flex-end;gap:3px;min-width:max-content}.nav button{padding:9px}.nav button span:last-child{display:none}.main{padding:21px 16px 36px}.topbar{margin-bottom:24px}.browser-note{display:none}.layout{grid-template-columns:1fr}.section-grid{grid-template-columns:1fr 1fr}.page-heading{align-items:flex-start;flex-direction:column}.heading-actions{align-self:flex-end;margin-top:-4px}}
+    @media(max-width:510px){.section-grid,.editor-grid,.lighting-controls{grid-template-columns:1fr}.top-actions .btn{padding:8px 9px}.page-title{font-size:28px}.device-visual{width:46px;height:46px}.panel-pad{padding:17px}.profile-card{grid-template-columns:42px 1fr}.profile-actions{grid-column:2;justify-content:flex-start}.dpi-number{font-size:58px}.stage{min-width:calc(33.3% - 8px)}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    /* Install-free online hub presentation */
+    :root{--bg:#f6f7f9;--panel:#fff;--panel-2:#f3f5f7;--panel-3:#ebeff3;--line:#e1e5e9;--text:#171a1d;--muted:#737b84;--blue:#356fe0;--blue-2:#202327;--amber:#d48c14;--green:#188454;--red:#d14a4a;--shadow:0 8px 30px #1018280a}
+    html{color-scheme:light}body{background:#f6f7f9;color:#171a1d;font-family:'DM Sans',Arial,sans-serif}.shell{display:block;min-height:100vh}.sidebar{position:sticky;top:0;z-index:8;height:68px;padding:0 clamp(18px,4vw,56px);background:#ffffffed;border-right:0;border-bottom:1px solid #e7e9ed;display:flex;flex-direction:row;align-items:center;gap:32px;backdrop-filter:blur(14px)}.brand{padding:0;gap:10px}.brand-mark{height:34px;width:34px;border-radius:50%;background:#202327;color:#fff;box-shadow:none}.brand-name{font-size:16px;color:#171a1d}.brand-caption{display:none}.nav-wrap{flex:1}.nav-label,.device-card,.side-foot{display:none}.nav{display:flex;gap:5px}.nav button{font-size:12px;color:#6e747b;padding:9px 13px;border-radius:7px}.nav button:hover{background:#f2f3f5;color:#171a1d}.nav button.active{background:#f1f3f5;color:#171a1d;box-shadow:inset 0 -2px #202327}.main{max-width:1450px;padding:24px clamp(18px,4vw,56px) 60px}.topbar{margin-bottom:27px}.crumb{font-size:12px;color:#777e86}.browser-note{background:#fff;border-color:#e5e8eb;color:#50565d}.browser-note svg{stroke:#168452}.btn{border-color:#e0e3e7;background:#fff;color:#292d31;border-radius:8px}.btn:hover{background:#f2f4f6;border-color:#ccd1d6}.btn.primary{background:#202327;border-color:#202327;color:#fff}.btn.primary:hover{background:#393d42}.btn.subtle{background:transparent}.page-title{color:#171a1d;letter-spacing:-.035em}.page-subtitle{color:#747b83}.overline{color:#747b83;letter-spacing:.08em}.panel,.profile-panel{background:#fff;border:1px solid #e6e9ec;box-shadow:0 5px 22px #1b28330a}.panel-title,.profile-name,.profile-title{color:#1b1e22}.panel-help,.foot-note,.profile-detail,.profile-meta{color:#777f87}.profile-art{background:linear-gradient(120deg,#eceff2,#f4f5f6 55%,#e9edf0)}.game-mark{color:#293039}.dpi-number{color:#1c2024}.dpi-range{accent-color:#25292d}.stage{background:#f7f8f9;border-color:#e4e7ea;color:#22262a}.stage.active{border-color:#33383d;background:#f0f2f4;box-shadow:inset 0 0 0 1px #33383d12}.stage-caption,.mini-label{color:#7a828a}.panel-divider{border-top-color:#e8eaed}.assign-row,.profile-card{background:#fafbfc;border-color:#e7e9ec}.profile-card.selected{border-color:#8e969e;background:#f6f7f8}.profile-icon{background:#eceff2;color:#343a40}.key-pill{background:#eceff2;color:#42484e}.assign-name{color:#343a40}.assign-type{color:#828991}.lighting-preview{background:#f0f2f4}.effect-select,.select,.setting input[type=text],.setting input[type=number],.setting select{background:#fff;color:#202429;border-color:#dfe3e7}.mode-option{background:#fafbfc;border-color:#e1e5e9;color:#444b52}.mode-option.selected{border-color:#383d42;background:#f0f2f4;color:#202429}.callout{background:#f5f6f7;border-color:#e4e7ea;color:#646c74}.callout strong{color:#252a2f}.profile-tag{background:#f0f2f4;color:#454c53}.tag{color:#555c63;background:#f1f3f5;border-color:#e3e6e9}.device-visual{background:#f0f2f4;border-color:#e1e5e8;color:#555e68}.connection-status{color:#737b84}.dot{background:#aab1b8}.connected .dot{background:#168452;box-shadow:0 0 0 4px #16845217}.modal-backdrop{background:#17202b55}.modal{background:#fff;border-color:#e1e4e8}.modal p{color:#737b84}.app-toast{background:#202327;color:#fff}.swatch{border-color:#fff;box-shadow:0 0 0 1px #aeb5bb}.swatch.selected{box-shadow:0 0 0 2px #30353a}.empty-note{border-color:#d7dce1;color:#747b83}
+    @media(max-width:760px){.sidebar{height:auto;min-height:62px;padding:8px 13px;gap:12px}.nav button{padding:9px}.main{padding:19px 16px 36px}.topbar{gap:8px}.crumb{display:none}.top-actions{margin-left:auto}.browser-note{display:none}}
+    /* Orbit's device-first dark control room */
+    :root{--bg:#0d0f11;--panel:#151719;--panel-2:#1b1e20;--panel-3:#232628;--line:#2c3032;--text:#f2f4f4;--muted:#a1a7a9;--blue:#a4d92a;--blue-2:#82bd00;--amber:#d7e7b0;--green:#9bdc21;--red:#ff7f80;--shadow:0 20px 55px #0008}
+    html{color-scheme:dark}body{background:#0d0f11;color:#f2f4f4}.shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}.sidebar{position:sticky;top:0;height:100vh;padding:25px 16px;background:#121416;border-right:1px solid #292d2f;border-bottom:0;display:flex;flex-direction:column;align-items:stretch;gap:27px}.brand-mark{border-radius:10px;background:#96ce21;color:#10120c;box-shadow:0 6px 20px #96ce2130}.brand-name{color:#f2f4f4}.brand-caption{display:block}.nav-label{display:block;color:#777f82}.nav-wrap{flex:unset;overflow:visible}.nav{display:grid;gap:5px}.nav button{font-size:12px;color:#adb3b4;padding:11px 12px;border-radius:8px}.nav button:hover{background:#202426;color:#f2f4f4}.nav button.active{background:#272f1c;color:#d8f0a0;box-shadow:inset 2px 0 #9bdc21}.device-card{display:block;margin-top:auto;background:#1a1d1f;border:1px solid #303537}.side-foot{display:block;color:#717a7d}.main{max-width:1600px;padding:29px clamp(20px,4vw,58px) 54px}.browser-note{background:#171a1b;border-color:#303537;color:#c3c8c9}.browser-note svg{stroke:#9bdc21}.btn{border-color:#34393a;background:#202426;color:#f2f4f4}.btn:hover{background:#2b3032;border-color:#4d5557}.btn.primary{background:#8cc51a;border-color:#8cc51a;color:#11150b}.btn.primary:hover{background:#a1d832}.page-title,.dpi-number{color:#f2f4f4}.page-subtitle,.crumb,.panel-help,.foot-note,.profile-detail,.profile-meta{color:#a1a7a9}.overline{color:#a4d92a}.panel,.profile-panel{background:#171a1b;border-color:#2c3032;box-shadow:0 12px 40px #0003}.panel-title,.profile-name,.profile-title{color:#f2f4f4}.profile-art{background:linear-gradient(120deg,#252c24,#272a28 55%,#302a21)}.game-mark{color:#d9e5ca}.stage,.assign-row,.profile-card{background:#1d2123;border-color:#303638;color:#eff1f1}.stage.active,.profile-card.selected{border-color:#8dbd2c;background:#242b1d;box-shadow:inset 0 0 0 1px #9bdc2118}.stage-caption,.mini-label,.assign-type{color:#9ca4a5}.assign-name{color:#e0e4e4}.key-pill,.profile-icon{background:#2b3031;color:#dce5d0}.panel-divider{border-top-color:#303536}.lighting-preview{background:#202526}.effect-select,.select,.setting input[type=text],.setting input[type=number],.setting select,.mode-option{background:#202426;color:#eff1f1;border-color:#383e40}.mode-option.selected{border-color:#9bdc21;background:#29321d;color:#e0f2bd}.setting label{color:#c6cccd}.callout{background:#20261a;border-color:#3b4a25;color:#c9d8af}.callout strong{color:#e8f3d2}.profile-tag{background:#29311f;color:#d8ecb4}.tag{background:#292f20;border-color:#414c2b;color:#d8ecb4}.connection-status{color:#a1a7a9}.dot{background:#677073}.connected .dot{background:#9bdc21;box-shadow:0 0 0 4px #9bdc211e}.modal{background:#171a1b;border-color:#343a3b}.modal p{color:#a1a7a9}.modal input{background:#202426;color:#fff;border-color:#383e40}.app-toast{background:#eff4e5;color:#171b11}.swatch{border-color:#151719;box-shadow:0 0 0 1px #6c7474}.swatch.selected{box-shadow:0 0 0 2px #b4e05f}.empty-note{border-color:#394142;color:#a1a7a9}
+    @media(max-width:980px){.shell{grid-template-columns:205px minmax(0,1fr)}.main{padding:24px 22px 42px}.layout{grid-template-columns:minmax(0,1.35fr) minmax(245px,.8fr)}}
+    @media(max-width:760px){.shell{display:block}.sidebar{position:sticky;top:0;z-index:8;height:auto;min-height:62px;padding:8px 13px;border-right:0;border-bottom:1px solid #292d2f;display:flex;flex-direction:row;align-items:center;gap:12px;background:#121416f5;backdrop-filter:blur(12px)}.brand{padding:0}.brand-caption,.device-card,.side-foot,.nav-label{display:none}.nav-wrap{flex:1;overflow:auto}.nav{display:flex;justify-content:flex-end;gap:3px;min-width:max-content}.nav button{padding:9px}.nav button span:last-child{display:none}.main{padding:19px 16px 36px}.topbar{gap:8px}.crumb{display:none}.top-actions{margin-left:auto}.browser-note{display:none}.layout{grid-template-columns:1fr}.page-heading{align-items:flex-start;flex-direction:column}.heading-actions{align-self:flex-end;margin-top:-4px}}
+    @media(max-width:510px){.section-grid,.editor-grid,.lighting-controls{grid-template-columns:1fr}.top-actions .btn{padding:8px 9px}.page-title{font-size:28px}.panel-pad{padding:17px}.profile-card{grid-template-columns:42px 1fr}.profile-actions{grid-column:2;justify-content:flex-start}.dpi-number{font-size:58px}.stage{min-width:calc(33.3% - 8px)}}
+  </style>
+  <style>
+    .dpi-number-input{width:5.4ch;min-width:5ch;padding:0;border:0;border-radius:5px;background:transparent;color:#f2f4f4;font:600 clamp(48px,6vw,70px)/.9 'Space Grotesk',sans-serif;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+    .dpi-number-input:focus-visible{outline:2px solid var(--blue);outline-offset:5px}
+    @media(max-width:510px){.dpi-number-input{font-size:58px}}
+  </style>
+  <style>
+    /* Orbit calibration desk: a quiet graphite instrument with a copper signal. */
+    :root{--bg:#101314;--panel:#191e1f;--panel-2:#202626;--panel-3:#282f2f;--line:#343c3c;--text:#edf0eb;--muted:#a3adaa;--blue:#e5a153;--blue-2:#e5a153;--amber:#f2c58e;--green:#9dbb9f;--red:#e48978;--radius:10px;--shadow:0 16px 42px #0003}
+    html{color-scheme:dark;scrollbar-color:#535b59 #101314;scroll-behavior:smooth}
+    body{background-color:var(--bg);background-image:linear-gradient(#aeb8b408 1px,transparent 1px),linear-gradient(90deg,#aeb8b408 1px,transparent 1px);background-size:48px 48px;color:var(--text);font-family:'DM Sans',Arial,sans-serif;line-height:1.55}
+    ::selection{background:#e5a153;color:#1c1711}
+    .shell{grid-template-columns:236px minmax(0,1fr)}
+    .sidebar{background:#131718;border-color:#343c3c;padding:28px 17px 22px;gap:31px}
+    .brand-mark{background:#e5a153;color:#21170d;box-shadow:0 0 0 5px #e5a15319;border-radius:9px}
+    .brand-name{letter-spacing:-.035em}
+    .nav-label,.overline{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.09em}
+    .nav-label{color:#89928f;font-size:10px}
+    .nav{gap:4px}
+    .nav button{border-radius:7px;color:#b2bab6;transition:transform .18s ease,background .18s ease,color .18s ease}
+    .nav button:hover{background:#242a29;color:var(--text);transform:translateX(3px)}
+    .nav button.active{background:#2b2620;color:#f2c58e;box-shadow:inset 2px 0 #e5a153}
+    .device-card{background:#1a1f1f;border-color:#3a4241;border-radius:8px}
+    .tag,.profile-tag{border-radius:5px;background:#32281f;border-color:#69503a;color:#f2c58e}
+    .device-name,.profile-name,.profile-title,.panel-title{letter-spacing:-.025em}
+    .main{max-width:1680px;padding:28px clamp(22px,4.4vw,68px) 64px}
+    .topbar{margin-bottom:38px}
+    .crumb,.browser-note,.device-state,.mini-label,.foot-note{font-variant-numeric:tabular-nums}
+    .browser-note{background:#191e1f;color:#bbc2be;border-color:#343c3c;border-radius:6px}
+    .browser-note svg{stroke:#9dbb9f}
+    .btn{border-color:#414a48;background:#202626;border-radius:6px;padding:10px 14px;font-weight:650;letter-spacing:-.01em;transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .btn:hover{background:#2a3230;border-color:#87918a;transform:translateY(-2px)}
+    .btn:active{transform:translateY(0)}
+    .btn.primary{background:#e5a153;border-color:#e5a153;color:#20170e}
+    .btn.primary:hover{background:#f0b36f;border-color:#f0b36f;box-shadow:0 7px 22px #e5a15330}
+    .btn:disabled{opacity:.48;cursor:not-allowed;transform:none;box-shadow:none}
+    .page.active{animation:desk-arrive .28s cubic-bezier(.2,.75,.2,1)}
+    @keyframes desk-arrive{from{opacity:.6;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+    .page-heading{margin-bottom:30px}
+    .overline{font-size:11px;color:#f0b36f;margin-bottom:11px}
+    .page-title{font-size:clamp(34px,4.4vw,58px);line-height:.98;letter-spacing:-.065em;font-weight:600}
+    #deviceTitle{font-size:clamp(34px,3.6vw,48px)}
+    .page-subtitle{font-size:15px;max-width:560px;color:#aab2ae;margin-top:12px}
+    .layout{grid-template-columns:minmax(0,1.48fr) minmax(280px,.82fr);gap:18px}
+    .panel,.profile-panel{background:#191e1f;border:1px solid #343c3c;border-radius:9px;box-shadow:0 13px 38px #0002}
+    .panel-pad,.profile-panel{padding:23px}
+    .panel-head{margin-bottom:20px}
+    .panel-title{font-size:17px}
+    .panel-help{font-size:13px;color:#a3adaa;line-height:1.5}
+    .dpi-panel:after{content:none}
+    .dpi-current{margin:31px 0 26px;gap:13px}
+    .dpi-number-input{color:#f3f2ec;font-size:clamp(62px,7vw,88px);font-weight:600;letter-spacing:-.085em;line-height:.88}
+    .dpi-unit{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;color:#f0b36f;margin-bottom:7px;letter-spacing:.08em}
+    .dpi-range{accent-color:#e5a153;height:6px}
+    .range-labels{color:#929b97;font:11px ui-monospace,SFMono-Regular,Consolas,monospace;margin-top:9px}
+    .stages{gap:8px;margin-top:25px}
+    .stage{min-width:0;flex:1 1 0;padding:12px 10px;background:#202626;border:1px solid #3a4240;border-radius:6px;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+    .stage:hover{border-color:#a7b1aa;transform:translateY(-2px)}
+    .stage.active{border-color:#e5a153;background:#30271f;box-shadow:inset 0 0 0 1px #e5a15322}
+    .stage-value{font-variant-numeric:tabular-nums}
+    .stage-caption{font-size:11px;color:#a3adaa}
+    .panel-divider{border-color:#343c3c;margin:22px 0}
+    .profile-art{height:150px;border:1px solid #454c48;border-radius:7px;background-color:#282724;background-image:linear-gradient(#d4c0a014 1px,transparent 1px),linear-gradient(90deg,#d4c0a014 1px,transparent 1px),radial-gradient(ellipse at 68% 42%,#b46d3b38,transparent 58%);background-size:22px 22px,22px 22px,auto;padding:17px;margin:19px 0}
+    .profile-art:after{width:164px;height:164px;right:22px;top:-86px;border-color:#efc79646;box-shadow:0 0 0 20px #efc7960d,0 0 0 43px #efc79609}
+    .game-mark{z-index:1;font-size:20px;letter-spacing:-.035em}
+    .profile-detail{font-size:12px}
+    .switch{background:#49514d}
+    .switch:checked{background:#e5a153}
+    .switch:checked:before{background:#261b10}
+    .section-grid{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:18px;margin-top:18px}
+    .lighting-preview{background-color:#232827;background-image:repeating-linear-gradient(0deg,#e4e7df09 0 1px,transparent 1px 18px),linear-gradient(112deg,#2c302c,#1e2423 65%);border:1px solid #3d4542;border-radius:7px}
+    .light-beam{background:linear-gradient(90deg,#e5a153,#f4d19a,#e5a153);box-shadow:0 0 12px #e5a15382;transform:rotate(-7deg);animation:signal-sweep 5.6s cubic-bezier(.45,0,.55,1) infinite alternate}
+    @keyframes signal-sweep{from{translate:-4% 0;opacity:.62}to{translate:4% 0;opacity:1}}
+    .effect-select,.select,.setting input[type=text],.setting input[type=number],.setting select,.mode-option{background:#202626;color:#edf0eb;border-color:#414a47;border-radius:6px}
+    .mode-option{padding:12px 8px;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+    .mode-option:hover{transform:translateY(-2px);border-color:#929b94}
+    .mode-option.selected{border-color:#e5a153;background:#30271f;color:#f2c58e}
+    .swatch{border-color:#191e1f;box-shadow:0 0 0 1px #646d68}
+    .swatch.selected{box-shadow:0 0 0 2px #f2c58e}
+    .assign-row,.profile-card{background:#202626;border-color:#3a4240;border-radius:6px}
+    .assign-row{padding:12px}
+    .key-pill,.profile-icon{background:#343a36;color:#f2c58e;border-radius:5px}
+    .assign-name{color:#e0e5df;font-size:12px}
+    .profile-card.selected{border-color:#e5a153;background:#29241e}
+    .profile-icon{width:43px;height:43px}
+    .callout{background:#202625;border-color:#3e4944;color:#bcc6bf;border-radius:6px;font-size:12px;padding:14px 15px}
+    .callout strong{color:#f2c58e}
+    .connection-status{font-size:12px;color:#adb5b0}
+    .dot{background:#707a74}
+    .connected .dot{background:#9dbb9f;box-shadow:0 0 0 4px #9dbb9f1e}
+    .setting label{font-size:12px;color:#c5ccc7}
+    .color-large{border-color:#505a54;border-radius:6px}
+    .app-toast{background:#f0e9dc;color:#201a13;border-radius:6px}
+    .modal-backdrop{background:#080a0ad9}
+    .modal{background:#191e1f;border-color:#46504b;border-radius:9px}
+    .modal p{color:#a3adaa}
+    .modal input{background:#202626;color:#edf0eb;border-color:#414a47}
+    button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #f2c58e;outline-offset:3px}
+    @media(max-width:1200px){.section-grid{grid-template-columns:minmax(0,1fr)}}
+    @media(max-width:980px){.shell{grid-template-columns:205px minmax(0,1fr)}.layout{grid-template-columns:minmax(0,1fr)}.section-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.sidebar{background:#131718f5;border-bottom-color:#343c3c}.main{padding:21px 18px 42px}.topbar{margin-bottom:28px}.layout{grid-template-columns:minmax(0,1fr)}.page-heading{margin-bottom:23px}}
+    @media(max-width:510px){body{background-size:36px 36px}.main{padding:17px 13px 32px}.page-title{font-size:38px}#deviceTitle{font-size:34px}.page-subtitle{font-size:14px}.panel-pad,.profile-panel{padding:17px}.section-grid,.editor-grid,.lighting-controls{grid-template-columns:minmax(0,1fr)}.section-grid{gap:13px}.dpi-number-input{font-size:64px}.stage{min-width:calc(33.3% - 8px);flex:1 1 calc(33.3% - 8px);padding:10px}.heading-actions{align-self:stretch}.heading-actions .btn{flex:1}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.page.active{animation:none}.light-beam{animation:none}.nav button,.btn,.stage,.mode-option{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">O</div><div><div class="brand-name">Orbit HUB</div><div class="brand-caption">Logitech device hub</div></div></div>
+      <div class="nav-wrap"><div class="nav-label">Workspace</div><nav class="nav" aria-label="Main navigation">
+        <button class="active" data-page="studio"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span><span>Devices</span></button>
+        <button data-page="profiles"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v15H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 16.5A2.5 2.5 0 0 1 6.5 14H20M8 8h7"/></svg></span><span>Profiles</span></button>
+        <button data-page="assignments"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h2m3 0h2m3 0h.01M7 13h.01m3 0h.01m3 0h.01m3 0h.01M8 17h8"/></svg></span><span>Assignments</span></button>
+        <button data-page="lighting"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4.5 12.36c.9.75 1.5 1.57 1.5 2.64h6c0-1.07.6-1.9 1.5-2.64A7 7 0 0 0 12 2z"/></svg></span><span>LIGHTSYNC</span></button>
+      </nav></div>
+      <div class="device-card"><div class="device-card-top"><span class="device-state"><i class="dot"></i><span id="sideState">No device connected</span></span><span class="tag" id="sideTag">LOCAL</span></div><div class="device-name" id="sideDevice">Profile workspace</div><div class="device-type">Profiles saved in this browser</div></div>
+      <div class="side-foot">Profiles are saved in this browser.<br>No account required.</div>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div class="crumb">Workspace <span style="color:#a3a8ae">/</span> <span id="crumbCurrent">Devices</span></div><div class="top-actions"><div class="browser-note"><svg viewBox="0 0 20 20"><path d="M10 2.5 16 5v4.3c0 3.4-2.3 6.1-6 8.2-3.7-2.1-6-4.8-6-8.2V5z"/><path d="m7.2 9.8 1.8 1.8 3.8-4"/></svg><span id="browserSupportNote">Local profiles · Chrome or Edge for mouse access</span></div><button class="btn" id="connectBtn">＋ Add Logitech device</button></div></div>
+      <section class="page active" id="page-studio">
+        <div class="page-heading"><div><div class="overline">My gear</div><h1 class="page-title" id="deviceTitle">Your devices</h1><p class="page-subtitle">Previously authorized mice reconnect automatically. Add a Logitech device once to grant this browser access.</p></div><div class="heading-actions"><button class="btn subtle" id="exportBtn">Export profile</button><button class="btn primary" id="saveBtn">Save changes</button></div></div>
+        <div class="layout">
+          <div>
+            <section class="panel dpi-panel panel-pad"><div class="dpi-body"><div class="panel-head"><div><h2 class="panel-title">Sensitivity</h2><div class="panel-help">Set this profile’s DPI, then apply it to the detected mouse below.</div></div><span class="profile-tag" id="activeProfileTag">Desktop</span></div><div class="dpi-current"><input id="dpiInput" class="dpi-number-input" type="number" min="100" max="25600" step="1" value="1000" aria-label="Type DPI value"><div class="dpi-unit">DPI</div></div><input id="dpiSlider" class="dpi-range" type="range" min="100" max="25600" step="50" value="1000" aria-label="DPI sensitivity"><div class="range-labels"><span>100</span><span>12,800</span><span>25,600</span></div><div class="stages" id="stageList"></div><hr class="panel-divider"><div class="panel-foot"><span class="foot-note">Type a DPI value or choose a stage.</span><button class="btn small" id="addStageBtn">＋ Add stage</button></div><hr class="panel-divider"><div class="panel-head"><div><h2 class="panel-title">Mouse sensor</h2><div class="panel-help">Apply the active DPI to change the mouse setting.</div></div><span class="connection-status" id="hardwareDpiStatus"><i class="dot"></i><span>Detecting mouse</span></span></div><div class="panel-foot" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn small" id="readDeviceDpiBtn" disabled>Read device DPI</button><button class="btn small primary" id="applyDeviceDpiBtn" disabled>Apply active DPI</button><button class="btn small" id="restoreDeviceDpiBtn" disabled>Restore previous DPI</button><span class="foot-note" id="supportedDpiText"></span></div></div></section>
+            <div class="section-grid">
+              <section class="panel panel-pad"><div class="panel-head"><div><h2 class="panel-title">LIGHTSYNC</h2><div class="panel-help">A quick look at your current effect.</div></div><button class="btn small subtle" data-go="lighting">Edit</button></div><div class="lighting-preview"><div class="light-beam" id="lightBeam"></div></div><div class="effect-row"><span class="foot-note" id="effectSummary">Cycle · Blue / violet</span><span class="profile-tag" id="brightnessSummary">70%</span></div><div class="swatches" id="miniSwatches"></div></section>
+              <section class="panel panel-pad"><div class="panel-head"><div><h2 class="panel-title">Quick assignments</h2><div class="panel-help">Your most used mouse buttons.</div></div><button class="btn small subtle" data-go="assignments">Edit</button></div><div class="assign-list" id="quickAssignments"></div></section>
+            </div>
+          </div>
+          <div>
+            <section class="panel profile-panel"><div class="panel-head"><div><h2 class="panel-title">Active profile</h2><div class="panel-help">Settings follow the selected profile.</div></div><button class="btn small subtle" data-go="profiles">Change</button></div><div class="profile-art"><div class="game-mark" id="profileArtLabel">DESKTOP</div></div><div class="profile-name" id="profileName">Desktop</div><div class="profile-detail" id="profileDetail">Desktop profile · Browser saved</div><hr class="panel-divider"><div class="row"><div><div class="switch-copy">Pin in Orbit</div><div class="switch-sub">Keep this setup selected in this browser</div></div><input id="persistentSwitch" class="switch" type="checkbox" aria-label="Pin active profile in Orbit"></div><div class="callout"><strong>Local profile data</strong><br>Profiles stay in this browser and are not uploaded. Hardware support varies by model. Button assignments are saved here but are not sent to the mouse.</div></section>
+            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Device connection</h2><div class="panel-help">USB, LIGHTSPEED receiver, or Bluetooth HID++ device</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note">Previously authorized Logitech mice reconnect automatically. Use Add Logitech device for first-time browser access. Controls appear only when the mouse reports the matching feature.</p><div class="foot-note" id="deviceDetails" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
+          </div>
+        </div>
+      </section>
+      <section class="page" id="page-profiles"><div class="page-heading"><div><div class="overline">Your setups</div><h1 class="page-title">Profiles</h1><p class="page-subtitle">Keep separate sensitivity and button setups for each game or activity.</p></div><div class="profile-toolbar"><button class="btn" id="importBtn">Import JSON</button><button class="btn primary" id="newProfileBtn">＋ New profile</button><input id="fileInput" type="file" accept="application/json,.json" hidden></div></div><div class="profile-list" id="profileList"></div><div class="callout">Profiles live in this browser's local storage. Export a copy to move it to another browser.</div></section>
+      <section class="page" id="page-assignments"><div class="page-heading"><div><div class="overline">Local controls</div><h1 class="page-title">Assignments</h1><p class="page-subtitle">Draft a button map for the active profile.</p></div><button class="btn primary" id="saveAssignments">Save assignments</button></div><section class="panel panel-pad"><div class="panel-head"><div><h2 class="panel-title">Button map</h2><div class="panel-help">Choose a command for each button.</div></div><span class="profile-tag" id="assignmentProfile">Desktop</span></div><div class="editor-grid" id="assignmentEditor"></div><div class="callout"><strong>Local only during public testing.</strong><br>These button assignments are saved in this browser. Orbit does not send them to mouse hardware.</div></section></section>
+      <section class="page" id="page-lighting"><div class="page-heading"><div><div class="overline">Device lighting</div><h1 class="page-title">LIGHTSYNC</h1><p class="page-subtitle">Choose a color and effect, then apply it to the RGB zones supported by your mouse.</p></div><div class="heading-actions"><button class="btn" id="applyDeviceLightingBtn" disabled>Apply to mouse</button><button class="btn primary" id="saveLighting">Save lighting</button></div></div><section class="panel panel-pad"><div class="lighting-controls"><div><div class="panel-head"><div><h2 class="panel-title">Effect preview</h2><div class="panel-help">Changes update the preview as you make them.</div></div></div><div class="lighting-preview" style="height:174px"><div class="light-beam" id="bigLightBeam" style="width:73%;height:5px"></div></div><div class="lighting-mode" id="effectModes"><button class="mode-option selected" data-effect="Cycle">Color cycle</button><button class="mode-option" data-effect="Fixed">Fixed color</button><button class="mode-option" data-effect="Pulse">Pulse</button></div></div><div><div class="setting"><label for="lightColor">Base color</label><input class="color-large" id="lightColor" type="color" value="#69a8ff"><div class="foot-note">Choose a color or select one of the saved swatches.</div></div><div class="swatches" id="bigSwatches" style="margin-top:14px"></div><div class="setting" style="margin-top:23px"><label for="brightness">Brightness <span id="brightnessValue">70%</span></label><input id="brightness" class="dpi-range" type="range" min="5" max="100" value="70" style="margin:6px 0 0"></div><div class="setting" style="margin-top:22px"><label for="lightingSpeed">Effect speed</label><select id="lightingSpeed"><option>Slow</option><option selected>Balanced</option><option>Fast</option></select></div></div></div></section><div class="callout"><strong id="hardwareLightingStatus">Connect a Logitech mouse to check its lighting features.</strong> Availability depends on the lighting feature reported by the selected model. Changes apply for this session and are not saved to mouse flash.</div></section>
+    </main>
+  </div>
+  <div id="toast" class="app-toast" role="status" aria-live="polite"></div>
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">New profile</h2><p id="modalDescription">Give your setup a name.</p><div class="setting"><label id="modalLabel" for="modalInput">Profile name</label><input id="modalInput" type="text" maxlength="48" placeholder="e.g. Apex Legends"></div><div class="modal-actions"><button class="btn" id="modalCancel">Cancel</button><button class="btn primary" id="modalConfirm">Create profile</button></div></div></div>
+  <script>
+  (()=>{
+    const defaults={activeProfileId:'desktop',defaultProfileId:'desktop',profileDefaultsVersion:1,persistent:false,connectedName:'',connectedVendorId:null,connectedProductId:null,profiles:[
+      {id:'ow2',name:'Overwatch 2',game:'OVERWATCH 2',dpi:1200,stages:[400,800,1200,2400,4800],effect:'Cycle',color:'#69a8ff',brightness:70,speed:'Balanced',assignments:{'G1':'DPI Shift','G2':'Melee','G3':'Ping','G4':'Previous weapon','G5':'Next weapon','Wheel click':'Melee'}} ,
+      {id:'desktop',name:'Desktop',game:'DESKTOP',dpi:1000,stages:[400,800,1000,1600,3200],effect:'Fixed',color:'#ffc66e',brightness:45,speed:'Slow',assignments:{'G1':'Back','G2':'Forward','G3':'Mute','G4':'Previous tab','G5':'Next tab','Wheel click':'Middle click'}},
+      {id:'valorant',name:'VALORANT',game:'VALORANT',dpi:800,stages:[400,800,1200,1600],effect:'Pulse',color:'#ff7f80',brightness:65,speed:'Balanced',assignments:{'G1':'DPI Shift','G2':'Melee','G3':'Ping','G4':'Previous weapon','G5':'Next weapon','Wheel click':'Melee'}}
+    ]};
+    const commands=['Unassigned','DPI Shift','DPI Cycle','Back','Forward','Mute','Play / pause','Previous weapon','Next weapon','Melee','Ping','Push to talk','Previous tab','Next tab','Middle click'];
+    const validEffects=new Set(['Cycle','Fixed','Pulse']),validSpeeds=new Set(['Slow','Balanced','Fast']);
+    const validAssignmentKeys=new Set(['G1','G2','G3','G4','G5','Wheel click']);
+    function normalizeProfile(raw,idOverride=null){
+      if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Profile data is not an object');
+      const name=typeof raw.name==='string'?raw.name.trim().slice(0,48):'';
+      if(!name)throw Error('Profile name is missing');
+      if(!Number.isInteger(raw.dpi)||raw.dpi<100||raw.dpi>25600)throw Error('DPI must be a whole number from 100 to 25,600');
+      if(!Array.isArray(raw.stages)||raw.stages.length<1||raw.stages.length>5||raw.stages.some(v=>!Number.isInteger(v)||v<100||v>25600)||new Set(raw.stages).size!==raw.stages.length)throw Error('Profile must have 1–5 unique DPI stages from 100 to 25,600');
+      if(!validEffects.has(raw.effect))throw Error('Lighting effect is not supported');
+      if(typeof raw.color!=='string'||!/^#[0-9a-f]{6}$/i.test(raw.color))throw Error('Color must be a six digit hex value');
+      if(!Number.isInteger(raw.brightness)||raw.brightness<5||raw.brightness>100)throw Error('Brightness must be from 5 to 100');
+      if(!validSpeeds.has(raw.speed))throw Error('Lighting speed is not supported');
+      if(!raw.assignments||typeof raw.assignments!=='object'||Array.isArray(raw.assignments))throw Error('Button assignments are missing');
+      const assignments={};
+      for(const [key,value] of Object.entries(raw.assignments)){
+        if(!validAssignmentKeys.has(key)||!commands.includes(value))throw Error('Button assignment is not supported');
+        assignments[key]=value;
+      }
+      if(!Object.keys(assignments).length)throw Error('Profile has no button assignments');
+      const id=idOverride??(typeof raw.id==='string'&&/^[a-z0-9_-]{1,80}$/i.test(raw.id)?raw.id:null);
+      if(!id)throw Error('Profile ID is invalid');
+      const game=typeof raw.game==='string'&&raw.game.trim()?raw.game.trim().slice(0,48):name.toUpperCase();
+      return {id,name,game,dpi:raw.dpi,stages:[...raw.stages].sort((a,b)=>a-b),effect:raw.effect,color:raw.color.toLowerCase(),brightness:raw.brightness,speed:raw.speed,assignments};
+    }
+    const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+    let state;try{state=JSON.parse(localStorage.getItem('orbit-config-v1'))||structuredClone(defaults)}catch{state=structuredClone(defaults)}
+    if(!state||typeof state!=='object'||Array.isArray(state)||!Array.isArray(state.profiles))state=structuredClone(defaults);
+    const normalizedProfiles=[];
+    for(const [index,candidate] of state.profiles.slice(0,50).entries()){
+      try{const clean=normalizeProfile(candidate);if(!normalizedProfiles.some(p=>p.id===clean.id))normalizedProfiles.push(clean)}catch{}
+    }
+    state.profiles=normalizedProfiles.length?normalizedProfiles:structuredClone(defaults.profiles);
+    state.persistent=state.persistent===true;
+    // Move existing installs to Desktop once, then keep each later profile selection intact.
+    if(!state.profiles.some(x=>x.id==='desktop'))state.profiles.unshift(structuredClone(defaults.profiles.find(x=>x.id==='desktop')));
+    if(state.profileDefaultsVersion!==1){state.activeProfileId='desktop';state.defaultProfileId='desktop';state.profileDefaultsVersion=1}
+    if(!state.profiles.some(x=>x.id===state.defaultProfileId))state.defaultProfileId='desktop';
+    if(!state.profiles.some(x=>x.id===state.activeProfileId))state.activeProfileId=state.profiles[0].id;
+    if(!state.persistent)state.activeProfileId=state.defaultProfileId;
+    try{localStorage.setItem('orbit-config-v1',JSON.stringify(state))}catch{}
+    let activePage='studio',modalAction=null,toastTimer,connectingDevice=false;
+    let hidDevice=null,hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,ledZones:[],lightingReadback:false,supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
+    const profile=()=>state.profiles.find(x=>x.id===state.activeProfileId)||state.profiles[0];
+    const persistState=()=>{try{localStorage.setItem('orbit-config-v1',JSON.stringify(state));return true}catch{return false}};
+    const save=(message='Saved in this browser')=>{const stored=persistState();render();toast(stored?message:'Could not save in this browser. Export your profile to keep a copy.')};
+    const toast=message=>{const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2300)};
+    const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function render(){const p=profile();const device=state.connectedName||'';const ids=Number.isInteger(state.connectedVendorId)&&Number.isInteger(state.connectedProductId)?`USB ID ${state.connectedVendorId.toString(16).padStart(4,'0').toUpperCase()}:${state.connectedProductId.toString(16).padStart(4,'0').toUpperCase()} · HID++ report 0x${(hidpp.reportId??0x10).toString(16)} · slot 0x${(hidpp.deviceIndex??0xff).toString(16)}`:'No device IDs saved';$('#sideDevice').textContent=device||'Profile workspace';$('#sideState').textContent=hidDevice?.opened?'Device connected':device?'Last device selected':'No device connected';$('#sideTag').textContent=hidDevice?.opened?'HID++':'LOCAL';$('#deviceTitle').textContent=device||'Your devices';$('#deviceDetails').textContent=device?ids:'No hardware selected. You can still edit, save, and export profiles.';$('#activeProfileTag').textContent=p.name;$('#profileName').textContent=p.name;$('#profileArtLabel').textContent=p.game||p.name.toUpperCase();$('#profileDetail').textContent=(p.id==='desktop'?'Desktop profile':'Game profile')+' · Browser saved';$('#persistentSwitch').checked=!!state.persistent;$('#assignmentProfile').textContent=p.name;
+      $('#browserSupportNote').textContent=navigator.hid?'Local profiles · no account required':'Mouse controls need Chrome or Edge on HTTPS';
+      $('#dpiInput').value=p.dpi;$('#dpiSlider').value=p.dpi;$('#stageList').innerHTML=p.stages.map((v,i)=>`<button class="stage ${v===p.dpi?'active':''}" data-stage="${v}" aria-pressed="${v===p.dpi}"><div class="stage-value">${v.toLocaleString()}</div><div class="stage-caption">Stage ${i+1}${v===p.dpi?' · active':''}</div></button>`).join('');
+      $('#effectSummary').textContent=`${p.effect} · ${p.color}`;$('#brightnessSummary').textContent=`${p.brightness}%`;$('#lightBeam').style.background=beam(p);$('#bigLightBeam').style.background=beam(p);$('#bigLightBeam').style.opacity=Math.max(.15,p.brightness/100);$('#lightColor').value=p.color;$('#brightness').value=p.brightness;$('#brightnessValue').textContent=p.brightness+'%';$('#lightingSpeed').value=p.speed;$$('[data-effect]').forEach(b=>b.classList.toggle('selected',b.dataset.effect===p.effect));
+      const swatches=['#69a8ff','#9a7cff','#ffc66e','#ff7f80','#66d2a0'];const swatchHtml=swatches.map(c=>`<button class="swatch ${c===p.color?'selected':''}" style="background:${c}" data-color="${c}" aria-label="Set color ${c}"></button>`).join('');$('#miniSwatches').innerHTML=swatchHtml;$('#bigSwatches').innerHTML=swatchHtml;
+      const quick=Object.entries(p.assignments).slice(0,3);$('#quickAssignments').innerHTML=quick.map(([key,value])=>`<div class="assign-row"><span class="key-pill">${esc(key)}</span><span class="assign-name">${esc(value)}</span><span class="assign-type">Button</span></div>`).join('');
+      $('#profileList').innerHTML=state.profiles.map(x=>`<article class="profile-card ${x.id===p.id?'selected':''}"><div class="profile-icon">${esc((x.game||x.name).slice(0,2))}</div><div><div class="profile-title">${esc(x.name)}</div><div class="profile-meta">${x.stages.length} DPI stages · ${esc(x.effect)} lighting${x.id===p.id?' · Active':''}${x.id===state.defaultProfileId?' · Default':''}</div></div><div class="profile-actions"><button class="btn small" data-activate="${esc(x.id)}">${x.id===p.id?'Active':'Use profile'}</button><button class="btn small subtle" data-export="${esc(x.id)}" aria-label="Export ${esc(x.name)}">Export</button></div></article>`).join('');
+      $('#assignmentEditor').innerHTML=Object.entries(p.assignments).map(([key,value])=>`<div class="setting"><label for="assign-${esc(key.replace(/\W/g,''))}">${esc(key)}</label><select id="assign-${esc(key.replace(/\W/g,''))}" data-assign="${esc(key)}">${commands.map(c=>`<option ${c===value?'selected':''}>${esc(c)}</option>`).join('')}</select></div>`).join('');
+      const connectedReady=!!hidDevice?.opened;const hardwareReady=connectedReady&&hidpp.supportedDpi.length>0;
+      const connected=$('#connectionStatus');connected.classList.toggle('connected',connectedReady);connected.querySelector('span').textContent=connectedReady?'Connected':state.connectedName?'Last selected · disconnected':'Not connected';
+      $('#readDeviceDpiBtn').disabled=!hardwareReady||hidpp.busy;
+      $('#applyDeviceDpiBtn').disabled=!hardwareReady||hidpp.busy;
+      $('#restoreDeviceDpiBtn').disabled=!hardwareReady||hidpp.busy||hidpp.previousDpi===null;
+      $('#hardwareDpiStatus').querySelector('span').textContent=hardwareReady?state.connectedName+' · '+(hidpp.currentDpi??'DPI unknown')+' DPI':connectedReady?'This mouse does not expose adjustable DPI':'Connect a Logitech mouse';
+      $('#supportedDpiText').textContent=hardwareReady?(hidpp.supportedDpi.length>10?'Range: '+hidpp.supportedDpi[0]+' to '+hidpp.supportedDpi.at(-1)+' DPI · '+hidpp.supportedDpi.length+' steps':'Supported: '+hidpp.supportedDpi.join(', ')):'';
+      $('#applyDeviceLightingBtn').disabled=!connectedReady||!hidpp.ledZones.length||hidpp.busy;
+      if(!connectedReady)setLightingStatus('Authorize this site once with Add Logitech device. Previously authorized mice reconnect automatically.');
+    }
+    function beam(p){return p.effect==='Fixed'?p.color:`linear-gradient(90deg,${p.color},#f2c58e,${p.color})`}
+    function navigate(page){activePage=page;$$('.page').forEach(x=>x.classList.toggle('active',x.id===`page-${page}`));$$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('#crumbCurrent').textContent=({studio:'Devices',profiles:'Profiles',assignments:'Assignments',lighting:'LIGHTSYNC'})[page]}
+    function exportProfile(p=profile()){const blob=new Blob([JSON.stringify({format:'orbit-profile-v1',device:'Logitech gaming mouse',profile:p},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-orbit.json`;a.click();URL.revokeObjectURL(a.href);toast('Profile exported')}
+    function openModal(action,title,description,label,placeholder,confirm){modalAction=action;$('#modalTitle').textContent=title;$('#modalDescription').textContent=description;$('#modalLabel').textContent=label;$('#modalInput').placeholder=placeholder;$('#modalInput').value='';$('#modalConfirm').textContent=confirm;$('#modalBackdrop').classList.add('open');$('#modalInput').focus()}
+    function closeModal(){$('#modalBackdrop').classList.remove('open');modalAction=null}
+    const bytesView=v=>new Uint8Array(v.buffer,v.byteOffset,v.byteLength);
+    async function hidppCall(featureIndex,functionIndex,params=[0,0,0],reportId=hidpp.reportId??0x10){
+      if(!hidDevice?.opened)throw Error('Connect a Logitech mouse first');
+      const functionByte=(functionIndex<<4)|0x08;
+      const deviceIndex=hidpp.deviceIndex??0xff;
+      const request=new Uint8Array(reportId===0x11?19:6);request[0]=deviceIndex;request[1]=featureIndex;request[2]=functionByte;params.slice(0,request.length-3).forEach((v,i)=>request[i+3]=v);
+      let listener,timer;
+      const response=new Promise((resolve,reject)=>{
+        listener=e=>{if(e.reportId!==0x10&&e.reportId!==0x11)return;const a=bytesView(e.data);if(a.length<6||a[0]!==deviceIndex)return;
+          if(a[1]===0xff&&a[2]===featureIndex&&a[3]===functionByte){reject(Error('Device rejected HID++ request (error 0x'+a[4].toString(16).padStart(2,'0')+')'));return}
+          if(a[1]===featureIndex&&a[2]===functionByte)resolve(a)};
+        hidDevice.addEventListener('inputreport',listener);
+        timer=setTimeout(()=>reject(Error('No HID++ reply from slot 0x'+deviceIndex.toString(16)+' using report 0x'+reportId.toString(16))),2000);
+      });
+      try{await hidDevice.sendReport(reportId,request);return await response}
+      finally{clearTimeout(timer);hidDevice.removeEventListener('inputreport',listener)}
+    }
+    function decodeDpiList(reply){
+      const values=[];for(let i=4;i+1<reply.length;i+=2){const v=(reply[i]<<8)|reply[i+1];if(!v)break;
+        if((v&0xe000)===0xe000){const step=v&0x1fff,end=i+3<reply.length?(reply[i+2]<<8)|reply[i+3]:0,start=values.at(-1);if(!step||!start||!end)break;for(let n=start+step;n<end;n+=step)values.push(n);if(values.at(-1)!==end)values.push(end);i+=2}
+        else values.push(v)}
+      return [...new Set(values)].sort((a,b)=>a-b);
+    }
+    const effectIds={Fixed:1,Cycle:3,Pulse:10};
+    function setLightingStatus(message){const el=$('#hardwareLightingStatus');if(el)el.textContent=message}
+    async function discoverMouseLighting(){
+      hidpp.colorLedFeature=null;hidpp.ledZones=[];
+      try{
+        const root=await hidppCall(0,0,[0x80,0x70,0]);const featureIndex=root[3];if(!featureIndex){setLightingStatus('This mouse did not report a supported RGB lighting feature.');return}
+        const info=await hidppCall(featureIndex,0,[0,0,0]);const zoneCount=info[3];const extCaps=(info[6]<<8)|info[7];
+        if(!zoneCount){setLightingStatus('Mouse lighting control is not available through its reported HID++ feature.');return}
+        // Some G502 HERO firmware reports valid color zones and effects while
+        // leaving the optional get-current-effect capability bit clear.
+        hidpp.lightingReadback=!!(extCaps&1);
+        hidpp.colorLedFeature=featureIndex;
+        for(let zone=0;zone<zoneCount;zone++){
+          const detail=await hidppCall(featureIndex,1,[zone,0,0]);const count=detail[6];const supported=[];
+          for(let i=0;i<count;i++){
+            try{const effect=await hidppCall(featureIndex,2,[zone,i,0]);supported.push((effect[5]<<8)|effect[6])}catch{break}
+          }
+          hidpp.ledZones.push({index:zone,supported});
+        }
+        const names=hidpp.ledZones.map(z=>'zone '+z.index).join(', ');
+        setLightingStatus(hidpp.ledZones.length?'Ready · '+names+(hidpp.lightingReadback?' · readback available':' · write response only'):'No RGB zones were reported by the mouse.');
+      }catch(e){hidpp.colorLedFeature=null;hidpp.ledZones=[];hidpp.lightingReadback=false;setLightingStatus('Lighting discovery failed: '+e.message)}
+    }
+    function hexRgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16))}
+    function lightingPacket(p){
+      const mode=effectIds[p.effect];if(!mode)throw Error('Choose a supported lighting effect');
+      const [r0,g0,b0]=hexRgb(p.color),scale=p.brightness/100;
+      const rgb=p.effect==='Fixed'?[r0,g0,b0].map(v=>Math.round(v*scale)):[r0,g0,b0];
+      const period=p.speed==='Slow'?5000:p.speed==='Fast'?1000:2500;
+      const led=new Uint8Array(11);led[0]=mode;
+      if(p.effect==='Fixed'){led[1]=rgb[0];led[2]=rgb[1];led[3]=rgb[2];led[4]=0}
+      else if(p.effect==='Cycle'){led[6]=(period>>8)&255;led[7]=period&255;led[8]=p.brightness}
+      else {led[1]=rgb[0];led[2]=rgb[1];led[3]=rgb[2];led[4]=(period>>8)&255;led[5]=period&255;led[6]=0;led[7]=p.brightness}
+      return led;
+    }
+    async function applyDeviceLighting(){
+      if(!hidDevice?.opened){toast('Connect a Logitech mouse first');return}
+      if(!hidpp.colorLedFeature||!hidpp.ledZones.length){toast('The connected mouse did not report controllable RGB zones');return}
+      if(hidpp.busy)return;
+      const p=profile(),effectId=effectIds[p.effect];
+      if(!hidpp.ledZones.every(z=>z.supported.includes(effectId))){toast('The mouse does not report support for '+p.effect+' on every lighting zone');return}
+      if(!window.confirm('Apply '+p.effect+' lighting to all '+hidpp.ledZones.length+' reported RGB zone(s) on '+state.connectedName+' for this session? This does not save to mouse flash.'))return;
+      hidpp.busy=true;render();try{
+        const led=lightingPacket(p);
+        for(const zone of hidpp.ledZones){const params=new Uint8Array(16);params[0]=zone.index;params.set(led,1);params[12]=0;await hidppCall(hidpp.colorLedFeature,3,params);if(hidpp.lightingReadback){const readback=await hidppCall(hidpp.colorLedFeature,14,[zone.index,0,0]);if(readback[3]!==zone.index||readback[4]!==led[0])throw Error('Zone '+zone.index+' did not keep the requested lighting mode')}}
+        toast('Mouse accepted lighting for '+hidpp.ledZones.length+' zone(s) · session only');
+      }catch(e){toast('Lighting write failed: '+e.message)}finally{hidpp.busy=false;render()}
+    }
+    async function readMouseDpi(setBaseline=false){
+      if(!hidpp.dpiFeature)throw Error('This mouse does not expose adjustable DPI');
+      const reply=await hidppCall(hidpp.dpiFeature,2,[0,0,0]);const value=(reply[4]<<8)|reply[5];if(!value)throw Error('Mouse returned an invalid DPI value');
+      if(setBaseline&&hidpp.previousDpi===null)hidpp.previousDpi=value;
+      hidpp.currentDpi=value;render();return value;
+    }
+    async function connectDevice(device=null){
+      if(!window.isSecureContext||!navigator.hid){toast('WebHID needs Chrome or Edge on HTTPS or localhost');return}
+      if(connectingDevice)return;connectingDevice=true;
+      let candidate=null;
+      try{
+        let d=device;
+        if(!d){const devices=await navigator.hid.requestDevice({filters:[{vendorId:0x046d}]});if(!devices.length)return;d=devices.find(x=>x.vendorId===0x046d)}
+        candidate=d;if(!d)throw Error('Choose a Logitech USB or wireless receiver device');
+        const reportCollections=d.collections.filter(c=>c.usagePage>=0xff00);
+        const reportIds=[0x11,0x10].filter(id=>reportCollections.some(c=>c.outputReports.some(r=>r.reportId===id)&&c.inputReports.some(r=>r.reportId===id)));
+        if(!reportIds.length)throw Error('This Logitech device does not expose a matching HID++ input/output report pair');
+        if(hidDevice&&hidDevice!==d&&hidDevice.opened)await hidDevice.close();
+        if(!d.opened)await d.open();hidDevice=d;hidpp={deviceIndex:0xff,reportId:reportIds[0],dpiFeature:null,colorLedFeature:null,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
+        state.connectedName=d.productName||'Logitech mouse';state.connectedVendorId=d.vendorId;state.connectedProductId=d.productId;
+        let featureIndex=0;const probeErrors=[];
+        for(const deviceIndex of [0xff,1,2,3,4,5,6]){
+          hidpp.deviceIndex=deviceIndex;
+          try{let feature=await hidppCall(0,0,[0x22,0x01,0]);featureIndex=feature[3];if(!featureIndex){feature=await hidppCall(0,0,[0x80,0x70,0]);featureIndex=feature[3]}if(featureIndex)break}catch(e){probeErrors.push('slot 0x'+deviceIndex.toString(16)+': '+e.message)}
+        }
+        if(featureIndex){
+          hidpp.deviceIndex=hidpp.deviceIndex??0xff;
+          try{
+            const feature=await hidppCall(0,0,[0x22,0x01,0]);hidpp.dpiFeature=feature[3];
+            if(hidpp.dpiFeature){const countReply=await hidppCall(hidpp.dpiFeature,0,[0,0,0]);if(countReply[3]){const listReply=await hidppCall(hidpp.dpiFeature,1,[0,0,0]);hidpp.supportedDpi=decodeDpiList(listReply);if(hidpp.supportedDpi.length)await readMouseDpi(true)}}
+          }catch{hidpp.dpiFeature=null;hidpp.supportedDpi=[];hidpp.currentDpi=null}
+          await discoverMouseLighting();
+        }else setLightingStatus('No DPI or RGB feature found on slots 0xFF or 0x01–0x06.'+(probeErrors.length?' Last probe: '+probeErrors.at(-1):''));
+        render();
+        const capabilities=[hidpp.supportedDpi.length?'DPI':'',hidpp.ledZones.length?'lighting':''].filter(Boolean);
+        toast(capabilities.length?state.connectedName+' connected · '+capabilities.join(' and ')+' ready':state.connectedName+' connected · no supported hardware controls reported');
+      }catch(e){if(candidate?.opened){try{await candidate.close()}catch{}}if(hidDevice){try{await hidDevice.close()}catch{};hidDevice=null}hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};render();toast(e.message||'Could not connect to the mouse')}finally{connectingDevice=false}
+    }
+    function hasHidppReports(device){return device.collections.some(c=>c.usagePage>=0xff00&&[0x10,0x11].some(id=>c.outputReports.some(r=>r.reportId===id)&&c.inputReports.some(r=>r.reportId===id)))}
+    async function autoDetectDevice(){
+      if(!window.isSecureContext||!navigator.hid?.getDevices)return;
+      try{
+        const approved=await navigator.hid.getDevices();
+        const candidates=approved.filter(d=>d.vendorId===0x046d&&hasHidppReports(d));
+        candidates.sort((a,b)=>Number(b.productId===state.connectedProductId)-Number(a.productId===state.connectedProductId));
+        if(candidates.length)await connectDevice(candidates[0]);
+      }catch(e){setLightingStatus('Automatic mouse detection failed: '+e.message)}
+    }
+    if(navigator.hid){
+      navigator.hid.addEventListener('connect',e=>{if(e.device.vendorId===0x046d&&!hidDevice&&hasHidppReports(e.device))connectDevice(e.device)});
+      navigator.hid.addEventListener('disconnect',e=>{if(e.device!==hidDevice)return;hidDevice=null;hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,ledZones:[],lightingReadback:false,supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};render();toast((state.connectedName||'Logitech mouse')+' disconnected')});
+    }
+    async function applyDeviceDpi(){
+      if(!hidDevice||!hidpp.dpiFeature||!hidpp.supportedDpi.length||hidpp.busy)return;const requested=Number(profile().dpi);
+      const target=hidpp.supportedDpi.reduce((best,v)=>Math.abs(v-requested)<Math.abs(best-requested)?v:best,hidpp.supportedDpi[0]);
+      if(!window.confirm('Set '+state.connectedName+' active DPI to '+target+'? The previous value ('+hidpp.currentDpi+' DPI) can be restored with the button below.'))return;
+      hidpp.busy=true;render();try{await hidppCall(hidpp.dpiFeature,3,[0,(target>>8)&255,target&255]);const actual=await readMouseDpi(false);profile().dpi=actual;toast(actual===target?'Mouse DPI set to '+actual:'Mouse reported '+actual+' DPI after the write')}catch(e){toast('DPI write failed: '+e.message)}finally{hidpp.busy=false;render()}
+    }
+    async function restoreDeviceDpi(){
+      if(!hidDevice||!hidpp.dpiFeature||hidpp.busy||hidpp.previousDpi===null)return;const target=hidpp.previousDpi;
+      if(!window.confirm('Restore '+state.connectedName+' original active DPI ('+target+')?'))return;
+      hidpp.busy=true;render();try{await hidppCall(hidpp.dpiFeature,3,[0,(target>>8)&255,target&255]);const actual=await readMouseDpi(false);profile().dpi=actual;toast(actual===target?'Restored '+actual+' DPI':'Mouse reported '+actual+' DPI after restore')}catch(e){toast('Restore failed: '+e.message)}finally{hidpp.busy=false;render()}
+    }
+    document.addEventListener('click',e=>{const nav=e.target.closest('[data-page]');if(nav){navigate(nav.dataset.page);return}const go=e.target.closest('[data-go]');if(go){navigate(go.dataset.go);return}const stage=e.target.closest('[data-stage]');if(stage){profile().dpi=Number(stage.dataset.stage);render();return}const color=e.target.closest('[data-color]');if(color){profile().color=color.dataset.color;render();return}const effect=e.target.closest('[data-effect]');if(effect){profile().effect=effect.dataset.effect;render();return}const activate=e.target.closest('[data-activate]');if(activate){state.activeProfileId=activate.dataset.activate;save();return}const exp=e.target.closest('[data-export]');if(exp){exportProfile(state.profiles.find(p=>p.id===exp.dataset.export));return}});
+    function highlightDpiStage(value){$$('[data-stage]').forEach((button,i)=>{const active=Number(button.dataset.stage)===Number(value);button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));button.querySelector('.stage-caption').textContent='Stage '+(i+1)+(active?' · active':'')})}
+    $('#dpiInput').addEventListener('input',e=>{const value=Number(e.target.value);if(e.target.value!==''&&e.target.validity.valid&&value>=100&&value<=25600){profile().dpi=value;$('#dpiSlider').value=value;highlightDpiStage(value)}});
+    $('#dpiInput').addEventListener('change',e=>{const input=e.target;if(input.value===''||!input.validity.valid){input.value=profile().dpi;return}profile().dpi=Number(input.value);render()});
+    $('#dpiInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const input=e.target;if(input.value!==''&&input.validity.valid){profile().dpi=Number(input.value);render()}else input.value=profile().dpi;input.blur()}});
+    $('#dpiSlider').addEventListener('input',e=>{profile().dpi=Number(e.target.value);$('#dpiInput').value=e.target.value});$('#dpiSlider').addEventListener('change',render);
+    $('#addStageBtn').addEventListener('click',()=>{if(profile().stages.length>=5){toast('This profile already has five stages');return}let candidate=Math.min(25600,Math.round(profile().dpi*1.5/50)*50);if(profile().stages.includes(candidate)){candidate=[400,800,1200,1600,2400,3200,4800,6400,8000,12000,16000,25600].find(x=>!profile().stages.includes(x))}if(!candidate){toast('No unused stage value found');return}profile().stages.push(candidate);profile().stages.sort((a,b)=>a-b);profile().dpi=candidate;render();toast('DPI stage added')});
+    $('#persistentSwitch').addEventListener('change',e=>{state.persistent=e.target.checked;toast(persistState()?(state.persistent?'Persistent profile enabled':'Persistent profile disabled'):'Could not save in this browser')});
+    $('#saveBtn').addEventListener('click',save);$('#saveAssignments').addEventListener('click',()=>{ $$('[data-assign]').forEach(el=>profile().assignments[el.dataset.assign]=el.value);save()});$('#saveLighting').addEventListener('click',save);$('#exportBtn').addEventListener('click',()=>exportProfile());$('#connectBtn').addEventListener('click',()=>connectDevice());$('#connectSecondary').addEventListener('click',()=>connectDevice());
+    $('#readDeviceDpiBtn').addEventListener('click',async()=>{try{toast('Mouse DPI: '+await readMouseDpi(true))}catch(e){toast('Read failed: '+e.message)}});$('#applyDeviceDpiBtn').addEventListener('click',applyDeviceDpi);$('#restoreDeviceDpiBtn').addEventListener('click',restoreDeviceDpi);$('#applyDeviceLightingBtn').addEventListener('click',applyDeviceLighting);
+    $('#lightColor').addEventListener('input',e=>{profile().color=e.target.value;$('#lightBeam').style.background=beam(profile());$('#bigLightBeam').style.background=beam(profile());$('#effectSummary').textContent=`${profile().effect} · ${profile().color}`});$('#brightness').addEventListener('input',e=>{profile().brightness=Number(e.target.value);$('#brightnessValue').textContent=e.target.value+'%';$('#bigLightBeam').style.opacity=Math.max(.15,profile().brightness/100)});$('#lightingSpeed').addEventListener('change',e=>profile().speed=e.target.value);
+    $('#newProfileBtn').addEventListener('click',()=>openModal('new','New profile','Create a separate setup for a game or activity.','Profile name','e.g. Apex Legends','Create profile'));
+    $('#modalCancel').addEventListener('click',closeModal);$('#modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closeModal()});$('#modalConfirm').addEventListener('click',()=>{const name=$('#modalInput').value.trim().slice(0,48);if(!name){$('#modalInput').focus();return}if(modalAction==='new'){if(state.profiles.length>=50){toast('This browser already has 50 profiles');return}const id='profile-'+Date.now();const p=normalizeProfile({...structuredClone(profile()),id,name,game:name.toUpperCase()},id);state.profiles.push(p);state.activeProfileId=id;closeModal();save('Profile created')} });$('#modalInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#modalConfirm').click();if(e.key==='Escape')closeModal()});
+    $('#importBtn').addEventListener('click',()=>$('#fileInput').click());$('#fileInput').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>131072)throw Error('Profile file is too large (maximum 128 KB)');if(state.profiles.length>=50)throw Error('This browser already has 50 profiles');const data=JSON.parse(await file.text());if(!data||data.format!=='orbit-profile-v1')throw Error('File is not an Orbit profile');const id='imported-'+Date.now()+'-'+state.profiles.length;const imported=normalizeProfile(data.profile,id);state.profiles.push(imported);state.activeProfileId=id;save('Profile imported')}catch(error){toast(error.message||'Could not import this profile')}finally{e.target.value=''}});
+    window.addEventListener('beforeunload',persistState);
+    render();autoDetectDevice();
+  })();
+  </script>
+</body>
+</html>
+
