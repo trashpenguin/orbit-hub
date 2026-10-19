@@ -287,7 +287,7 @@
         </div>
       </section>
       <section class="page" id="page-profiles"><div class="page-heading"><div><div class="overline">Your setups</div><h1 class="page-title">Profiles</h1><p class="page-subtitle">Keep separate sensitivity and button setups for each game or activity.</p></div><div class="profile-toolbar"><button class="btn" id="importBtn">Import JSON</button><button class="btn primary" id="newProfileBtn">＋ New profile</button><input id="fileInput" type="file" accept="application/json,.json" hidden></div></div><div class="profile-list" id="profileList"></div><div class="callout">Profiles live in this browser's local storage. Export a copy to move it to another browser.</div></section>
-      <section class="page" id="page-assignments"><div class="page-heading"><div><div class="overline">Local controls</div><h1 class="page-title">Assignments</h1><p class="page-subtitle">Draft a button map for the active profile.</p></div><button class="btn primary" id="saveAssignments">Save assignments locally</button></div><section class="panel panel-pad"><div class="panel-head"><div><h2 class="panel-title">Button map</h2><div class="panel-help">Choose a command for each button.</div></div><span class="profile-tag" id="assignmentProfile">Desktop</span></div><div class="editor-grid" id="assignmentEditor"></div><div class="callout"><strong>Saved in this browser only.</strong><br>These assignments are not applied to your mouse. Hardware remapping stays unavailable until the mouse profile format and readback are verified.</div><p class="panel-help" id="hardwareAssignmentStatus" role="status" aria-live="polite">Connect a Logitech mouse to check whether it exposes onboard button profiles.</p></section></section>
+      <section class="page" id="page-assignments"><div class="page-heading"><div><div class="overline">Button controls</div><h1 class="page-title">Assignments</h1><p class="page-subtitle">Edit locally, then apply supported actions to the active onboard profile.</p></div><div class="action-row"><button class="btn" id="saveAssignments">Save locally</button><button class="btn primary" id="applyHardwareAssignments" disabled>Apply to mouse</button></div></div><section class="panel panel-pad"><div class="panel-head"><div><h2 class="panel-title">Button map</h2><div class="panel-help">G1–G5 map to G502 HERO buttons 4–8; Wheel click maps to button 3.</div></div><span class="profile-tag" id="assignmentProfile">Desktop</span></div><div class="editor-grid" id="assignmentEditor"></div><div class="callout"><strong>Experimental hardware write · G502 HERO only.</strong><br>Orbit exports a full backup before writing the active profile slot, changes only six button records, recalculates the checksum, and reads the data back. Each write requires confirmation. Unsupported game actions remain local. Keep the backup file in case recovery is needed.</div><p class="panel-help" id="hardwareAssignmentStatus" role="status" aria-live="polite">Connect a Logitech G502 HERO to inspect its active onboard profile.</p></section></section>
       <section class="page" id="page-lighting"><div class="page-heading"><div><div class="overline">Device lighting</div><h1 class="page-title">LIGHTSYNC</h1><p class="page-subtitle">Preview a profile effect, or apply it to RGB zones reported by your connected mouse.</p></div><div class="heading-actions"><button class="btn" id="applyDeviceLightingBtn" disabled>Apply to mouse for this session</button><button class="btn primary" id="saveLighting">Save preview locally</button></div></div><section class="panel panel-pad"><div class="lighting-controls"><div><div class="panel-head"><div><h2 class="panel-title">Effect preview</h2><div class="panel-help">Changes update the preview as you make them.</div></div></div><div class="lighting-preview" style="height:174px"><div class="light-beam" id="bigLightBeam" style="width:73%;height:5px"></div></div><div class="lighting-mode" id="effectModes"><button class="mode-option selected" data-effect="Cycle">Color cycle</button><button class="mode-option" data-effect="Fixed">Fixed color</button><button class="mode-option" data-effect="Pulse">Pulse</button></div></div><div><div class="setting"><label for="lightColor">Base color</label><input class="color-large" id="lightColor" type="color" value="#69a8ff"><div class="foot-note">Choose a color or select one of the saved swatches.</div></div><div class="swatches" id="bigSwatches" style="margin-top:14px"></div><div class="setting" style="margin-top:23px"><label for="brightness">Brightness <span id="brightnessValue">70%</span></label><input id="brightness" class="dpi-range" type="range" min="5" max="100" value="70" style="margin:6px 0 0"></div><div class="setting" style="margin-top:22px"><label for="lightingSpeed">Effect speed</label><select id="lightingSpeed"><option>Slow</option><option selected>Balanced</option><option>Fast</option></select></div></div></div></section><div class="callout"><strong id="hardwareLightingStatus">Connect a Logitech mouse to check its lighting features.</strong> Availability depends on the lighting feature reported by the selected model. Applying changes is temporary; use the mouse’s own software to save onboard lighting.</div></section>
     </main>
   </div>
@@ -300,7 +300,18 @@
       {id:'desktop',name:'Desktop',game:'DESKTOP',dpi:1000,stages:[400,800,1000,1600,3200],effect:'Fixed',color:'#ffc66e',brightness:45,speed:'Slow',assignments:{'G1':'Back','G2':'Forward','G3':'Mute','G4':'Previous tab','G5':'Next tab','Wheel click':'Middle click'}},
       {id:'valorant',name:'VALORANT',game:'VALORANT',dpi:800,stages:[400,800,1200,1600],effect:'Pulse',color:'#ff7f80',brightness:65,speed:'Balanced',assignments:{'G1':'DPI Shift','G2':'Melee','G3':'Ping','G4':'Previous weapon','G5':'Next weapon','Wheel click':'Melee'}}
     ]};
-    const commands=['Unassigned','DPI Shift','DPI Cycle','Back','Forward','Mute','Play / pause','Previous weapon','Next weapon','Melee','Ping','Push to talk','Previous tab','Next tab','Middle click'];
+    const commands=['Unassigned','Left click','Right click','Middle click','Back','Forward','DPI Shift','DPI Cycle','Next DPI','Previous DPI','Next profile','Previous profile','Mute','Play / pause','Previous tab','Next tab','Previous weapon','Next weapon','Melee','Ping','Push to talk'];
+    const g502ButtonOffsets={G1:3,G2:4,G3:5,G4:6,G5:7,'Wheel click':2};
+    const hardwareActions={
+      'Unassigned':[0xff,0xff,0xff,0xff],
+      'Left click':[0x80,0x01,0x00,0x01],'Right click':[0x80,0x01,0x00,0x02],'Middle click':[0x80,0x01,0x00,0x04],
+      Back:[0x80,0x01,0x00,0x08],Forward:[0x80,0x01,0x00,0x10],
+      'DPI Shift':[0x90,0x07,0xff,0xff],'DPI Cycle':[0x90,0x05,0xff,0xff],
+      'Next DPI':[0x90,0x03,0xff,0xff],'Previous DPI':[0x90,0x04,0xff,0xff],
+      'Next profile':[0x90,0x08,0xff,0xff],'Previous profile':[0x90,0x09,0xff,0xff],
+      Mute:[0x80,0x03,0x00,0xe2],'Play / pause':[0x80,0x03,0x00,0xcd],
+      'Previous tab':[0x80,0x02,0x03,0x2b],'Next tab':[0x80,0x02,0x01,0x2b]
+    };
     const validEffects=new Set(['Cycle','Fixed','Pulse']),validSpeeds=new Set(['Slow','Balanced','Fast']);
     const validAssignmentKeys=new Set(['G1','G2','G3','G4','G5','Wheel click']);
     function normalizeProfile(raw,idOverride=null){
@@ -349,7 +360,8 @@
     const toast=message=>{const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2300)};
     const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     function render(){const p=profile();const device=state.connectedName||'';const ids=Number.isInteger(state.connectedVendorId)&&Number.isInteger(state.connectedProductId)?`USB ID ${state.connectedVendorId.toString(16).padStart(4,'0').toUpperCase()}:${state.connectedProductId.toString(16).padStart(4,'0').toUpperCase()} · HID++ report 0x${(hidpp.reportId??0x10).toString(16)} · slot 0x${(hidpp.deviceIndex??0xff).toString(16)}`:'No device IDs saved';$('#sideDevice').textContent=device||'Profile workspace';$('#sideState').textContent=hidDevice?.opened?'Device connected':device?'Last device selected':'No device connected';$('#sideTag').textContent=hidDevice?.opened?'HID++':'LOCAL';$('#deviceTitle').textContent=device||'Your devices';$('#deviceDetails').textContent=hidDevice?.opened?ids:lastConnectError?'Connection failed: '+lastConnectError:device?ids:'No hardware selected. You can still edit, save, and export profiles.';$('#activeProfileTag').textContent=p.name;$('#profileName').textContent=p.name;$('#profileArtLabel').textContent=p.game||p.name.toUpperCase();$('#profileDetail').textContent=(p.id==='desktop'?'Desktop profile':'Game profile')+' · Browser saved';$('#persistentSwitch').checked=!!state.persistent;$('#assignmentProfile').textContent=p.name;
-      const assignmentStatus=$('#hardwareAssignmentStatus');if(assignmentStatus)assignmentStatus.textContent=!hidDevice?.opened?(lastConnectError?'Connection failed: '+lastConnectError:'Connect a Logitech mouse to check whether it exposes onboard button profiles.'):hidpp.onboardProfilesFeature?'Onboard profile feature found (HID++ 0x8100). Read-only detection only; profile format must be verified before hardware writes.':'This mouse did not report onboard profiles (HID++ 0x8100); assignments remain local.';
+      const assignmentStatus=$('#hardwareAssignmentStatus');if(assignmentStatus)assignmentStatus.textContent=!hidDevice?.opened?(lastConnectError?'Connection failed: '+lastConnectError:'Connect a Logitech G502 HERO to inspect its active onboard profile.'):hidpp.onboardProfile?.ready?`Ready · active slot ${hidpp.onboardProfile.sector} · format ${hidpp.onboardProfile.profileFormat} · ${hidpp.onboardProfile.mode===1?'onboard mode':'host mode'}. A hardware apply makes a local backup first.`:hidpp.onboardProfile?.error||'This mouse or profile format is not verified for assignment writes; assignments remain local.';
+      const applyAssignments=$('#applyHardwareAssignments');if(applyAssignments)applyAssignments.disabled=!hidDevice?.opened||!hidpp.onboardProfile?.ready||hidpp.busy;
       $('#browserSupportNote').textContent=navigator.hid?'Local profiles · no account required':'Mouse controls need Chrome or Edge on HTTPS';
       const connectedNow=!!hidDevice?.opened,browserReady=!!navigator.hid&&window.isSecureContext;
       $('#webhidGuidance').textContent=!window.isSecureContext?'Open this site over HTTPS to use mouse controls.':!navigator.hid?'WebHID is unavailable. Use desktop Chrome or Edge.':connectingDevice?'Waiting for your device choice in the browser prompt.':connectedNow?'Mouse connected. Check the feature results below.':'Click Add Logitech device, choose your mouse, then click Connect in the browser prompt.';
@@ -359,7 +371,7 @@
       $('#setupFeatures').classList.toggle('complete',connectedNow&&hidpp.featuresProbed);$('#setupFeatures').classList.toggle('current',connectedNow&&!hidpp.featuresProbed);
       $('#capDpi').textContent=!connectedNow?'Waiting for connection':hidpp.dpiFeature?(hidpp.currentDpi?hidpp.currentDpi.toLocaleString()+' DPI · readable':'Supported · reading value'):hidpp.featuresProbed?'Not reported by this mouse':'Checking';
       $('#capLighting').textContent=!connectedNow?'Waiting for connection':hidpp.ledZones.length?hidpp.ledZones.length+' RGB zone(s) reported':hidpp.featuresProbed?'No controllable RGB zones reported':'Checking';
-      $('#capButtons').textContent=!connectedNow?'Not checked':hidpp.onboardProfilesFeature?'Onboard profiles detected · writes unverified':hidpp.featuresProbed?'Not reported · assignments stay local':'Checking';
+      $('#capButtons').textContent=!connectedNow?'Not checked':hidpp.onboardProfile?.ready?'G502 onboard profile · read/write ready':hidpp.onboardProfilesFeature?'Onboard profile found · format unsupported':hidpp.featuresProbed?'Not reported · assignments stay local':'Checking';
       $('#capModel').textContent=connectedNow&&state.connectedVendorId===0x046d&&state.connectedProductId===0xc08b?'G502 HERO · connection and DPI tested':connectedNow?'This model is not verified':'G502 HERO is the only model tested';
       $('#deviceDetails').classList.toggle('connection-error',!!lastConnectError&&!connectedNow);
       ['connectBtn','connectSecondary'].forEach(id=>{const button=$('#'+id);button.disabled=connectingDevice;button.textContent=connectingDevice?'Opening device chooser…':'＋ Add Logitech device'});
@@ -430,14 +442,76 @@
         setLightingStatus(hidpp.ledZones.length?'Ready · '+names+(hidpp.lightingReadback?' · readback available':' · write response only'):'No RGB zones were reported by the mouse.');
       }catch(e){hidpp.colorLedFeature=null;hidpp.ledZones=[];hidpp.lightingReadback=false;setLightingStatus('Lighting discovery failed: '+e.message)}
     }
+    function onboardCrc(bytes){let crc=0xffff;for(let i=0;i<bytes.length-2;i++){crc^=bytes[i]<<8;for(let bit=0;bit<8;bit++)crc=(crc&0x8000)?((crc<<1)^0x1021)&0xffff:(crc<<1)&0xffff}return crc}
+    function onboardCrcValid(bytes){if(bytes.length<3)return false;const stored=(bytes.at(-2)<<8)|bytes.at(-1);return stored===onboardCrc(bytes)}
+    async function readOnboardSector(sector,size){
+      const bytes=[];const readChunk=async offset=>{
+        const reply=await hidppCall(hidpp.onboardProfilesFeature,5,[(sector>>8)&255,sector&255,(offset>>8)&255,offset&255],0x11);
+        if(reply.length<19)throw Error('Mouse returned a short onboard-memory read');return Array.from(reply.slice(3,19));
+      };
+      while(bytes.length<size-15)bytes.push(...await readChunk(bytes.length));
+      if(bytes.length<size){const offset=size-16,chunk=await readChunk(offset);bytes.push(...chunk.slice(bytes.length-offset))}
+      return Uint8Array.from(bytes.slice(0,size));
+    }
+    async function getOnboardDirectory(meta){
+      let directory=await readOnboardSector(0,meta.size);
+      if(directory.length<4||directory.slice(0,4).every(v=>v===0)||directory.slice(0,4).every(v=>v===255))directory=await readOnboardSector(0x100,meta.size);
+      const entries=[];for(let i=0;i+3<directory.length;i+=4){const sector=(directory[i]<<8)|directory[i+1];if(sector===0xffff)break;if(sector>0&&sector<meta.sectorCount)entries.push({sector,enabled:directory[i+2]})}
+      return entries;
+    }
     async function discoverOnboardProfiles(){
-      hidpp.onboardProfilesFeature=null;hidpp.onboardProfileInfo=null;
+      hidpp.onboardProfilesFeature=null;hidpp.onboardProfileInfo=null;hidpp.onboardProfile=null;
       try{
-        const feature=await hidppCall(0,0,[0x81,0x00,0]);
-        if(!feature[3])return;
+        const feature=await hidppCall(0,0,[0x81,0x00,0]);if(!feature[3])return;
         hidpp.onboardProfilesFeature=feature[3];
-        hidpp.onboardProfileInfo=await hidppCall(feature[3],0,[0,0,0]);
-      }catch{}finally{hidpp.featuresProbed=true;render()}
+        const reply=await hidppCall(feature[3],0,[0,0,0]),data=reply.slice(3);hidpp.onboardProfileInfo=reply;
+        if(data.length<9)throw Error('Mouse returned incomplete onboard-profile information');
+        const meta={memoryModel:data[0],profileFormat:data[1],profileCount:data[3],buttonCount:data[5],sectorCount:data[6],size:(data[7]<<8)|data[8]};
+        if(state.connectedVendorId!==0x046d||state.connectedProductId!==0xc08b)throw Error('Hardware assignment writes are enabled only for the tested G502 HERO (USB ID 046D:C08B)');
+        if(meta.memoryModel!==1||meta.profileFormat!==2||meta.buttonCount<8||meta.size!==255||meta.sectorCount<2)throw Error('Writes require G502 base profile format 2, 255-byte sectors, and at least eight button entries');
+        const modeReply=await hidppCall(feature[3],2,[0,0,0]),mode=modeReply[3];
+        const activeReply=await hidppCall(feature[3],4,[0,0,0]),sector=(activeReply[3]<<8)|activeReply[4];
+        const entries=await getOnboardDirectory(meta);if(!entries.some(entry=>entry.sector===sector))throw Error('The active onboard slot is missing from the device profile directory');
+        const bytes=await readOnboardSector(sector,meta.size);if(!onboardCrcValid(bytes))throw Error('The active onboard slot checksum is invalid; Orbit will not write it');
+        hidpp.onboardProfile={...meta,mode,sector,entries,bytes,ready:true};
+      }catch(e){hidpp.onboardProfile={ready:false,error:'Onboard assignment check failed: '+(e.message||'unknown device response')}}finally{hidpp.featuresProbed=true;render()}
+    }
+    function encodeHardwareAction(action){const value=hardwareActions[action];if(!value)throw Error('“'+action+'” is an Orbit-only game action. Choose a hardware action before applying.');return value}
+    function hardwareBackupKey(){return 'orbit-hardware-profile-backup-v1'}
+    function saveOnboardBackup(onboard,bytes){
+      const record={format:'orbit-g502-sector-backup-v1',vendorId:state.connectedVendorId,productId:state.connectedProductId,sector:onboard.sector,profileFormat:onboard.profileFormat,size:onboard.size,createdAt:new Date().toISOString(),data:btoa(Array.from(bytes,v=>String.fromCharCode(v)).join(''))};
+      const records=JSON.parse(localStorage.getItem(hardwareBackupKey())||'[]');records.push(record);localStorage.setItem(hardwareBackupKey(),JSON.stringify(records.slice(-10)));
+      const blob=new Blob([JSON.stringify(record,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`orbit-g502-slot-${onboard.sector}-backup-${record.createdAt.slice(0,10)}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
+    }
+    async function writeOnboardSector(sector,bytes,size){
+      const feature=hidpp.onboardProfilesFeature;
+      await hidppCall(feature,6,[(sector>>8)&255,sector&255,0,0,(size>>8)&255,size&255],0x11);
+      for(let offset=0;offset<size;offset+=16){const chunk=Array.from(bytes.slice(offset,offset+16));while(chunk.length<16)chunk.push(255);await hidppCall(feature,7,chunk,0x11)}
+      await hidppCall(feature,8,[0,0,0],0x10);
+    }
+    async function applyHardwareAssignments(){
+      const onboard=hidpp.onboardProfile;if(!hidDevice?.opened||!onboard?.ready||hidpp.busy)return;
+      let next;
+      try{
+        next=onboard.bytes.slice();for(const [key,buttonOffset] of Object.entries(g502ButtonOffsets)){const encoded=encodeHardwareAction(profile().assignments[key]);next.set(encoded,32+buttonOffset*4)}
+        if(!onboardCrcValid(onboard.bytes))throw Error('Current profile checksum changed; disconnect and reconnect before trying again');
+        const crc=onboardCrc(next);next[next.length-2]=(crc>>8)&255;next[next.length-1]=crc&255;
+        if(next.every((value,index)=>value===onboard.bytes[index])){toast('Assignments already match the active mouse profile');return}
+      }catch(e){toast(e.message);return}
+      const modeText=onboard.mode===1?'onboard mode is already active':'the mouse will switch from host mode to onboard mode';
+      const summary=Object.entries(g502ButtonOffsets).map(([key])=>`${key}: ${profile().assignments[key]}`).join('\n');
+      if(!window.confirm(`Experimental hardware write to G502 HERO slot ${onboard.sector}:\n\n${summary}\n\nOrbit will download a backup, rewrite the full 255-byte profile sector, verify the checksum and readback, and then ${modeText}. Continue?`))return;
+      hidpp.busy=true;render();let writeStarted=false;
+      try{
+        saveOnboardBackup(onboard,onboard.bytes);
+        writeStarted=true;await writeOnboardSector(onboard.sector,next,onboard.size);
+        const readback=await readOnboardSector(onboard.sector,onboard.size);
+        if(!onboardCrcValid(readback)||!readback.every((value,index)=>value===next[index]))throw Error('Mouse profile readback did not match the saved data');
+        if(onboard.mode!==1){await hidppCall(hidpp.onboardProfilesFeature,1,[1,0,0]);const mode=await hidppCall(hidpp.onboardProfilesFeature,2,[0,0,0]);if(mode[3]!==1)throw Error('Assignments were saved and verified, but the mouse did not switch to onboard mode')}
+        onboard.bytes=readback;onboard.mode=1;toast('Assignments saved and verified on G502 HERO slot '+onboard.sector+' · backup downloaded');
+      }catch(e){
+        if(writeStarted){try{await writeOnboardSector(onboard.sector,onboard.bytes,onboard.size);const restored=await readOnboardSector(onboard.sector,onboard.size);if(onboardCrcValid(restored)&&restored.every((value,index)=>value===onboard.bytes[index]))toast('Write failed; original onboard profile was restored and verified. '+e.message);else toast('Write failed and automatic restore could not be verified. Use the downloaded backup to recover the original profile. '+e.message)}catch(restoreError){toast('Write failed; automatic restore failed. Use the downloaded backup to recover the original profile. '+restoreError.message)}}else toast('Hardware assignment write failed: '+e.message);
+      }finally{hidpp.busy=false;render()}
     }
     function hexRgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16))}
     function lightingPacket(p){
@@ -544,7 +618,7 @@
     $('#dpiSlider').addEventListener('input',e=>{profile().dpi=Number(e.target.value);$('#dpiInput').value=e.target.value});$('#dpiSlider').addEventListener('change',render);
     $('#addStageBtn').addEventListener('click',()=>{if(profile().stages.length>=5){toast('This profile already has five stages');return}let candidate=Math.min(25600,Math.round(profile().dpi*1.5/50)*50);if(profile().stages.includes(candidate)){candidate=[400,800,1200,1600,2400,3200,4800,6400,8000,12000,16000,25600].find(x=>!profile().stages.includes(x))}if(!candidate){toast('No unused stage value found');return}profile().stages.push(candidate);profile().stages.sort((a,b)=>a-b);profile().dpi=candidate;render();toast('DPI stage added')});
     $('#persistentSwitch').addEventListener('change',e=>{state.persistent=e.target.checked;toast(persistState()?(state.persistent?'Persistent profile enabled':'Persistent profile disabled'):'Could not save in this browser')});
-    $('#saveBtn').addEventListener('click',save);$('#saveAssignments').addEventListener('click',()=>{ $$('[data-assign]').forEach(el=>profile().assignments[el.dataset.assign]=el.value);save()});$('#saveLighting').addEventListener('click',save);$('#exportBtn').addEventListener('click',()=>exportProfile());$('#connectBtn').addEventListener('click',()=>connectDevice());$('#connectSecondary').addEventListener('click',()=>connectDevice());
+    $('#saveBtn').addEventListener('click',save);$('#saveAssignments').addEventListener('click',()=>{ $$('[data-assign]').forEach(el=>profile().assignments[el.dataset.assign]=el.value);save()});$('#applyHardwareAssignments').addEventListener('click',()=>{ $$('[data-assign]').forEach(el=>profile().assignments[el.dataset.assign]=el.value);save();applyHardwareAssignments()});$('#saveLighting').addEventListener('click',save);$('#exportBtn').addEventListener('click',()=>exportProfile());$('#connectBtn').addEventListener('click',()=>connectDevice());$('#connectSecondary').addEventListener('click',()=>connectDevice());
     $('#readDeviceDpiBtn').addEventListener('click',async()=>{try{toast('Mouse DPI: '+await readMouseDpi(true))}catch(e){toast('Read failed: '+e.message)}});$('#applyDeviceDpiBtn').addEventListener('click',applyDeviceDpi);$('#restoreDeviceDpiBtn').addEventListener('click',restoreDeviceDpi);$('#applyDeviceLightingBtn').addEventListener('click',applyDeviceLighting);
     $('#lightColor').addEventListener('input',e=>{profile().color=e.target.value;$('#lightBeam').style.background=beam(profile());$('#bigLightBeam').style.background=beam(profile());$('#effectSummary').textContent=`${profile().effect} · ${profile().color}`});$('#brightness').addEventListener('input',e=>{profile().brightness=Number(e.target.value);$('#brightnessValue').textContent=e.target.value+'%';$('#bigLightBeam').style.opacity=Math.max(.15,profile().brightness/100)});$('#lightingSpeed').addEventListener('change',e=>profile().speed=e.target.value);
     $('#newProfileBtn').addEventListener('click',()=>openModal('new','New profile','Create a separate setup for a game or activity.','Profile name','e.g. Apex Legends','Create profile'));
