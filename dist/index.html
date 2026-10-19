@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0f11">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-Hf49Ukg+/fpMRwVaF4Fkfa6kN8eDjCJpWRVKaDGrVh0='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="An install-free browser mouse workspace for local profiles, DPI, and supported RGB lighting controls.">
   <title>Orbit HUB — Online mouse studio</title>
   <style>
@@ -144,7 +146,7 @@
     <main class="main">
       <div class="topbar"><div class="crumb">Workspace <span style="color:#a3a8ae">/</span> <span id="crumbCurrent">Devices</span></div><div class="top-actions"><div class="browser-note"><svg viewBox="0 0 20 20"><path d="M10 2.5 16 5v4.3c0 3.4-2.3 6.1-6 8.2-3.7-2.1-6-4.8-6-8.2V5z"/><path d="m7.2 9.8 1.8 1.8 3.8-4"/></svg><span id="browserSupportNote">Local profiles · Chrome or Edge for mouse access</span></div><button class="btn" id="connectBtn">＋ Add Logitech device</button></div></div>
       <section class="page active" id="page-studio">
-        <div class="page-heading"><div><div class="overline">My gear</div><h1 class="page-title" id="deviceTitle">Your devices</h1><p class="page-subtitle">Previously authorized mice reconnect automatically. Add a Logitech device once to grant this browser access.</p></div><div class="heading-actions"><button class="btn subtle" id="exportBtn">Export profile</button><button class="btn primary" id="saveBtn">Save changes</button></div></div>
+        <div class="page-heading"><div><div class="overline">Public test · My gear</div><h1 class="page-title" id="deviceTitle">Your devices</h1><p class="page-subtitle">Add a Logitech device once to grant this browser access. Hardware support varies by model; G502 HERO is the only model verified in this test build.</p></div><div class="heading-actions"><button class="btn subtle" id="exportBtn">Export profile</button><button class="btn primary" id="saveBtn">Save changes</button></div></div>
         <div class="layout">
           <div>
             <section class="panel dpi-panel panel-pad"><div class="dpi-body"><div class="panel-head"><div><h2 class="panel-title">Sensitivity</h2><div class="panel-help">Set this profile’s DPI, then apply it to the detected mouse below.</div></div><span class="profile-tag" id="activeProfileTag">Desktop</span></div><div class="dpi-current"><input id="dpiInput" class="dpi-number-input" type="number" min="100" max="25600" step="1" value="1000" aria-label="Type DPI value"><div class="dpi-unit">DPI</div></div><input id="dpiSlider" class="dpi-range" type="range" min="100" max="25600" step="50" value="1000" aria-label="DPI sensitivity"><div class="range-labels"><span>100</span><span>12,800</span><span>25,600</span></div><div class="stages" id="stageList"></div><hr class="panel-divider"><div class="panel-foot"><span class="foot-note">Type a DPI value or choose a stage.</span><button class="btn small" id="addStageBtn">＋ Add stage</button></div><hr class="panel-divider"><div class="panel-head"><div><h2 class="panel-title">Mouse sensor</h2><div class="panel-help">Apply the active DPI to change the mouse setting.</div></div><span class="connection-status" id="hardwareDpiStatus"><i class="dot"></i><span>Detecting mouse</span></span></div><div class="panel-foot" style="justify-content:flex-start;flex-wrap:wrap"><button class="btn small" id="readDeviceDpiBtn" disabled>Read device DPI</button><button class="btn small primary" id="applyDeviceDpiBtn" disabled>Apply active DPI</button><button class="btn small" id="restoreDeviceDpiBtn" disabled>Restore previous DPI</button><span class="foot-note" id="supportedDpiText"></span></div></div></section>
@@ -155,7 +157,7 @@
           </div>
           <div>
             <section class="panel profile-panel"><div class="panel-head"><div><h2 class="panel-title">Active profile</h2><div class="panel-help">Settings follow the selected profile.</div></div><button class="btn small subtle" data-go="profiles">Change</button></div><div class="profile-art"><div class="game-mark" id="profileArtLabel">DESKTOP</div></div><div class="profile-name" id="profileName">Desktop</div><div class="profile-detail" id="profileDetail">Desktop profile · Browser saved</div><hr class="panel-divider"><div class="row"><div><div class="switch-copy">Pin in Orbit</div><div class="switch-sub">Keep this setup selected in this browser</div></div><input id="persistentSwitch" class="switch" type="checkbox" aria-label="Pin active profile in Orbit"></div><div class="callout"><strong>Local profile data</strong><br>Profiles stay in this browser and are not uploaded. Hardware support varies by model. Button assignments are saved here but are not sent to the mouse.</div></section>
-            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Device connection</h2><div class="panel-help">USB, LIGHTSPEED receiver, or Bluetooth HID++ device</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note">Previously authorized Logitech mice reconnect automatically. Use Add Logitech device for first-time browser access. Controls appear only when the mouse reports the matching feature.</p><div class="foot-note" id="deviceDetails" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
+            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Device connection</h2><div class="panel-help">USB, LIGHTSPEED receiver, or Bluetooth HID++ device</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note">Previously authorized mice reconnect automatically. First use requires browser approval. Controls vary by model, and other mouse models have not been verified in this build.</p><div class="foot-note" id="deviceDetails" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
           </div>
         </div>
       </section>
@@ -202,7 +204,7 @@
     let state;try{state=JSON.parse(localStorage.getItem('orbit-config-v1'))||structuredClone(defaults)}catch{state=structuredClone(defaults)}
     if(!state||typeof state!=='object'||Array.isArray(state)||!Array.isArray(state.profiles))state=structuredClone(defaults);
     const normalizedProfiles=[];
-    for(const [index,candidate] of state.profiles.slice(0,50).entries()){
+    for(const candidate of state.profiles){
       try{const clean=normalizeProfile(candidate);if(!normalizedProfiles.some(p=>p.id===clean.id))normalizedProfiles.push(clean)}catch{}
     }
     state.profiles=normalizedProfiles.length?normalizedProfiles:structuredClone(defaults.profiles);
