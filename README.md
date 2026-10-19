@@ -11,6 +11,7 @@ There is no account or app server. Profiles are stored in local browser storage 
 ## Tested scope
 
 - Logitech G502 HERO over HID++: device detection and DPI reading were verified in this development environment.
+- The connection panel gives a three-step browser setup and reports DPI, lighting, and onboard-profile features after a successful connection. Connection errors remain visible until another attempt.
 - DPI apply and restore require an explicit confirmation each time. The browser session keeps the starting DPI for restore.
 - RGB effects are offered only when the connected device reports the relevant HID++ feature and zones. Some models report write acceptance without supporting readback, so successful response does not independently verify the visible lighting result.
 - Button assignments remain local. A read-only probe checks whether the connected device reports HID++ 0x8100 onboard profiles and reads the feature info response. This does not prove the profile data layout, integrity checks, button command IDs, or a safe write and does not send assignments to the mouse.
