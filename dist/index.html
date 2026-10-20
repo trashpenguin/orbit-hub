@@ -106,14 +106,15 @@
     .mode-option.selected{border-color:#e5a153;background:#30271f;color:#f2c58e}
     .mode-option.unsupported{opacity:.55;border-style:dashed}
     #lightingEffectsSupport{margin-top:12px;max-width:580px;line-height:1.6}
-    .compatibility-record{margin:16px 0 12px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#151b20}
-    .compatibility-record h3{font:600 13px 'Space Grotesk';margin:0 0 8px}
-    .compatibility-record table{width:100%;border-collapse:collapse;font-size:11px}
-    .compatibility-record th,.compatibility-record td{padding:7px 8px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
-    .compatibility-record th{color:var(--text);font-weight:600;white-space:nowrap}
-    .compatibility-record td{color:var(--muted)}
-    #deviceEvidence{margin:10px 0 12px;line-height:1.6}
-    @media(max-width:700px){.compatibility-record{overflow-x:auto}.compatibility-record table{min-width:560px}}
+    .compatibility-record{margin:16px 0 12px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text)}
+    .compatibility-record h3{font:600 14px 'Space Grotesk';color:var(--text);margin:0}
+    .compatibility-model{font-size:12px;color:var(--muted);margin:4px 0 10px}
+    .compatibility-results{margin:0}
+    .compatibility-result{display:grid;grid-template-columns:minmax(88px,.42fr) minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+    .compatibility-result dt{font-size:12px;font-weight:650;color:var(--text)}
+    .compatibility-result dd{margin:0;color:var(--text);font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+    .compatibility-result dd span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+    #deviceEvidence{margin:10px 0 12px;line-height:1.6;font-size:12px}
     .swatch{border-color:#191e1f;box-shadow:0 0 0 1px #646d68}
     .swatch.selected{box-shadow:0 0 0 2px #f2c58e}
     .assign-row,.profile-card{background:#202626;border-color:#3a4240;border-radius:6px}
@@ -252,6 +253,12 @@
     .capability-grid{border-color:#c3cbc4}
     .capability{background:#ecefea}
     .capability-value{font-size:13px;color:#171d1a}
+    .setup-step{background:#ecefea;border-color:#b8c0b9;color:#171d1a}
+    .setup-step strong{color:#171d1a}
+    .setup-step span{color:#46534b}
+    .setup-step.complete{background:#e5f0e8;border-color:#8ca895}
+    .setup-step.current{background:#fae7e1;border-color:#e45132}
+    #deviceEvidence{color:#3e4942;font-size:13px}
     .modal-backdrop{background:#171d1a99}
     .modal{background:#f5f6f2;border-color:#b8c0b9;border-radius:3px;box-shadow:0 18px 50px #171d1a30}
     .modal h2{font:600 22px/1.1 Switzer,Arial,sans-serif;color:#171d1a}
@@ -292,7 +299,7 @@
           </div>
           <div>
             <section class="panel profile-panel"><div class="panel-head"><div><h2 class="panel-title">Active profile</h2><div class="panel-help">Settings follow the selected profile.</div></div><button class="btn small subtle" data-go="profiles">Change</button></div><div class="profile-art"><div class="game-mark" id="profileArtLabel">DESKTOP</div></div><div class="profile-name" id="profileName">Desktop</div><div class="profile-detail" id="profileDetail">Desktop profile · Browser saved</div><hr class="panel-divider"><div class="row"><div><div class="switch-copy">Pin in Orbit</div><div class="switch-sub">Keep this setup selected in this browser</div></div><input id="persistentSwitch" class="switch" type="checkbox" aria-label="Pin active profile in Orbit"></div><div class="callout"><strong>Local profile data</strong><br>Profiles stay in this browser and are not uploaded. Supported onboard button assignments can be applied to the mouse from Assignments.</div></section>
-            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Connect a mouse</h2><div class="panel-help">Use USB or a supported LIGHTSPEED receiver. Bluetooth availability varies by browser and device.</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note" id="webhidGuidance" role="status">Connect from desktop Chrome or Edge on this HTTPS page. The browser asks you to choose a Logitech device.</p><div class="setup-flow" id="setupFlow"><div class="setup-step" id="setupBrowser"><strong>1 · Browser</strong><span>Checking WebHID support</span></div><div class="setup-step" id="setupConnect"><strong>2 · Connect</strong><span>Choose your mouse in the browser prompt</span></div><div class="setup-step" id="setupFeatures"><strong>3 · Check controls</strong><span>Orbit checks reported features</span></div></div><div class="capability-grid" aria-label="Mouse feature support"><div class="capability"><span class="capability-label">DPI</span><span class="capability-value" id="capDpi">Waiting for connection</span></div><div class="capability"><span class="capability-label">Lighting</span><span class="capability-value" id="capLighting">Waiting for connection</span></div><div class="capability"><span class="capability-label">Button profiles</span><span class="capability-value" id="capButtons">Not checked</span></div><div class="capability"><span class="capability-label">Device ID</span><span class="capability-value" id="capModel">Not connected</span></div></div><p class="foot-note" id="deviceEvidence" role="status" aria-live="polite">Connect a mouse to see what Orbit detected and what has been confirmed on this device.</p><div class="compatibility-record"><h3>Manual test record</h3><table><thead><tr><th>Device</th><th>Feature</th><th>Observed result</th><th>Limit</th></tr></thead><tbody><tr><th rowspan="3">Logitech G502 HERO<br>046D:C08B</th><td>DPI</td><td>Device detected; DPI read succeeded</td><td>One device and setup tested</td></tr><tr><td>LIGHTSYNC</td><td>Two zones reported; mouse acknowledged writes</td><td>Readback unavailable; physical LED change not confirmed</td></tr><tr><td>Button profile</td><td>No supported profile format reported</td><td>Assignments remain local</td></tr></tbody></table></div><div class="foot-note" id="deviceDetails" role="status" aria-live="polite" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
+            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Connect a mouse</h2><div class="panel-help">Use USB or a supported LIGHTSPEED receiver. Bluetooth availability varies by browser and device.</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note" id="webhidGuidance" role="status">Connect from desktop Chrome or Edge on this HTTPS page. The browser asks you to choose a Logitech device.</p><div class="setup-flow" id="setupFlow"><div class="setup-step" id="setupBrowser"><strong>1 · Browser</strong><span>Checking WebHID support</span></div><div class="setup-step" id="setupConnect"><strong>2 · Connect</strong><span>Choose your mouse in the browser prompt</span></div><div class="setup-step" id="setupFeatures"><strong>3 · Check controls</strong><span>Orbit checks reported features</span></div></div><div class="capability-grid" aria-label="Mouse feature support"><div class="capability"><span class="capability-label">DPI</span><span class="capability-value" id="capDpi">Waiting for connection</span></div><div class="capability"><span class="capability-label">Lighting</span><span class="capability-value" id="capLighting">Waiting for connection</span></div><div class="capability"><span class="capability-label">Button profiles</span><span class="capability-value" id="capButtons">Not checked</span></div><div class="capability"><span class="capability-label">Device ID</span><span class="capability-value" id="capModel">Not connected</span></div></div><p class="foot-note" id="deviceEvidence" role="status" aria-live="polite">Connect a mouse to see what Orbit detected and what has been confirmed on this device.</p><div class="compatibility-record"><h3>Manual test record</h3><p class="compatibility-model">Logitech G502 HERO · 046D:C08B</p><dl class="compatibility-results"><div class="compatibility-result"><dt>DPI</dt><dd>Device detected; DPI read succeeded<span>One device and setup tested</span></dd></div><div class="compatibility-result"><dt>LIGHTSYNC</dt><dd>Two zones reported; mouse acknowledged writes<span>Readback unavailable; visible LED change not confirmed</span></dd></div><div class="compatibility-result"><dt>Button profile</dt><dd>No supported profile format reported<span>Assignments remain local</span></dd></div></dl></div><div class="foot-note" id="deviceDetails" role="status" aria-live="polite" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
           </div>
         </div>
       </section>
