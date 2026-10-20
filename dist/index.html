@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#dfe3de">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-Dlj8jTDHZHZwtL5H3nb5g9pZny/bJXKsVe5dqa8v4A0='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-Jx7fgyzx+Q0yL9crZ7JjDFGtzEn5uE79WweVEV/HZ9k='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="A browser-based calibration bench for Logitech mouse DPI, local profiles, and feature-detected LIGHTSYNC controls.">
   <title>Orbit HUB | Mouse calibration</title>
   <style>
@@ -106,6 +106,14 @@
     .mode-option.selected{border-color:#e5a153;background:#30271f;color:#f2c58e}
     .mode-option.unsupported{opacity:.55;border-style:dashed}
     #lightingEffectsSupport{margin-top:12px;max-width:580px;line-height:1.6}
+    .compatibility-record{margin:16px 0 12px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#151b20}
+    .compatibility-record h3{font:600 13px 'Space Grotesk';margin:0 0 8px}
+    .compatibility-record table{width:100%;border-collapse:collapse;font-size:11px}
+    .compatibility-record th,.compatibility-record td{padding:7px 8px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
+    .compatibility-record th{color:var(--text);font-weight:600;white-space:nowrap}
+    .compatibility-record td{color:var(--muted)}
+    #deviceEvidence{margin:10px 0 12px;line-height:1.6}
+    @media(max-width:700px){.compatibility-record{overflow-x:auto}.compatibility-record table{min-width:560px}}
     .swatch{border-color:#191e1f;box-shadow:0 0 0 1px #646d68}
     .swatch.selected{box-shadow:0 0 0 2px #f2c58e}
     .assign-row,.profile-card{background:#202626;border-color:#3a4240;border-radius:6px}
@@ -284,7 +292,7 @@
           </div>
           <div>
             <section class="panel profile-panel"><div class="panel-head"><div><h2 class="panel-title">Active profile</h2><div class="panel-help">Settings follow the selected profile.</div></div><button class="btn small subtle" data-go="profiles">Change</button></div><div class="profile-art"><div class="game-mark" id="profileArtLabel">DESKTOP</div></div><div class="profile-name" id="profileName">Desktop</div><div class="profile-detail" id="profileDetail">Desktop profile · Browser saved</div><hr class="panel-divider"><div class="row"><div><div class="switch-copy">Pin in Orbit</div><div class="switch-sub">Keep this setup selected in this browser</div></div><input id="persistentSwitch" class="switch" type="checkbox" aria-label="Pin active profile in Orbit"></div><div class="callout"><strong>Local profile data</strong><br>Profiles stay in this browser and are not uploaded. Supported onboard button assignments can be applied to the mouse from Assignments.</div></section>
-            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Connect a mouse</h2><div class="panel-help">Use USB or a supported LIGHTSPEED receiver. Bluetooth availability varies by browser and device.</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note" id="webhidGuidance" role="status">Connect from desktop Chrome or Edge on this HTTPS page. The browser asks you to choose a Logitech device.</p><div class="setup-flow" id="setupFlow"><div class="setup-step" id="setupBrowser"><strong>1 · Browser</strong><span>Checking WebHID support</span></div><div class="setup-step" id="setupConnect"><strong>2 · Connect</strong><span>Choose your mouse in the browser prompt</span></div><div class="setup-step" id="setupFeatures"><strong>3 · Check controls</strong><span>Orbit checks reported features</span></div></div><div class="capability-grid" aria-label="Mouse feature support"><div class="capability"><span class="capability-label">DPI</span><span class="capability-value" id="capDpi">Waiting for connection</span></div><div class="capability"><span class="capability-label">Lighting</span><span class="capability-value" id="capLighting">Waiting for connection</span></div><div class="capability"><span class="capability-label">Button profiles</span><span class="capability-value" id="capButtons">Not checked</span></div><div class="capability"><span class="capability-label">Model support</span><span class="capability-value" id="capModel">Logitech feature detection</span></div></div><div class="foot-note" id="deviceDetails" role="status" aria-live="polite" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
+            <section class="panel panel-pad" style="margin-top:16px"><div class="panel-head"><div><h2 class="panel-title">Connect a mouse</h2><div class="panel-help">Use USB or a supported LIGHTSPEED receiver. Bluetooth availability varies by browser and device.</div></div><span class="connection-status" id="connectionStatus"><i class="dot"></i><span>Not connected</span></span></div><p class="foot-note" id="webhidGuidance" role="status">Connect from desktop Chrome or Edge on this HTTPS page. The browser asks you to choose a Logitech device.</p><div class="setup-flow" id="setupFlow"><div class="setup-step" id="setupBrowser"><strong>1 · Browser</strong><span>Checking WebHID support</span></div><div class="setup-step" id="setupConnect"><strong>2 · Connect</strong><span>Choose your mouse in the browser prompt</span></div><div class="setup-step" id="setupFeatures"><strong>3 · Check controls</strong><span>Orbit checks reported features</span></div></div><div class="capability-grid" aria-label="Mouse feature support"><div class="capability"><span class="capability-label">DPI</span><span class="capability-value" id="capDpi">Waiting for connection</span></div><div class="capability"><span class="capability-label">Lighting</span><span class="capability-value" id="capLighting">Waiting for connection</span></div><div class="capability"><span class="capability-label">Button profiles</span><span class="capability-value" id="capButtons">Not checked</span></div><div class="capability"><span class="capability-label">Device ID</span><span class="capability-value" id="capModel">Not connected</span></div></div><p class="foot-note" id="deviceEvidence" role="status" aria-live="polite">Connect a mouse to see what Orbit detected and what has been confirmed on this device.</p><div class="compatibility-record"><h3>Manual test record</h3><table><thead><tr><th>Device</th><th>Feature</th><th>Observed result</th><th>Limit</th></tr></thead><tbody><tr><th rowspan="3">Logitech G502 HERO<br>046D:C08B</th><td>DPI</td><td>Device detected; DPI read succeeded</td><td>One device and setup tested</td></tr><tr><td>LIGHTSYNC</td><td>Two zones reported; mouse acknowledged writes</td><td>Readback unavailable; physical LED change not confirmed</td></tr><tr><td>Button profile</td><td>No supported profile format reported</td><td>Assignments remain local</td></tr></tbody></table></div><div class="foot-note" id="deviceDetails" role="status" aria-live="polite" style="margin:12px 0"></div><button class="btn small" id="connectSecondary">＋ Add Logitech device</button></section>
           </div>
         </div>
       </section>
@@ -360,6 +368,7 @@
     try{localStorage.setItem('orbit-config-v1',JSON.stringify(state))}catch{}
     let activePage='studio',modalAction=null,toastTimer,connectingDevice=false,lastConnectError='';
     let hidDevice=null,hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],lightingReadback:false,supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
+    let deviceEvidence={dpi:'Not checked',lighting:'Not checked',assignments:'Not checked'};
     const profile=()=>state.profiles.find(x=>x.id===state.activeProfileId)||state.profiles[0];
     const persistState=()=>{try{localStorage.setItem('orbit-config-v1',JSON.stringify(state));return true}catch{return false}};
     const save=(message='Saved in this browser')=>{const stored=persistState();render();toast(stored?message:'Could not save in this browser. Export your profile to keep a copy.')};
@@ -375,10 +384,11 @@
       $('#setupBrowser').classList.toggle('complete',browserReady);$('#setupBrowser').classList.toggle('current',!browserReady);
       $('#setupConnect').classList.toggle('complete',connectedNow);$('#setupConnect').classList.toggle('current',browserReady&&!connectedNow);
       $('#setupFeatures').classList.toggle('complete',connectedNow&&hidpp.featuresProbed);$('#setupFeatures').classList.toggle('current',connectedNow&&!hidpp.featuresProbed);
-      $('#capDpi').textContent=!connectedNow?'Waiting for connection':hidpp.dpiFeature?(hidpp.currentDpi?hidpp.currentDpi.toLocaleString()+' DPI · readable':'Supported · reading value'):hidpp.featuresProbed?'Not reported by this mouse':'Checking';
-      $('#capLighting').textContent=!connectedNow?'Waiting for connection':hidpp.ledZones.length?hidpp.ledZones.length+' RGB zone(s) reported':hidpp.featuresProbed?'No controllable RGB zones reported':'Checking';
-      $('#capButtons').textContent=!connectedNow?'Not checked':hidpp.onboardProfile?.ready?`Onboard profile · format ${hidpp.onboardProfile.profileFormat} · writes available`:hidpp.onboardProfilesFeature?'Onboard profile found · format unsupported':hidpp.featuresProbed?'No onboard profile reported':'Checking';
-      $('#capModel').textContent=connectedNow?state.connectedName+' · '+(hidpp.onboardProfile?.ready?'profile recognized':'feature-based detection'):'Connect a Logitech mouse to identify its features';
+      $('#capDpi').textContent=!connectedNow?'Waiting for connection':hidpp.dpiFeature?deviceEvidence.dpi:hidpp.featuresProbed?'Not reported':'Checking';
+      $('#capLighting').textContent=!connectedNow?'Waiting for connection':hidpp.ledZones.length?deviceEvidence.lighting:hidpp.featuresProbed?'No controllable RGB zones reported':'Checking';
+      $('#capButtons').textContent=!connectedNow?'Not checked':hidpp.onboardProfile?.ready?deviceEvidence.assignments:hidpp.onboardProfilesFeature?'Profile format unsupported':hidpp.featuresProbed?'No onboard profile reported':'Checking';
+      $('#capModel').textContent=connectedNow?`${state.connectedName} · ${state.connectedVendorId.toString(16).padStart(4,'0').toUpperCase()}:${state.connectedProductId.toString(16).padStart(4,'0').toUpperCase()}`:'Connect a mouse to identify its features';
+      $('#deviceEvidence').textContent=connectedNow?`Live report · ${ids}. DPI: ${deviceEvidence.dpi}. LIGHTSYNC: ${deviceEvidence.lighting}. Button profile: ${deviceEvidence.assignments}. Detected support describes the protocol response; it does not always confirm visible behavior.`:'Connect a mouse to see its model ID, detected features, and which results Orbit can confirm.';
       $('#deviceDetails').classList.toggle('connection-error',!!lastConnectError&&!connectedNow);
       ['connectBtn','connectSecondary'].forEach(id=>{const button=$('#'+id);button.disabled=connectingDevice;button.textContent=connectingDevice?'Opening device chooser…':'＋ Add Logitech device'});
       $('#dpiInput').value=p.dpi;$('#dpiSlider').value=p.dpi;$('#stageList').innerHTML=p.stages.map((v,i)=>`<button class="stage ${v===p.dpi?'active':''}" data-stage="${v}" aria-pressed="${v===p.dpi}"><div class="stage-value">${v.toLocaleString()}</div><div class="stage-caption">Stage ${i+1}${v===p.dpi?' · active':''}</div></button>`).join('');
@@ -434,9 +444,9 @@
     async function discoverMouseLighting(){
       hidpp.colorLedFeature=null;hidpp.ledZones=[];
       try{
-        const root=await hidppCall(0,0,[0x80,0x70,0]);const featureIndex=root[3];if(!featureIndex){setLightingStatus('This mouse did not report a supported RGB lighting feature.');return}
+        const root=await hidppCall(0,0,[0x80,0x70,0]);const featureIndex=root[3];if(!featureIndex){deviceEvidence.lighting='No RGB feature reported';setLightingStatus('This mouse did not report a supported RGB lighting feature.');return}
         const info=await hidppCall(featureIndex,0,[0,0,0]);const zoneCount=info[3];const extCaps=(info[6]<<8)|info[7];
-        if(!zoneCount){setLightingStatus('Mouse lighting control is not available through its reported HID++ feature.');return}
+        if(!zoneCount){deviceEvidence.lighting='RGB feature found · no controllable zones reported';setLightingStatus('Mouse lighting control is not available through its reported HID++ feature.');return}
         // Some G502 HERO firmware reports valid color zones and effects while
         // leaving the optional get-current-effect capability bit clear.
         hidpp.lightingReadback=!!(extCaps&1);
@@ -449,8 +459,9 @@
           hidpp.ledZones.push({index:zone,supported});
         }
         const names=hidpp.ledZones.map(z=>'zone '+z.index).join(', ');
-        setLightingStatus(hidpp.ledZones.length?'Ready · '+names+(hidpp.lightingReadback?' · readback available':' · write response only'):'No RGB zones were reported by the mouse.');
-      }catch(e){hidpp.colorLedFeature=null;hidpp.ledZones=[];hidpp.lightingReadback=false;setLightingStatus('Lighting discovery failed: '+e.message)}
+        deviceEvidence.lighting=hidpp.lightingReadback?'Mode readback available · '+hidpp.ledZones.length+' zone(s)':'Zone support detected · '+hidpp.ledZones.length+' zone(s) · write acknowledgement only';
+        setLightingStatus(hidpp.ledZones.length?'Ready · '+names+(hidpp.lightingReadback?' · mode readback available':' · write acknowledgement only'):'No RGB zones were reported by the mouse.');
+      }catch(e){hidpp.colorLedFeature=null;hidpp.ledZones=[];hidpp.lightingReadback=false;deviceEvidence.lighting='Feature check failed';setLightingStatus('Lighting discovery failed: '+e.message)}
     }
     function onboardCrc(bytes){let crc=0xffff;for(let i=0;i<bytes.length-2;i++){crc^=bytes[i]<<8;for(let bit=0;bit<8;bit++)crc=(crc&0x8000)?((crc<<1)^0x1021)&0xffff:(crc<<1)&0xffff}return crc}
     function onboardCrcValid(bytes){if(bytes.length<3)return false;const stored=(bytes.at(-2)<<8)|bytes.at(-1);return stored===onboardCrc(bytes)}
@@ -485,7 +496,7 @@
         const entries=await getOnboardDirectory(meta);if(!entries.some(entry=>entry.sector===sector))throw Error('The active onboard slot is missing from the device profile directory');
         const bytes=await readOnboardSector(sector,meta.size);if(!onboardCrcValid(bytes))throw Error('The active onboard slot checksum is invalid; Orbit will not write it');
         hidpp.onboardProfile={...meta,buttonBase,mode,sector,entries,bytes,ready:true};
-      }catch(e){hidpp.onboardProfile={ready:false,error:'Onboard assignment check failed: '+(e.message||'unknown device response')}}finally{hidpp.featuresProbed=true;render()}
+      }catch(e){hidpp.onboardProfile={ready:false,error:'Onboard assignment check failed: '+(e.message||'unknown device response')}}finally{deviceEvidence.assignments=hidpp.onboardProfile?.ready?`Profile layout recognized · format ${hidpp.onboardProfile.profileFormat} · writes not yet verified on this model`:hidpp.onboardProfile?.error||'No compatible onboard profile reported';hidpp.featuresProbed=true;render()}
     }
     function decodeHardwareAction(bytes){
       const b=Array.from(bytes);if(b.length!==4)return null;
@@ -534,9 +545,9 @@
         const readback=await readOnboardSector(onboard.sector,onboard.size);
         if(!onboardCrcValid(readback)||!readback.every((value,index)=>value===next[index]))throw Error('Mouse profile readback did not match the saved data');
         if(onboard.mode!==1){await hidppCall(hidpp.onboardProfilesFeature,1,[1,0,0]);const mode=await hidppCall(hidpp.onboardProfilesFeature,2,[0,0,0]);if(mode[3]!==1)throw Error('Assignments were saved and verified, but the mouse did not switch to onboard mode')}
-        onboard.bytes=readback;onboard.mode=1;toast('Assignments saved and verified on '+state.connectedName+' slot '+onboard.sector+' · backup downloaded');
+        onboard.bytes=readback;onboard.mode=1;deviceEvidence.assignments='Write and profile readback verified this session';toast('Assignments saved and verified on '+state.connectedName+' slot '+onboard.sector+' · backup downloaded');
       }catch(e){
-        if(writeStarted){try{await writeOnboardSector(onboard.sector,onboard.bytes,onboard.size);const restored=await readOnboardSector(onboard.sector,onboard.size);if(onboardCrcValid(restored)&&restored.every((value,index)=>value===onboard.bytes[index]))toast('Write failed; original onboard profile was restored and verified. '+e.message);else toast('Write failed and automatic restore could not be verified. Use the downloaded backup to recover the original profile. '+e.message)}catch(restoreError){toast('Write failed; automatic restore failed. Use the downloaded backup to recover the original profile. '+restoreError.message)}}else toast('Hardware assignment write failed: '+e.message);
+        if(writeStarted){try{await writeOnboardSector(onboard.sector,onboard.bytes,onboard.size);const restored=await readOnboardSector(onboard.sector,onboard.size);if(onboardCrcValid(restored)&&restored.every((value,index)=>value===onboard.bytes[index])){deviceEvidence.assignments='Write failed; original profile restored and readback verified';toast('Write failed; original onboard profile was restored and verified. '+e.message)}else{deviceEvidence.assignments='Write failed; automatic restore not verified';toast('Write failed and automatic restore could not be verified. Use the downloaded backup to recover the original profile. '+e.message)}}catch(restoreError){deviceEvidence.assignments='Write failed; automatic restore failed';toast('Write failed; automatic restore failed. Use the downloaded backup to recover the original profile. '+restoreError.message)}}else{deviceEvidence.assignments='Write failed: '+e.message;toast('Hardware assignment write failed: '+e.message)}
       }finally{hidpp.busy=false;render()}
     }
     function hexRgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16))}
@@ -563,14 +574,15 @@
       hidpp.busy=true;render();try{
         const led=lightingPacket(p);
         for(const zone of hidpp.ledZones){const params=new Uint8Array(16);params[0]=zone.index;params.set(led,1);params[12]=0;await hidppCall(hidpp.colorLedFeature,3,params,0x11);if(hidpp.lightingReadback){const readback=await hidppCall(hidpp.colorLedFeature,14,[zone.index,0,0],0x11);if(readback[3]!==zone.index||readback[4]!==led[0])throw Error('Zone '+zone.index+' did not keep the requested lighting mode')}}
-        toast('Mouse accepted lighting for '+hidpp.ledZones.length+' zone(s) · session only');
-      }catch(e){toast('Lighting write failed: '+e.message)}finally{hidpp.busy=false;render()}
+        deviceEvidence.lighting=hidpp.lightingReadback?'Write accepted · mode readback confirmed on '+hidpp.ledZones.length+' zone(s) · session only':'Write acknowledged by '+hidpp.ledZones.length+' zone(s) · visible change not confirmed · session only';
+        setLightingStatus(deviceEvidence.lighting);toast(deviceEvidence.lighting);
+      }catch(e){deviceEvidence.lighting='Lighting write failed: '+e.message;setLightingStatus(deviceEvidence.lighting);toast('Lighting write failed: '+e.message)}finally{hidpp.busy=false;render()}
     }
     async function readMouseDpi(setBaseline=false){
       if(!hidpp.dpiFeature)throw Error('This mouse does not expose adjustable DPI');
       const reply=await hidppCall(hidpp.dpiFeature,2,[0,0,0]);const value=(reply[4]<<8)|reply[5];if(!value)throw Error('Mouse returned an invalid DPI value');
       if(setBaseline&&hidpp.previousDpi===null)hidpp.previousDpi=value;
-      hidpp.currentDpi=value;render();return value;
+      hidpp.currentDpi=value;deviceEvidence.dpi='Read confirmed · '+value.toLocaleString()+' DPI';render();return value;
     }
     function flattenHidCollections(collections,result=[]){for(const collection of collections||[]){result.push(collection);flattenHidCollections(collection.children,result)}return result}
     function hidppReportIds(device){
@@ -590,7 +602,7 @@
         const reportIds=hidppReportIds(d);
         if(!reportIds.length){const reportSummary=flattenHidCollections(d.collections).filter(c=>c.usagePage>=0xff00).map(c=>`0x${c.usagePage.toString(16)} in[${c.inputReports.map(r=>'0x'+r.reportId.toString(16)).join(',')}] out[${c.outputReports.map(r=>'0x'+r.reportId.toString(16)).join(',')}]`).join('; ');throw Error(`The selected Logitech interface${d.productName?' for '+d.productName:''} has no matching HID++ report pair. ${reportSummary||'No vendor HID collection was exposed to this browser.'} If this mouse exposes another Logitech interface, select that entry in the browser chooser.`)}
         if(hidDevice&&hidDevice!==d&&hidDevice.opened)await hidDevice.close();
-        if(!d.opened)await d.open();hidDevice=d;hidpp={deviceIndex:0xff,reportId:reportIds[0],dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
+        if(!d.opened)await d.open();hidDevice=d;deviceEvidence={dpi:'Checking',lighting:'Checking',assignments:'Checking'};hidpp={deviceIndex:0xff,reportId:reportIds[0],dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};
         state.connectedName=d.productName||'Logitech mouse';state.connectedVendorId=d.vendorId;state.connectedProductId=d.productId;
         let featureIndex=0;const probeErrors=[];
         for(const reportId of reportIds){
@@ -611,12 +623,12 @@
             const feature=await hidppCall(0,0,[0x22,0x01,0]);hidpp.dpiFeature=feature[3];
             if(hidpp.dpiFeature){const countReply=await hidppCall(hidpp.dpiFeature,0,[0,0,0]);if(countReply[3]){const listReply=await hidppCall(hidpp.dpiFeature,1,[0,0,0]);hidpp.supportedDpi=decodeDpiList(listReply);if(hidpp.supportedDpi.length)await readMouseDpi(true)}}
           }catch{hidpp.dpiFeature=null;hidpp.supportedDpi=[];hidpp.currentDpi=null}
-          await discoverOnboardProfiles();await discoverMouseLighting();
-        }else{hidpp.featuresProbed=true;setLightingStatus('No supported DPI, RGB, or onboard-profile feature found after checking advertised HID++ reports and device slots.'+(probeErrors.length?' Last probe: '+probeErrors.at(-1):''))}
+          await discoverOnboardProfiles();await discoverMouseLighting();if(!hidpp.dpiFeature)deviceEvidence.dpi='No adjustable DPI feature reported';
+        }else{hidpp.featuresProbed=true;deviceEvidence={dpi:'No DPI feature reported',lighting:'No RGB feature reported',assignments:'No onboard-profile feature reported'};setLightingStatus('No supported DPI, RGB, or onboard-profile feature found after checking advertised HID++ reports and device slots.'+(probeErrors.length?' Last probe: '+probeErrors.at(-1):''))}
         lastConnectError='';render();
         const capabilities=[hidpp.supportedDpi.length?'DPI':'',hidpp.ledZones.length?'lighting':''].filter(Boolean);
         toast(capabilities.length?state.connectedName+' connected · '+capabilities.join(' and ')+' ready':state.connectedName+' connected · no supported hardware controls reported');
-      }catch(e){if(candidate?.opened){try{await candidate.close()}catch{}}if(hidDevice){try{await hidDevice.close()}catch{};hidDevice=null}hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};lastConnectError=e.message||'Could not connect to the mouse';render();toast(lastConnectError)}finally{connectingDevice=false;render()}
+      }catch(e){if(candidate?.opened){try{await candidate.close()}catch{}}if(hidDevice){try{await hidDevice.close()}catch{};hidDevice=null}deviceEvidence={dpi:'Not checked',lighting:'Not checked',assignments:'Not checked'};hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};lastConnectError=e.message||'Could not connect to the mouse';render();toast(lastConnectError)}finally{connectingDevice=false;render()}
     }
     function hasHidppReports(device){return hidppReportIds(device).length>0}
     async function autoDetectDevice(){
@@ -630,18 +642,18 @@
     }
     if(navigator.hid){
       navigator.hid.addEventListener('connect',e=>{if(e.device.vendorId===0x046d&&!hidDevice&&hasHidppReports(e.device))connectDevice(e.device)});
-      navigator.hid.addEventListener('disconnect',e=>{if(e.device!==hidDevice)return;hidDevice=null;hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],lightingReadback:false,supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};render();toast((state.connectedName||'Logitech mouse')+' disconnected')});
+      navigator.hid.addEventListener('disconnect',e=>{if(e.device!==hidDevice)return;hidDevice=null;deviceEvidence={dpi:'Not checked',lighting:'Not checked',assignments:'Not checked'};hidpp={deviceIndex:0xff,reportId:0x11,dpiFeature:null,colorLedFeature:null,onboardProfilesFeature:null,onboardProfileInfo:null,featuresProbed:false,ledZones:[],lightingReadback:false,supportedDpi:[],currentDpi:null,previousDpi:null,busy:false};render();toast((state.connectedName||'Logitech mouse')+' disconnected')});
     }
     async function applyDeviceDpi(){
       if(!hidDevice||!hidpp.dpiFeature||!hidpp.supportedDpi.length||hidpp.busy)return;const requested=Number(profile().dpi);
       const target=hidpp.supportedDpi.reduce((best,v)=>Math.abs(v-requested)<Math.abs(best-requested)?v:best,hidpp.supportedDpi[0]);
       if(!window.confirm('Set '+state.connectedName+' active DPI to '+target+'? The previous value ('+hidpp.currentDpi+' DPI) can be restored with the button below.'))return;
-      hidpp.busy=true;render();try{await hidppCall(hidpp.dpiFeature,3,[0,(target>>8)&255,target&255]);const actual=await readMouseDpi(false);profile().dpi=actual;toast(actual===target?'Mouse DPI set to '+actual:'Mouse reported '+actual+' DPI after the write')}catch(e){toast('DPI write failed: '+e.message)}finally{hidpp.busy=false;render()}
+      hidpp.busy=true;render();try{await hidppCall(hidpp.dpiFeature,3,[0,(target>>8)&255,target&255]);const actual=await readMouseDpi(false);profile().dpi=actual;deviceEvidence.dpi=actual===target?'Write accepted · readback confirmed at '+actual.toLocaleString()+' DPI':'Write accepted · readback returned '+actual.toLocaleString()+' DPI (requested '+target+')';toast(actual===target?'Mouse DPI set to '+actual:'Mouse reported '+actual+' DPI after the write')}catch(e){deviceEvidence.dpi='DPI write or readback failed: '+e.message;toast('DPI write failed: '+e.message)}finally{hidpp.busy=false;render()}
     }
     async function restoreDeviceDpi(){
       if(!hidDevice||!hidpp.dpiFeature||hidpp.busy||hidpp.previousDpi===null)return;const target=hidpp.previousDpi;
       if(!window.confirm('Restore '+state.connectedName+' original active DPI ('+target+')?'))return;
-      hidpp.busy=true;render();try{await hidppCall(hidpp.dpiFeature,3,[0,(target>>8)&255,target&255]);const actual=await readMouseDpi(false);profile().dpi=actual;toast(actual===target?'Restored '+actual+' DPI':'Mouse reported '+actual+' DPI after restore')}catch(e){toast('Restore failed: '+e.message)}finally{hidpp.busy=false;render()}
+      hidpp.busy=true;render();try{await hidppCall(hidpp.dpiFeature,3,[0,(target>>8)&255,target&255]);const actual=await readMouseDpi(false);profile().dpi=actual;deviceEvidence.dpi=actual===target?'Restore write accepted · readback confirmed at '+actual.toLocaleString()+' DPI':'Restore readback returned '+actual.toLocaleString()+' DPI (target '+target+')';toast(actual===target?'Restored '+actual+' DPI':'Mouse reported '+actual+' DPI after restore')}catch(e){deviceEvidence.dpi='DPI restore or readback failed: '+e.message;toast('Restore failed: '+e.message)}finally{hidpp.busy=false;render()}
     }
     document.addEventListener('click',e=>{const nav=e.target.closest('[data-page]');if(nav){navigate(nav.dataset.page);return}const go=e.target.closest('[data-go]');if(go){navigate(go.dataset.go);return}const stage=e.target.closest('[data-stage]');if(stage){profile().dpi=Number(stage.dataset.stage);render();return}const color=e.target.closest('[data-color]');if(color){profile().color=color.dataset.color;render();return}const effect=e.target.closest('[data-effect]');if(effect){profile().effect=effect.dataset.effect;render();return}const activate=e.target.closest('[data-activate]');if(activate){state.activeProfileId=activate.dataset.activate;save();return}const exp=e.target.closest('[data-export]');if(exp){exportProfile(state.profiles.find(p=>p.id===exp.dataset.export));return}});
     function highlightDpiStage(value){$$('[data-stage]').forEach((button,i)=>{const active=Number(button.dataset.stage)===Number(value);button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));button.querySelector('.stage-caption').textContent='Stage '+(i+1)+(active?' · active':'')})}

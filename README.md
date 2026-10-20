@@ -11,6 +11,7 @@ There is no account or app server. Profiles are stored in local browser storage 
 ## Tested scope
 
 - Logitech G502 HERO over HID++: device detection and DPI reading were verified in the development environment. This is a single-model check, not a compatibility guarantee.
+- Recorded G502 HERO hardware results (USB ID `046D:C08B`): DPI read succeeded; two LIGHTSYNC zones were reported and acknowledged a lighting write, but the device did not provide readback and the visible LED change was not confirmed; no compatible onboard button profile was reported.
 - The connection panel gives a three-step browser setup, checks both advertised HID++ short and long report types, and reports DPI, lighting, and onboard-profile features after a successful connection. Connection errors remain visible until another attempt.
 - DPI apply and restore require an explicit confirmation each time. The browser session keeps the starting DPI for restore.
 - RGB effects are offered only when the connected device reports the relevant HID++ feature and zones. Some models report write acceptance without supporting readback, so successful response does not independently verify the visible lighting result.
