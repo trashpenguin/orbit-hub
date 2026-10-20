@@ -1,5 +1,7 @@
 # Orbit HUB public test
 
+[Open the live app](https://trashpenguin.github.io/orbit-hub/) · [Pages deployment status](https://github.com/trashpenguin/orbit-hub/actions/workflows/pages.yml)
+
 Orbit HUB is an install-free browser prototype for local mouse profiles, DPI control, and limited Logitech RGB lighting. It is independent and is not affiliated with Logitech.
 
 ## Run it
