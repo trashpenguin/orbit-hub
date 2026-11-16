@@ -1,0 +1,57 @@
+import { defineConfig } from "vite";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+
+import { pwa } from "./build/pwa-vite-plugin";
+import { sites } from "./build/sites-vite-plugin";
+import { devFeedback } from "./build/dev-feedback-plugin";
+
+const rootDir = fileURLToPath(new URL(".", import.meta.url));
+
+const packageVersion = JSON.parse(
+  readFileSync(resolve(rootDir, "package.json"), "utf8"),
+) as { version: string };
+const buildChannel = process.env.OPENMOUSE_BUILD_CHANNEL ?? "stable";
+
+const versionBase = packageVersion.version.replace(/\.\d+$/, "");
+function betaBuildVersion(): string {
+  const sha = process.env.CF_PAGES_COMMIT_SHA;
+  if (sha) return `${versionBase}.${sha.slice(0, 3)}`;
+  try {
+    const number = execSync("git rev-list --count HEAD", {
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .toString()
+      .trim();
+    return `${versionBase}.${number}`;
+  } catch {
+    return `${versionBase}.${new Date().toISOString().slice(0, 10).replace(/-/g, "")}`;
+  }
+}
+const buildId = buildChannel === "beta" ? betaBuildVersion() : "";
+
+export default defineConfig({
+  base: process.env.ORBIT_BASE_PATH ?? "/",
+  plugins: [sites(), pwa(packageVersion.version), devFeedback()],
+  resolve: {
+    // Prefix aliases, so react-dom/client and react/jsx-runtime follow too.
+    alias: {
+      react: "preact/compat",
+      "react-dom": "preact/compat",
+    },
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(packageVersion.version),
+    __BUILD_CHANNEL__: JSON.stringify(buildChannel),
+    __BUILD_ID__: JSON.stringify(buildId),
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+      },
+    },
+  },
+});

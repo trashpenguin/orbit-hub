@@ -1,0 +1,27 @@
+{
+  "name": "openmouse",
+  "version": "2.0.0",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "node --test \"src/**/*.test.ts\" \"test/**/*.test.ts\" \"build/**/*.test.ts\"",
+    "size": "node build/check-bundle-size.ts",
+    "sync:devices": "node scripts/sync-supported-devices.mjs",
+    "check": "npm run build && npm run size && npm test",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@openmouse/keyboard-protocol": "1.6.1",
+    "@openmouse/protocol": "0.59.0",
+    "lucide-react": "^1.43.0",
+    "posthog-js": "^1.438.17",
+    "preact": "^10.29.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}

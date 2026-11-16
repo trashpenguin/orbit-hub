@@ -1,0 +1,287 @@
+# Device artwork
+
+Top-down product images shown in the persistent device panel. These are
+**not committed to the repo** — they're hosted in the `openmouse-devices`
+Cloudflare R2 bucket (public read via its r2.dev URL, upload access
+restricted to maintainers) and served from
+`DEVICE_IMAGE_BASE_URL` in `src/ui/device-images.ts`. This file stays as
+the provenance/licensing record for every image that's been uploaded.
+
+## Contributing artwork (no bucket access needed)
+
+Only a maintainer can upload to the bucket, so don't open a PR with a binary
+image file — it has nowhere to go. Instead:
+
+1. Open a [Device artwork request](https://github.com/OpenMouse-Project/openmouse/discussions/categories/artwork-request)
+   discussion with a direct link to a source image (a transparent PNG/WebP is
+   ideal; a photo on a plain background is fine too) and what you know about
+   its licensing.
+2. Optionally, open a PR alongside it that adds the device's
+   `vendorId:productId` → `<name>.png` entry to `src/ui/device-images.ts`
+   (or the name-fallback regex, if the PID isn't pinned yet) using the
+   filename you'd expect the art to get. The mapping can land before the
+   file exists in the bucket — a missing file just fails at image-load time,
+   not at build time, so it won't break the site.
+3. A maintainer normalizes the image (transparent background, ~340px-wide
+   product panel size), uploads it to the bucket, and adds the
+   source/licensing note below.
+
+## Maintainer upload steps
+
+1. Save a **transparent** PNG or WebP named after the model in kebab-case,
+   e.g. `razer-viper-v3-pro.png`. The panel sits on a dark background, so an
+   image with a white backdrop shows as a white block.
+2. Keep enough resolution for a product panel up to roughly 340 px wide.
+3. Upload it to the bucket:
+   ```bash
+   npx wrangler r2 object put openmouse-devices/<name>.png --file=<name>.png --remote
+   ```
+   (requires `wrangler login` against the OpenMouse Cloudflare account first).
+4. Map the device to it in `src/ui/device-images.ts`, keyed by
+   `vendorId:productId` in lowercase hex — value is the bare filename, not a
+   path. A mouse with separate wired and receiver product ids needs an entry
+   for each.
+5. Record the source/licensing note for the file below, for provenance.
+
+## Licensing
+
+Vendor product renders are usually copyrighted marketing assets, and this
+repository is public. Prefer artwork you made or can redistribute — a traced
+silhouette is enough at this size — over an official render lifted from a
+product page.
+
+`logitech-pro-x-superlight-2c.png` was supplied for the redesign from Logitech's
+official PRO X SUPERLIGHT 2c product gallery. Confirm redistribution terms
+before including it in a public release package.
+
+`logitech-pro-x2-superstrike.png` was supplied from Logitech G's official
+PRO X2 SUPERSTRIKE product gallery
+(`resource.logitechg.com/.../pro-x2-superstrike-pdp/2026/pro-x2-superstrike-top-angle-lifestyle-gallery-2.png`,
+direct DAM file, transparent). Normalized to a 700×700 transparent canvas
+(~600 px mouse, centered) to match the G502 set. Replaces an earlier R2 entry
+that was a 16:9 lifestyle shot with an opaque green background. Confirm
+redistribution terms before including it in a public release package.
+
+`logitech-pro-x3-superstrike.png` was supplied from Logitech G's official
+PRO X3 SUPERSTRIKE product gallery
+(`resource.logitechg.com/.../pro-x3-superstrike-pdp/gallery/pro-x3-superstrike-mouse-midnight-black-top-angle-gallery-1.png`,
+direct DAM file, transparent, Midnight Black hero SKU to distinguish it from
+the white X2 render). Normalized to a 700×700 transparent canvas (~600 px
+mouse, centered) to match the G502 set. **Needs a maintainer upload** — the
+mapping in `src/ui/device-images.ts` keys on `superstrike` + `x 3` in the
+reported name (receiver `0x046d:0xc54f`, mouse-protocol #117) and falls back
+to a broken image until then. Confirm redistribution terms before including
+it in a public release package.
+
+The three `logitech-g502*.png` files were supplied from Lenovo, Logitech G,
+and MyXprs product-image URLs. They were normalized to matching 700×700
+transparent canvases; the original G502 backdrop was extracted from its source
+render. Confirm redistribution terms before including them in a public release
+package.
+
+`logitech-g703.png` was supplied from Logitech G's official G703 HERO product
+gallery (`resource.logitechg.com` DAM `g703-mouse-top-angle-gallery-1.png`)
+and normalized to the same 700×700 transparent canvas as the G502 set. Confirm
+redistribution terms before including it in a public release package.
+
+`logitech-mx-master-4.png` is a line-art trace made for this repository, not a
+vendor render. Only geometry derives from the source: the outer silhouette and
+the shell seams — button split, scroll-wheel housing, thumb rest, thumb wheel,
+side-panel crease and the wheel-mode button — were authored as paths against a
+product image. No colour, shading, texture or lettering was carried over, and
+the Logitech wordmark on the shell was deliberately excluded rather than faded,
+since it is a trademark and this repository is public. This render is currently
+parked (no acceptable re-render was sourced), so the MX Master 4 resolves to the
+generic `unknown-device.png` placeholder until a clean render is supplied.
+
+`endgame-gear-op1-8k.png` was supplied from an Overclockers UK product-image
+URL for the OP1 8K. Confirm redistribution terms before including it in a
+public release package.
+
+`endgame-gear-op1we.png` was supplied from an Overclockers UK product-image
+URL for the OP1we.
+
+`razer-viper-v2-pro.png` was supplied from Razer's support FAQ device-layout
+asset (`dl.razerzone.com/src/6048-1-en-v10.png`). Ideally replace it with a
+higher-resolution image if one is found. Confirm redistribution terms before
+including it in a public release package.
+
+`razer-orochi-v2.png` was supplied from Razer's own product-image CDN
+(`dl.razerzone.com/src/OrochiV2-1-en-v1.png`), keyed out of its white
+backdrop and downscaled onto a transparent canvas. Confirm redistribution
+terms before including it in a public release package.
+
+`teevolution-terra-pro.png` was supplied from Teevolution's Terra PRO Shopify
+CDN product render. Confirm redistribution terms before including it in a
+public release package.
+
+`crdrako-ko-one.png` was supplied from CRDRAKO's KO-ONE Shopify CDN product
+render and converted to a transparent PNG. Confirm redistribution terms before
+including it in a public release package.
+
+`razer-viper-mini.webp` was supplied from a Discord attachment URL for the
+Razer Viper Mini (wired). Confirm redistribution terms before including it in
+a public release package.
+
+`zaunkoenig-m3k.png` was supplied from the OpenMouse product-image storage URL
+for Zaunkoenig M3K and is also used for the M2K entry. Confirm redistribution
+terms before including it in a public release package.
+
+`attackshark-r2.png` — the name-fallback mapping in `src/ui/device-images.ts`
+is in place (keyed on the reported name "Attack Shark R2", since PID 0x402D is
+shared with the Lingbao M5 Pro). The render was supplied from igEEKJO's
+product page (`igeekjo.com` Shopify CDN,
+`.../files/download_fc6e45b7-7ddb-40ad-89da-e75cab39120a.jpg`, fetched
+2026), keyed out of its white backdrop and centered on a transparent 700×700
+canvas.
+
+**TEMPORARY checked-in copy.** To fix the overwritten artwork immediately,
+the normalized `attackshark-r2.png` is committed at
+`public/devices/attackshark-r2.png` and served from the repo via the
+`LOCAL_OVERRIDES` map in `src/ui/device-images.ts` (it returns
+`/devices/attackshark-r2.png` instead of the R2 URL). This is a stopgap, not
+the final home. Until this file is in the bucket, the panel shows the repo
+copy; an earlier unmoderated crowd upload overwrote the bucket entry with
+unrelated artwork (a dog photo), which is why the bucket file must not be
+trusted.
+
+**Maintainer TODO (do once, then remove the stopgap):**
+1. Upload the real render to the bucket:
+   ```bash
+   npx wrangler r2 object put openmouse-devices/attackshark-r2.png --file=public/devices/attackshark-r2.png --remote
+   ```
+2. Delete the leftover crowd objects (the dog picture lives under the `crowd/`
+   prefix): in the Cloudflare dashboard, R2 → `openmouse-devices` → `crowd/` →
+   select all → Delete, or delete each key with
+   `npx wrangler r2 object delete openmouse-devices/crowd/<key>`.
+3. Remove the stopgap: delete `LOCAL_OVERRIDES` from `src/ui/device-images.ts`,
+   delete `public/devices/attackshark-r2.png`, and flip
+   `device-images.test.ts` back to asserting `CDN + "attackshark-r2.png"`.
+4. Keep this note as provenance. Vendor product art — treat as a request
+   pending licensing review.
+
+`noir-m2-nex.png` is reserved for the name-fallback mapping for Noir Gear's
+M2-NEX. A local render from the vendor configurator may be used for development
+previews, but it is deliberately not committed here. Before publishing the
+asset, Noir Gear must confirm redistribution rights or OpenMouse should use a
+maintainer-created silhouette instead.
+
+`noir-s1.png` is reserved for the NOIR S1 name-fallback mapping. The code PR
+does not include a vendor configurator render; request artwork separately via
+the Device artwork request template and confirm redistribution rights before
+the asset is uploaded.
+
+`delux-m800-mini.png` — the name-fallback mapping in `src/ui/device-images.ts`
+is in place (keyed on reported names like "Delux M800 Mini", "Delux M800 Pro",
+"Delux M800 Mini (Wireless)"). The render was supplied from Delux's official
+product portal (`deluxworld.com`, `/uploads/admin/image/20251226/M800mini黑.png`),
+centered on a transparent 700×700 canvas.
+
+`attackshark-r5-ultra.png` is the top-down render of the Attack Shark R5 Ultra
+extracted from Attack Shark's official product gallery
+(`cdn.shopify.com/s/files/1/0823/5050/6282/files/R5ULTRA_C06_3.png`), keyed
+out of its white backdrop and downscaled. Confirm redistribution terms before
+including it in a public release package.
+
+`razer-viper.webp` was supplied from a Best Buy shopping page for the device. Confirm redistribution
+terms before including it in a public release package.
+
+`logitech-mx-master-3s.png` was supplied from Logitech's product CDN (MX Master
+3S Bluetooth Edition graphite top view). Confirm redistribution terms before
+including it in a public release package.
+
+`pulsar-x2-v2.png` was supplied from Pulsar Gaming Gears' Japan CDN product
+render for the X2 v2 [Red Edition] Gaming Mouse (top-down view of the Medium
+shell), cropped to the mouse, resized, and centered on a transparent canvas.
+Confirm redistribution terms before including it in a public release package.
+
+`wlmouse-beast-max.png` is the black colorway, extracted from WL Mouse Hub
+(`gm.wlmouse.gg`, the official WLMouse configurator) after pairing a Beast Max
+over WebHID — the driver only serves the connected device's own product
+renders, so this can't be fetched without real hardware. Confirm
+redistribution terms before including it in a public release package.
+
+The following were added to cover additional `supported` devices from the
+support catalog, sourced from official brand/media CDNs and retailer product
+renders, then normalized to transparent PNGs (white backgrounds keyed out where
+needed). Confirm redistribution terms before including any in a public release
+package:
+
+- `logitech-g203.png` (G203 LIGHTSYNC / PRODIGY, G102 share the shell) — Logitech / retailer render
+- `logitech-g402.png` — Logitech G402 render
+- `logitech-g303.png` — Logitech G303 render
+- `logitech-g403.png` — Logitech G403 render
+- `logitech-g903.png` — Logitech G903 render
+- `logitech-g305.png` — Logitech G305 LIGHTSPEED (G304 shares the shell)
+- `logitech-g-pro.png` — Logitech G Pro (2017) / G Pro Hero / G Pro Wireless classic shell
+- `logitech-g-pro-2.png` — Logitech G Pro 2
+- `logitech-g309.png` — Logitech G309 Lightspeed
+- `logitech-mx-anywhere-3.png` — Logitech MX Anywhere 3 top-view render
+- `logitech-mx-ergo-s.png` — Logitech MX Ergo S top-view render
+- `razer-deathadder-v2.png` — Razer DeathAdder V2 (V2 / V2 Pro / Essential share the shell)
+- `razer-deathadder-v3.png` — Razer DeathAdder V3 render (V3 Pro shares the shell)
+- `razer-deathadder-v4-pro.png` — Razer DeathAdder V4 Pro (Carbon Fiber SKU shares the shell)
+- `razer-viper-v3-hyperspeed.png` — Razer Viper V3 HyperSpeed render
+- `razer-viper-v4-pro.png` — Razer Viper V4 Pro render
+- `endgame-gear-xm2-8k.png` — Endgame Gear XM2 8K top-down render
+- `endgame-gear-xm2w.png` — Endgame Gear XM2w 4K top-down render
+- `wlmouse-sword-x.png` — WLMouse Sword X render (Beast X / Beast Mini / Beast X Pro have no render yet; they resolve to the generic placeholder)
+- `vgn-dragonfly-f2.png` — VGN Dragonfly F2 Master+ render
+- `lamzu-maya-x.png` — Lamzu Maya X render
+- `atk-f1-v2-ultra-max.png` — ATK F1 V2 Ultra Max render
+- `finalmouse-ulx.png` — Finalmouse Starlight-12 / ULX low-profile shape render
+- `finalmouse-slx.png` — Finalmouse Starlight X (SLX) render. The name-fallback
+  mapping in `src/ui/device-images.ts` is in place (keyed on "Starlight X" /
+  "SLX", before the ULX catch-all). **Needs a maintainer upload**; until the
+  file is in the bucket the panel falls back to the placeholder. Vendor product
+  art — request licensing review before publishing it in R2.
+- `mchose-a7-v2.png` — MCHOSE A7 V2 render, from MCHOSE's own M HUB configurator
+  (`https://cdn.mchose.com.cn/configCenter/assets/img/mouse/A7V2Pro_white.png`).
+  MCHOSE only publishes `A7V2Pro_*` renders and the Pro / Pro+ / Ultra / Ultra+
+  are one shell, so this single image covers the whole A7 V2 family. **Needs a
+  maintainer upload**, the mapping in `src/ui/device-images.ts` is already in
+  place and falls back to the placeholder until then. Not yet cleared for
+  licensing: it is vendor product art, so treat it as a request rather than an
+  approved asset.
+- `keychron-m6.png`: Keychron M6 (1K, PixArt 3395; PID 0x3434:0xd060, receiver
+  0x3434:0xd029) render, from Keychron Launcher's own product catalogue
+  (`https://sysmgr.keychron.cn/api/upload/cover/25/1751522970525.png`; a second
+  angled view is at `.../1751522970560.png`). Transparent 2560×2560 PNG, needs
+  the usual crop/downscale to the ~340 px panel size. **Needs a maintainer
+  upload**, the mapping in `src/ui/device-images.ts` is in place and falls back
+  to the placeholder until then. Vendor product art, not yet cleared for
+  licensing, so treat it as a request rather than an approved asset.
+- `vxe-r1-series.png` — shared by the VXE R1 family (R1, R1 SE, R1 SE+, R1 Pro,
+  and R1 Pro Max), which use the same external shell. The render was extracted
+  from ATK Hub, ATK/VXE's official device configurator, and normalized as a
+  transparent PNG for the device panel. **Needs a maintainer upload**, the
+  mapping in `src/ui/device-images.ts` is already in place and falls back
+  cleanly until then. Vendor product art, not yet cleared for licensing, so
+  treat it as a request rather than an approved asset.
+- `mchose-a7-v3.png` — MCHOSE A7 V3 render. Same story as the V2 above:
+  MCHOSE publishes only `A7V3Pro_*` renders and the four V3 models share a
+  shell, so one image covers the family. **Needs a maintainer upload**, and
+  carries the same unresolved licensing question.
+
+- `dareu-a950-pro-mg.png` — **needs a maintainer upload.** The mapping covers
+  the A950 PRO Mg mouse (`0x260d:0x1117`) and dedicated receiver
+  (`0x260d:0x1114`). Suggested source: the contributor-supplied transparent
+  render from Dareu's driver panel
+  (`https://driver.dareu.com/allinone/products/1117/TM271F.png?v=1.3.24`). It
+  is vendor product art; request licensing review before publishing it in R2.
+
+- `coolermaster-mm711.png` — Cooler Master MM711 wired gaming mouse (`0x2516:0x0101`).
+  **Needs a maintainer upload** to the `openmouse-devices` R2 bucket; the mapping in
+  `src/ui/device-images.ts` is in place and falls back cleanly to the placeholder until then.
+
+
+`unknown-keyboard.png` is the keyboard placeholder, the keyboard twin of
+`unknown-device.png`: a flat black silhouette with a white Arial Bold question
+mark, on a transparent 1428×716 canvas. Every device labelled a keyboard that
+has no art of its own resolves to it, and keyboard images fall back to it on a
+load error. Only the outline derives from a source image, a transparent pngtree
+stock render of a 60% keyboard (`pngtree-compact-60-mechanical-gaming-keyboard-with-retro-carbon-pbt-keycaps-png-image_18714675.webp`);
+no colour, keycaps, legends or shading carried over. It is committed at
+`public/devices/unknown-keyboard.png` and served from the repo until a
+maintainer uploads it to the bucket; then drop its `LOCAL_OVERRIDES` entry in
+`src/shared/device-images.ts` and point the tests at `CDN + "unknown-keyboard.png"`.
