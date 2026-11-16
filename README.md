@@ -1,37 +1,31 @@
-# Orbit HUB public test
+# Orbit Hub
 
-[Open the live app](https://trashpenguin.github.io/orbit-hub/) · [Pages deployment status](https://github.com/trashpenguin/orbit-hub/actions/workflows/pages.yml)
+[Open Orbit Hub](https://trashpenguin.github.io/orbit-hub/) · [Open the original Logitech app](https://trashpenguin.github.io/orbit-hub/legacy/)
 
-Orbit HUB is an install-free browser prototype for local mouse profiles, DPI control, and limited Logitech RGB lighting. It is independent and is not affiliated with Logitech.
+Orbit Hub integrates the [OpenMouse control panel](https://github.com/OpenMouse-Project/openmouse/tree/28f08ddf61ce0bc97a4eaa780b98bfe31a9f39fc) and its device drivers. The panel shows controls for the features each device reports, including DPI, polling rate, sensor settings, button assignments, RGB and onboard profiles. It includes supported keyboard controls, diagnostics, hardware tests, profile sharing, themes and translations. Check the [OpenMouse device list](https://openmouse.app/supported) for model and feature coverage.
 
-## Run it
+Use desktop Chrome or Edge on HTTPS or localhost. Choose **Add device** and approve the browser's device chooser. Keep the [legacy app](LEGACY.md) available for existing Orbit profiles and backups. Its browser data and file format are separate from the OpenMouse control panel.
 
-Serve this folder from an HTTPS static host. `localhost` is suitable for development; a public deployment must use HTTPS for WebHID. Open the page in desktop Chrome or Edge and select **Add Logitech device** once to grant browser access. USB and supported LIGHTSPEED receivers are the intended connection paths; Bluetooth exposure depends on the browser and device. The browser remembers that permission for this site. Firefox, Safari, mobile browsers, and restricted browser contexts may not provide WebHID, so device controls will not be available there.
+## Development
 
-There is no account or app server. Profiles are stored in local browser storage and are not uploaded. They do not sync between browsers or devices. Export a JSON backup before clearing browser data or moving to another browser.
+```sh
+npm ci
+npm run dev
+npm run check
+```
 
-## Tested scope
+Use Node.js 24. The development server supports fixture previews such as `?preview=egg-op1-v2` and `?preview=list`. Fixture previews allow testing the interface without writing settings to hardware.
 
-- Logitech G502 HERO over HID++: device detection and DPI reading were verified in the development environment. This is a single-model check, not a compatibility guarantee.
-- Recorded G502 HERO hardware results (USB ID `046D:C08B`): DPI read succeeded; two LIGHTSYNC zones were reported and acknowledged a lighting write, but the device did not provide readback and the visible LED change was not confirmed; no compatible onboard button profile was reported.
-- The connection panel gives a three-step browser setup, checks both advertised HID++ short and long report types, and reports DPI, lighting, and onboard-profile features after a successful connection. Connection errors remain visible until another attempt.
-- DPI apply and restore require an explicit confirmation each time. The browser session keeps the starting DPI for restore.
-- RGB effects are offered only when the connected device reports the relevant HID++ feature and zones. Some models report write acceptance without supporting readback, so successful response does not independently verify the visible lighting result.
-- Experimental hardware assignments are enabled for Logitech devices (VID `046D`) that report HID++ onboard-profile feature `0x8100`, memory model 1, profile format 1, 2, 3, 5, or 7, and a valid 255-byte sector checksum. The button-record base is selected by profile format and entries are bounded by the device-reported button count. Orbit downloads and stores a full slot backup before Apply, changes only exposed button records, recomputes the checksum, reads the full profile back, and attempts to restore the original sector if verification fails. Unsupported game-specific actions remain local.
-- This does not cover every Logitech mouse: many non-gaming models have no onboard assignment profiles, and some use other protocols or formats. Feature detection confirms the advertised feature and layout, not that every model's button labels or actions behave like G HUB. Hardware writes still require real-device verification per model.
+The GitHub Pages workflow builds the app under `/orbit-hub/` on pushes to `main`. To replicate that build, run `ORBIT_BASE_PATH=/orbit-hub/ npm run check` in a POSIX shell or set `$env:ORBIT_BASE_PATH = '/orbit-hub/'` before `npm run check` in PowerShell. Serve that build under the same path.
 
-## Profile files
+## OpenMouse Bridge
 
-Orbit imports only `orbit-profile-v1` JSON files with validated fields, supported commands, and bounded DPI stages. Profile data is treated as untrusted input. The app limits imports to 128 KB and stores up to 50 profiles per browser.
+For automatic game and app profile switching and devices that require native HID, install [OpenMouse Bridge](https://github.com/OpenMouse-Project/OpenMouse-Bridge). Add `https://trashpenguin.github.io` to the `allowedOrigins` array in Bridge's `config.json` and restart Bridge. Use the origin without a path or trailing slash. On Windows the default directory is `%APPDATA%\OpenMouse\OpenMouse Bridge\config`. Add the exact development origin if you use a non-default local port. Refer to the [Bridge configuration guide](https://github.com/OpenMouse-Project/OpenMouse-Bridge#run-locally).
 
-## Public test checklist
+## Game and app requests
 
-Before inviting testers, deploy `index.html` from a static HTTPS origin and verify that the hosting policy permits WebHID for its own origin. Approve the browser device chooser and use the explicit Apply action only when Orbit identifies a supported onboard format. Each write is experimental and asks for confirmation. Verify each mouse model physically before claiming G HUB-level compatibility; unsupported devices remain local-only for button assignments.
+On static hosting, the request dialog downloads the reviewed request as text and offers a link to the OpenMouse Discord. For direct submission, deploy the included Cloudflare Pages Functions on a separate Pages project and configure the `DISCORD_FEEDBACK_WEBHOOK` secret and `ORBIT_FEEDBACK_ORIGIN=https://trashpenguin.github.io` there. Configure rate limiting on the feedback deployment using the included middleware's `SECURITY_KV` binding or a Cloudflare WAF rule. Set the Orbit Hub GitHub Actions repository variable `VITE_FEEDBACK_URL` to the resulting HTTPS `/api/feedback` endpoint and rebuild. Keep the webhook URL server-side.
 
-The interface uses inline HTML, CSS, and JavaScript and does not fetch fonts, analytics, or profile data from third parties.
+## Source and license
 
-The interface font files in `dist/fonts/` are Switzer from [Fontshare](https://www.fontshare.com/fonts/switzer), subject to the [Fontshare license](https://www.fontshare.com/licenses/sil-ofl).
-
-## GitHub Pages
-
-The repository serves the `dist/` folder with GitHub Pages. After publishing, open the Pages URL in desktop Chrome or Edge over HTTPS; WebHID requires a supported browser and the user must select the device in the browser chooser. This static site does not add a backend or send profile data to GitHub.
+The integrated app is licensed under [AGPL-3.0-or-later](LICENSE). Upstream credits, hardware notes and documentation are in [OPENMOUSE.md](OPENMOUSE.md). Source for this version is available in [the Orbit Hub repository](https://github.com/trashpenguin/orbit-hub).

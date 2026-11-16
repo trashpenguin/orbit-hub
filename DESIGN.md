@@ -1,63 +1,150 @@
-# Orbit HUB design direction
+# OpenMouse design
 
-## Brief
+The single source of truth for how OpenMouse looks. Read it before touching any UI.
+Values live in code: `src/styles/tokens.css`. When this file and the code disagree, the code
+wins; fix this file.
 
-Orbit HUB is a browser-based control bench for Logitech mice. Visitors need to identify the connected device, set a DPI target, manage local profiles, inspect lighting features, and understand which controls are hardware-backed. Keep the existing single-file HTML, CSS, and JavaScript app and its local-only profile model.
+Reading: a hardware control panel for people who tune their mouse by the number. Calm, dark,
+precise, instrument-like. Dial ENERGY 1 / RHYTHM 2 / MOTION 1.
 
-## Concepts considered
+## Principles
 
-| Concept | Rule, signature, anchor | Scores: originality / fit / feasibility / portability |
-|---|---|---|
-| Sensor plate | Treat the interface like an optical calibration plate: measured DPI is the central reading, stage values are calibration points, and the active target is marked in signal orange. Anchor: this app controls a mouse sensor and exposes HID++ readouts. | 4 / 5 / 5 / 2 |
-| Orbit trace | Arrange each profile as a path around the active device, with controls radiating from its current sensor state. Anchor: the Orbit name and the device profile workspace. | 3 / 4 / 4 / 4 |
-| Packet bench | Show every control as a request/response strip, with interactions snapping from local draft to device result. Anchor: HID++ packet and feature discovery. | 4 / 4 / 3 / 2 |
+- **The device is the hero.** On its settings page, simple name and connection information sit
+  above the standalone contained mouse image, directly on the page canvas with no card or stage.
+  Device-shelf blocks retain their own existing artwork treatment.
+- **Numbers first.** Settings read as figures: label above, value, unit after, meta under. All
+  numbers are tabular.
+- **Colour means something.** The accent (from the user's theme) marks the active place, the
+  primary action, focus, slider fills and the active stage. `--ok` / `--bad` / `--warn` mark real
+  states only. Everything else is ink.
+- **Real data only.** Every value comes from the device or this browser. A value the device does
+  not report is left out or shown as "–". Empty states say why and what fills them.
+- **One idea per block.** Short titles, sentence case, no category overlines, no uppercase micro
+  labels, no decorative dots, stripes or glows.
 
-**Selected: Sensor plate.** It ties the visual hierarchy to the actual job of the app, and stays clear when the mouse is disconnected.
+## Structure
 
-## Concept card
+| Layer | Recipe |
+|---|---|
+| Ground | `--ground`: flat page ink, matching Desktop. The shared ASCII is the single background identity motif. |
+| ASCII field | `shared/AsciiField.tsx`: the Desktop app's glow field, top right, under the sidebar and main column. Decorative (`aria-hidden`, no pointer events). |
+| Chrome | Sidebar on `--ink-0` with a hairline edge. |
+| Panel | `.om-panel` (or the legacy `.setting-card`): `--sheen` over `--surface-1` over `--ink-1` (opaque, so the ASCII field never shows through), `--lit` edge, `--r-md`. Featured panel: `.om-panel.is-lit` (one or two per page). |
+| Row | Inside a panel: hairline `--line-1` separators. Don't nest panels. |
+| Well | Inset areas (segmented controls, inputs, render stages): `--well` + `--inset-shadow`. |
+| Raised | Buttons, the selected segment key, switch thumb: `--btn` / `--key`. |
+| Floating | Menus, dialogs, toasts, the pending bar, help: opaque `--solid-2` + `--shadow-float`. |
 
-- **Idea:** Orbit HUB is a calibration plate for mouse settings, with the current sensor target as its primary reading.
-- **Metaphor:** A precision optical instrument with a matte measurement surface, ruled marks, and a single signal color.
-- **Signature:** Selecting a DPI stage moves the active calibration mark and updates the large numeric reading; hardware status sits beside the measurement.
-- **Emotion:** Exact, tactile, and easy to trust.
-- **Motion verb:** Snap and settle, like a calibration stop engaging.
-- **Screenshot:** The active DPI reading, five stage points, and live device status on one pale instrument surface.
+## App layout
 
-## Visual system
+- **Sidebar** (`AppSidebar.tsx`, 248px, collapsible to a 68px icon rail, remembered; nav rows 36px, radius 6, 10px inline padding, 13/500):
+  brand + build; Devices, Hardware test, Games (without Bridge it lists the supported games under a download-Bridge panel); "Your devices" switcher
+  (thumbnail, name, battery icon + percent or "Not connected"); footer: Docs ↗, What's new,
+  Help & feedback (Discord), Settings; Bridge status line, which opens a small card with Bridge's
+  status, update notice and download link (`features/bridge/BridgeStatus.tsx`).
+- **Main column**: news strip on top, then the scrolling page (`.om-content` > `.om-page`: 28px
+  top and 32px side padding around a content box of at most 1160px). The pending-changes bar floats at the bottom of the main column. A help button floats
+  bottom right and opens a small panel of common questions with instant answers, plus links to
+  the site FAQ and Discord (`app/HelpPanel.tsx`).
+- **Devices home** (`features/devices/DevicesHome.tsx`): a swipeable shelf of device blocks, each
+  one surface (render on a stage, name, connection badge, live stats with icons, Configure/Open,
+  and a ⋯ menu to remove the device) ending in an Add device block with the supported mice
+  crossfading. Drag, swipe, arrow buttons, dots and arrow keys all move it. The shelf sits in the
+  middle of the page and centres when it doesn't fill the width. No devices: the same shelf with
+  only the Add device block, larger, in the middle of the page; its button becomes the primary
+  action.
+- **Device page** (`features/devices/DeviceHero.tsx`): the device rail on the left (breadcrumb, name,
+  "Connected" + connection type, then the contained render alone on the page, no stage), the
+  workspace beside it (tabs in a 40px well, then the panels). The rail is 280px when the page's
+  content box is at least 1000px wide, 220px from 760px, and stacks above the tabs below that
+  (container query on `.om-device-page`); 16px gap. Overview: Current setup figures + DPI stage
+  chips, Battery over time chart (recorded samples), Firmware.
+- **Setting cards** flow in a masonry column layout (`CardSlot`, `styles/instrument.css`) so there
+  are no holes; every card heading carries a glyph, and feature switches are tiles
+  (`SwitchRow` in `shared/ui.tsx`).
+- **Settings** (`features/settings/InterfaceSettings.tsx`): grouped panels of setting rows (title + description start, control end): Appearance
+  (theme gallery, each tile painted in its own theme; animations), Language (picker with native
+  names), Behaviour, Profile key, Driver previews (dev builds), About.
 
-- **Palette:** `ground #dfe3de` (anodized instrument housing), `paper #f5f6f2` (readout surfaces), `ink #171d1a` (controls and text), `muted #58625d` (secondary labels), `line #b8c0b9` (engraved divisions), `signal #e45132` (active target and action).
-- **Type:** Switzer 400/500/600/700, self-hosted from Fontshare for display and interface; system monospace for measured values and technical labels.
-- **Grid:** 12-column desktop canvas with a 240 px dark instrument rail; main controls align to columns 1, 7, and 10. At 760 px, the rail becomes a compact top bar and content stacks into one column.
-- **Rhythm:** Tight 8 px control groupings, 16 px normal gaps, 28 px panel spacing, and one open 48 px device-heading interval.
-- **Shape:** 3 px corners for instrument surfaces, 2 px rules, round only the status LEDs and color swatches.
-- **Motion:** 160–220 ms ease-out transitions; active stages lift 2 px and show a signal edge. Reduced-motion removes transitions. No ambient animation is used because this is a control surface that should stay still between inputs.
+## Tokens
 
-## Composition plan
+Use tokens only; no hex in components or area CSS. Alpha mixes use the `-rgb` triples:
+`rgb(var(--accent-rgb) / 0.12)`.
 
-```text
-Devices / calibration dashboard
-┌ dark rail ┐  model name, connection / actions
-│ nav      │  ┌ DPI measurement + stage points ┐ ┌ active profile ┐
-│ device   │  └ mouse sensor actions ─────────┘ └ feature status ┘
-│ status   │  ┌ LIGHTSYNC preview ─────────────┐ ┌ button draft ──┐
-└──────────┘
+| Token | Use |
+|---|---|
+| `--ink-0`, `--ink-1`, `--ground` | Chrome, page |
+| `--surface-1..4` | Panel, hover/selected, pressed/strong, rare |
+| `--solid-1`, `--solid-2` | Opaque surfaces (menus, dialogs, sticky heads) |
+| `--well`, `--glint` | Inset areas, hover wash |
+| `--line-1..3` | Hairlines: divider, input edge, emphasis |
+| `--text-1..4` | Values/titles, body, labels/meta, disabled/placeholder only |
+| `--accent`, `--accent-rgb`, `--on-accent`, `--accent-soft`, `--accent-line` | Active place, primary action, focus, fills |
+| `--ok`, `--bad`, `--warn`, `--info` | Real states only |
+| `--stage-light` | The light behind a device render |
 
-Profiles / index
-┌ dark rail ┐  title + import / create
-│ nav      │  profile rows, each one long measured record
-└──────────┘
+Themes: all 12 (Emerald default, Matt, Violet, Ice, Ember, Mono, Miku, Catppuccin Mocha /
+Macchiato / Frappé, NieR: Automata, Light) are full token sets in `tokens.css`, selected by
+`data-interface-theme` on the shell (and mirrored on `<html>`). Derived tokens are declared on every
+themed element, so any element carrying `data-interface-theme` paints itself in that theme.
+No component may fork on a theme name.
 
-Assignments / command sheet
-┌ dark rail ┐  title + save
-│ nav      │  button key | local command, in a two-column grid
-└──────────┘
+## Type
 
-LIGHTSYNC / instrument panel
-┌ dark rail ┐  title + apply / save actions
-│ nav      │  effect preview field | color and level controls
-└──────────┘
-```
+- DM Sans for everything, self-hosted from `public/fonts/DMSans-Variable.ttf` (SIL OFL 1.1, licence
+  and source record beside it), pinned to optical size 14 (`--font-opsz`) so it renders the same
+  named instance as the Desktop app. JetBrains Mono only for raw identifiers, hex and HID logs.
+  The ASCII field uses Cascadia Mono 11/500 at a 15.4px line.
+- Scale: page title 22, panel title 15, body 13, meta 12, small 11. Figures 30 at 600.
+- Sentence case everywhere. No uppercase tracked labels. Weights 400–600 (the Desktop renderer
+  only has the 100-step named instances), no negative tracking on titles or figures.
 
-## Genericness check
+## Shape and space
 
-The measurement surface, sensor reading, stage marks, and signal-orange active target depend on mouse calibration and the app's actual DPI stages. The interface is not a generic neon gamer dashboard or a product marketing landing page.
+- Radii: 3 (chips), 6 (controls, rows), 10 (panels, wells), 14 (hero, device blocks, dialogs).
+- Spacing on a 4px grid. Panel padding 16px; gaps between panels 16px; rows ≥ 40px; buttons 32px;
+  switches 36×20 with a 16px thumb. Tabs: a 40px well (4px padding and gap, radius 10) holding
+  32px keys (radius 6).
+- These numbers are shared with the Desktop app: `src/styles/visual-contract.json` is checked
+  against `tokens.css` by `visual-contract.test.ts`, and the same file is checked against the
+  Desktop constants.
+- Device renders: always `object-fit: contain`, absolutely positioned inside their stage, never
+  cropped.
+
+## Controls
+
+`.om-btn` (default raised), `.is-primary` (one per view), `.is-ghost`, `.is-danger`, `.is-sm`,
+`.is-lg`, `.is-icon`; `.om-icon-btn`; `.om-badge` (`.is-ok/.is-bad/.is-warn/.is-accent`);
+`.segmented` and `.rate-slider-buttons` (well + raised key); `SwitchButton`; `OptionMenu`;
+`StepperSlider`; range inputs with an accent fill. Focus is the accent gap ring (`--focus`), never
+removed.
+
+## Icons
+
+lucide-react at stroke 1.8, `currentColor`, `--text-3` at rest, accent when active. Icons sit next
+to text that says the same thing (battery icon + percent, connection icon + "Wireless"). The battery
+is the custom `BatteryIcon` (fill tracks the level; low and charging change its colour).
+
+## Motion
+
+120–260ms washes and fades. The device page body fades in; panels and bars rise 8px once. The
+ASCII field sweeps in once (520ms, rows staggered top-down) when the page loads and when the theme
+changes. No loops except the add-device crossfade, which stops with reduced motion. The Animations
+preference and `prefers-reduced-motion` both stop motion.
+
+## ASCII field
+
+The same field as the Desktop app, ported from its Rust source (`shared/ascii.ts`, checked line
+for line against a reference generated by the Rust code, `shared/ascii-golden.json`): ramp
+` .:-=+*#%@`, an accent glow from the top-right corner shaped by value noise, up to 42% of the
+window width (24 to 104 columns), 40 rows, alpha 0.24 fading out below the middle. The seed is
+chosen once per page session; rows are rebuilt only when the column count changes.
+
+## Checklist before shipping a page
+
+- [ ] Tokens only; no new radii, shadows or hex.
+- [ ] Sentence case, no overlines, no em dashes in copy.
+- [ ] One primary button per view.
+- [ ] Every number tabular; every value real or "–".
+- [ ] Works in Emerald, Light and NieR; RTL (Arabic) mirrors correctly.
+- [ ] Keyboard: every control reachable, visible focus, Escape closes dialogs.
