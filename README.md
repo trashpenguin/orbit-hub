@@ -35,11 +35,3 @@ The interface font files in `dist/fonts/` are Switzer from [Fontshare](https://w
 ## GitHub Pages
 
 The repository serves the `dist/` folder with GitHub Pages. After publishing, open the Pages URL in desktop Chrome or Edge over HTTPS; WebHID requires a supported browser and the user must select the device in the browser chooser. This static site does not add a backend or send profile data to GitHub.
-
-## Reverse-engineering notes
-
-REA was used against the installed Logitech G HUB 39.1.2 Electron package. Static analysis recovered parts of the renderer IPC surface, but did not establish G HUB's own write path. Orbit uses the publicly exposed HID++ 0x8100 onboard-profile feature directly through browser WebHID; it does not connect to G HUB's local service. Orbit supports the shared button-record layouts for formats 1, 2, 3, 5, and 7 when the device reports compatible geometry. This provides broader support for Logitech gaming mice with compatible onboard profiles; it is not equivalent to all G HUB device support.
-
-Profile-sector framing and layout references: [Logitech HID++ documentation](https://github.com/Logitech/cpg-docs/tree/master/hidpp20), [Solaar profile support work](https://github.com/pwr-Solaar/Solaar/pull/3345), and [OpenMouse profile-format notes](https://github.com/OpenMouse-Project/mouse-protocol/blob/main/docs/logitech-onboard-profiles.md). Formats are device-specific, so Orbit enables writes only for recognized layouts with valid checksums and bounded button entries.
-
-The layout is informed by Logitech's public [HID++ 2.0 documentation](https://github.com/Logitech/cpg-docs/tree/master/hidpp20) and [G HUB feature overview](https://www.logitechg.com/en-sg/software/ghub). Orbit is an independent prototype and is not affiliated with Logitech.
