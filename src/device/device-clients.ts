@@ -10,9 +10,11 @@ import { KeychronKeyboardClient } from "./keychron-keyboard.ts";
 import { keychronHallEffectEnabled } from "./keychron-flag.ts";
 import { ViaKeyboardClient } from "./via-keyboard.ts";
 import { mouseReceiverRole, receiverKey } from "./mouse-receivers.ts";
-import type { PulsarClient, SupportedClient } from "@openmouse/protocol/drivers/registry";
+import { isTufM3GenII, TufM3GenIIClient } from "./tuf-m3-gen-ii.ts";
+import type { PulsarClient, SupportedClient as ProtocolClient } from "@openmouse/protocol/drivers/registry";
 export { describeHidDevice } from "./hid-diagnostics.ts";
-export { type PulsarClient, type SupportedClient };
+export type SupportedClient = ProtocolClient | TufM3GenIIClient;
+export { type PulsarClient };
 
 type NativeBridgeDevice = HIDDevice & { openMouseTransport?: "bridge" };
 
@@ -81,6 +83,7 @@ async function bridgeRazerClient(device: HIDDevice): Promise<SupportedClient | n
 }
 
 export async function createMouseClient(device: HIDDevice): Promise<SupportedClient | null> {
+  if (isTufM3GenII(device)) return new TufM3GenIIClient(device);
   if (isBridgeRazer(device)) return bridgeRazerClient(device);
   return (await loadRegistry()).createSupportedClient(device);
 }
@@ -154,6 +157,7 @@ export async function clientSupportScore(device: HIDDevice): Promise<number> {
   // (Bolt's long-report collection) still counts.
   if (receiverRole === "mouse") return 20_000 + (await loadRegistry()).clientSupportScore(device);
   if (createKeyboardClient(device)) return receiverRole === "sibling" ? 0 : 900;
+  if (isTufM3GenII(device)) return 10_000;
   if (await bridgeRazerClient(device) !== null) return 10_000;
   return (await loadRegistry()).clientSupportScore(device);
 }
@@ -168,7 +172,7 @@ export async function logicalDeviceGroups(devices: HIDDevice[] = []): Promise<HI
   const merged = collapseBoltPeers(
     eggWeMergeLogicalDevices(
       devices,
-      (device) => registry.createSupportedClient(device) !== null
+      (device) => isTufM3GenII(device) || registry.createSupportedClient(device) !== null
         || (isBridgeRazer(device) && bridgeRazerClientFrom(device, razer) !== null)
         || createKeyboardClient(device) !== null,
     ),
@@ -250,5 +254,6 @@ export async function listLogicalDevices(devices: HIDDevice[] = []): Promise<HID
 
 /** Brand label for a connected client; the registry answers once loaded. */
 export async function deviceBrand(client: SupportedClient): Promise<string> {
+  if (client instanceof TufM3GenIIClient) return "ASUS";
   return (await loadRegistry()).deviceBrand(client);
 }

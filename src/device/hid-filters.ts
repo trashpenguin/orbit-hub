@@ -1,3 +1,4 @@
+import { TUF_M3_GEN_II_FILTER } from "./tuf-m3-gen-ii.ts";
 import { SUPPORTED_HID_FILTERS } from "@openmouse/protocol/drivers/vendors";
 import { SUPPORTED_HID_FILTERS as KEYBOARD_HID_FILTERS } from "@openmouse/keyboard-protocol/drivers";
 import { KEYCHRON_CONFIG_USAGE, KEYCHRON_CONFIG_USAGE_PAGE, KEYCHRON_HE_PRODUCTS, KEYCHRON_VENDOR_ID } from "@openmouse/keyboard-protocol/keychron";
@@ -22,5 +23,5 @@ export const KEYCHRON_HID_FILTERS: HIDDeviceFilter[] = Object.keys(KEYCHRON_HE_P
 /** Keychron filters are offered only behind the experimental flag, read when the app loads. */
 export const HID_FILTERS: HIDDeviceFilter[] = [
   ...SUPPORTED_HID_FILTERS, ...KEYBOARD_HID_FILTERS, ...(keychronHallEffectEnabled() ? KEYCHRON_HID_FILTERS : []),
-  BASILISK_V3_PRO_BLUETOOTH,
+  TUF_M3_GEN_II_FILTER, BASILISK_V3_PRO_BLUETOOTH,
 ];
