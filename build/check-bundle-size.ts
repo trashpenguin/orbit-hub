@@ -54,7 +54,8 @@ export const BUDGET_BYTES: Record<string, number> = {
   // Responsive toolbars, cards, and settings measured 171,171 bytes.
   ".css": 174_000,
   // Inline setting feedback and its translations add about 3 kB.
-  ".js": 3_968_000,
+  // TUF M3 Gen II configuration reports bring the total to about 3.969 MB.
+  ".js": 3_970_000,
 };
 
 // main-*.js measured 1,511,619 bytes right after the split (posthog ~377 kB

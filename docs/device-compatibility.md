@@ -7,6 +7,11 @@ This list covers mice marked supported or Bridge-required in the [device catalog
 
 Models outside this list may have experimental drivers or be awaiting verification.
 
+| Mouse | Status |
+| --- | --- |
+| ASUS TUF Gaming M3 Gen II (USB `0b05:1a9b`) | Experimental wired DPI stages and polling rate. Physical verification is pending. |
+| Inphic PG1 | Driver needed. A Hardware Ids entry and a configuration report capture from a physical unit are needed to identify its protocol. |
+
 | Brand | Mouse | Catalog status |
 | --- | --- | --- |
 | Asus | ROG Gladius II P502 | Supported |

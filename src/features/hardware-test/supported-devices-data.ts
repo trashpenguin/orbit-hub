@@ -375,6 +375,8 @@ export const SUPPORTED_DEVICES: readonly SupportedDeviceEntry[] = [
   { brand: "Asus", model: "Gladius II Core", status: "driver" },
   { brand: "Asus", model: "Strix Impact III", status: "driver" },
   { brand: "Asus", model: "TUF Gaming M3 Gen 1", status: "driver" },
+  { brand: "Asus", model: "TUF Gaming M3 Gen II", status: "likely", pids: [0x1a9b] },
+  { brand: "Inphic", model: "PG1", status: "driver" },
   { brand: "Asus", model: "ROG Gladius II P502", status: "supported", pids: [0x1845] },
   { brand: "Incott", model: "G23 V2 (SE / Pro)", status: "supported", pids: [0x522c, 0x622c] },
   { brand: "Incott", model: "GHERO (and Pro)", status: "likely" },
