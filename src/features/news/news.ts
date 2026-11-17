@@ -14,12 +14,7 @@ interface NewsResponse {
   url?: unknown;
 }
 
-const NEWS_URL = "https://cdn.jsdelivr.net/gh/OpenMouse-Project/openmouse@main/public/news.json";
-
-// Same-origin copy, shipped with every build. If the CDN is unreachable —
-// offline, blocked by an ad blocker, or filtered on a corporate network — the
-// notice still reaches users instead of silently disappearing.
-const NEWS_FALLBACK_URL = (import.meta.env?.BASE_URL ?? "/") + "news.json";
+const NEWS_URL = (import.meta.env?.BASE_URL ?? "/") + "news.json";
 
 const LEVELS: NewsLevel[] = ["info", "warning", "critical"];
 
@@ -35,11 +30,6 @@ async function fetchNewsFrom(url: string, signal?: AbortSignal): Promise<NewsIte
   return { id, level, message, url: link };
 }
 
-export async function fetchNews(signal?: AbortSignal): Promise<NewsItem | null> {
-  try {
-    return await fetchNewsFrom(NEWS_URL, signal);
-  } catch (error) {
-    if (signal?.aborted) throw error;
-    return fetchNewsFrom(NEWS_FALLBACK_URL, signal);
-  }
+export function fetchNews(signal?: AbortSignal): Promise<NewsItem | null> {
+  return fetchNewsFrom(NEWS_URL, signal);
 }

@@ -6,7 +6,7 @@ import * as control from "../../device/controller";
 import type { ControlSnapshot } from "../../device/types";
 import { LOCALE_NAME_KEYS, t } from "../../i18n/index";
 import { interfaceThemeSlug, type InterfaceTheme } from "./interface-preferences";
-import { DiscordIcon, DISCORD_URL, GitHubIcon, GITHUB_URL, TwitterIcon, TWITTER_URL } from "../../shared/social-links";
+import { PROJECT_URL } from "../../shared/project-links";
 import { OptionMenu, SwitchButton } from "../../shared/ui";
 
 const THEME_ORDER: readonly InterfaceTheme[] = [
@@ -174,7 +174,7 @@ export function InterfaceSettings({ snapshot }: { snapshot: ControlSnapshot }): 
                     </span>
                   </span>
                 </span>
-                <span className="om-theme-name">{displayText(locale, name)}</span>
+                <span className="om-theme-name">{displayText(locale, name === "Emerald" ? "Orbit" : name)}</span>
               </button>
             ))}
           </fieldset>
@@ -244,11 +244,8 @@ export function InterfaceSettings({ snapshot }: { snapshot: ControlSnapshot }): 
         </SettingRow>
         <SettingRow title={t(locale, "set.supportTitle")}>
           <span className="om-about-links">
-            <a className="om-btn is-sm" href="https://openmouse.app/supported" target="_blank" rel="noreferrer">{t(locale, "nav.supported")}</a>
-            <a className="om-btn is-sm" href="https://openmouse.app/donate.html" target="_blank" rel="noreferrer">{t(locale, "nav.supportProject")}</a>
-            <a className="om-icon-btn" href={DISCORD_URL} target="_blank" rel="noreferrer" title={displayText(locale, "OpenMouse on Discord")} aria-label={displayText(locale, "OpenMouse on Discord")}><DiscordIcon /></a>
-            <a className="om-icon-btn" href={TWITTER_URL} target="_blank" rel="noreferrer" title={displayText(locale, "OpenMouse on X")} aria-label={displayText(locale, "OpenMouse on X")}><TwitterIcon /></a>
-            <a className="om-icon-btn" href={GITHUB_URL} target="_blank" rel="noreferrer" title={displayText(locale, "OpenMouse on GitHub")} aria-label={displayText(locale, "OpenMouse on GitHub")}><GitHubIcon /></a>
+            <a className="om-btn is-sm" href={PROJECT_URL + "#readme"} target="_blank" rel="noreferrer">{t(locale, "nav.docs")}</a>
+            <a className="om-btn is-sm" href={PROJECT_URL} target="_blank" rel="noreferrer">{displayText(locale, "GitHub")}</a>
           </span>
         </SettingRow>
         <SettingRow title={t(locale, "set.reset")} description={t(locale, "set.resetBody")}>

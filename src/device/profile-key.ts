@@ -105,7 +105,7 @@ export function decodeProfileKey(rawKey: string): DecodeResult {
     || !("v" in payload) || (payload as { v: unknown }).v !== KEY_VERSION
     || !("brand" in payload) || !("name" in payload)
   ) {
-    return { ok: false, error: "This key is from an incompatible OpenMouse version." };
+    return { ok: false, error: "This key is from an incompatible Orbit Hub version." };
   }
   return { ok: true, payload: payload as ProfileKeyPayload };
 }

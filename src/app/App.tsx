@@ -15,7 +15,6 @@ import { useBridgeProfileApplier } from "../features/bridge/useBridgeProfileAppl
 import { useControl } from "./useControl";
 import { setSoundsEnabled } from "../platform/sound-manager";
 import { UiLocaleContext } from "../shared/ui-locale";
-import { AsciiField } from "../shared/AsciiField";
 
 // Secondary pages and dialogs load on demand: the control panel's first paint
 // is the device view, so nothing behind a tab or a button belongs in the
@@ -176,7 +175,6 @@ export function App(): ReactNode {
       ].filter(Boolean).join(" ")}
       data-interface-theme={themeSlug}
     >
-      <AsciiField theme={themeSlug} reducedMotion={preferences.reducedMotion} />
       <AppSidebar
         snapshot={snapshot}
         page={resolvedPage}

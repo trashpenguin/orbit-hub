@@ -17,7 +17,7 @@ import { initialUiLocale } from "./shared/ui-locale";
 const controlApp = document.querySelector<HTMLDivElement>("#control-app");
 
 if (!controlApp) {
-  throw new Error("OpenMouse could not find the control application root.");
+  throw new Error("Orbit Hub could not find the control application root.");
 }
 
 function isChromium(): boolean {
@@ -39,7 +39,7 @@ function Root(): ReactNode {
       <UnsupportedNotice
         notice={{
           headline: "Make the window bigger.",
-          detail: `OpenMouse lays its device controls out side by side and needs at least ${MIN_WIDTH} × ${MIN_HEIGHT} pixels. Resize the window, or move to a larger display.`,
+          detail: `Orbit Hub lays its device controls out side by side and needs at least ${MIN_WIDTH} × ${MIN_HEIGHT} pixels. Resize the window, or move to a larger display.`,
         }}
       />
     );

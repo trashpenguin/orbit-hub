@@ -1,16 +1,15 @@
-# OpenMouse design
+# Orbit Hub design
 
-The single source of truth for how OpenMouse looks. Read it before touching any UI.
+The single source of truth for how Orbit Hub looks. Read it before touching any UI.
 Values live in code: `src/styles/tokens.css`. When this file and the code disagree, the code
 wins; fix this file.
 
-Reading: a hardware control panel for people who tune their mouse by the number. Calm, dark,
-precise, instrument-like. Dial ENERGY 1 / RHYTHM 2 / MOTION 1.
+Orbit Hub uses a midnight-blue workspace, a warm accent, and an orbital stage for device artwork. The default Orbit theme retains the existing saved theme identifier.
 
 ## Principles
 
 - **The device is the hero.** On its settings page, simple name and connection information sit
-  above the standalone contained mouse image, directly on the page canvas with no card or stage.
+  above the contained mouse image and its orbit outline.
   Device-shelf blocks retain their own existing artwork treatment.
 - **Numbers first.** Settings read as figures: label above, value, unit after, meta under. All
   numbers are tabular.
@@ -26,10 +25,9 @@ precise, instrument-like. Dial ENERGY 1 / RHYTHM 2 / MOTION 1.
 
 | Layer | Recipe |
 |---|---|
-| Ground | `--ground`: flat page ink, matching Desktop. The shared ASCII is the single background identity motif. |
-| ASCII field | `shared/AsciiField.tsx`: the Desktop app's glow field, top right, under the sidebar and main column. Decorative (`aria-hidden`, no pointer events). |
+| Ground | `--ground`: dark page ink with a quiet surface under the device artwork. |
 | Chrome | Sidebar on `--ink-0` with a hairline edge. |
-| Panel | `.om-panel` (or the legacy `.setting-card`): `--sheen` over `--surface-1` over `--ink-1` (opaque, so the ASCII field never shows through), `--lit` edge, `--r-md`. Featured panel: `.om-panel.is-lit` (one or two per page). |
+| Panel | `.om-panel` (or the legacy `.setting-card`): `--sheen` over `--surface-1` over `--ink-1` , `--lit` edge, `--r-md`. Featured panel: `.om-panel.is-lit` (one or two per page). |
 | Row | Inside a panel: hairline `--line-1` separators. Don't nest panels. |
 | Well | Inset areas (segmented controls, inputs, render stages): `--well` + `--inset-shadow`. |
 | Raised | Buttons, the selected segment key, switch thumb: `--btn` / `--key`. |
@@ -37,27 +35,24 @@ precise, instrument-like. Dial ENERGY 1 / RHYTHM 2 / MOTION 1.
 
 ## App layout
 
-- **Sidebar** (`AppSidebar.tsx`, 248px, collapsible to a 68px icon rail, remembered; nav rows 36px, radius 6, 10px inline padding, 13/500):
+- **Sidebar** (`AppSidebar.tsx`, 226px, collapsible to a 68px icon rail, remembered; nav rows 40px, radius 8, 10px inline padding, 13/500):
   brand + build; Devices, Hardware test, Games (without Bridge it lists the supported games under a download-Bridge panel); "Your devices" switcher
   (thumbnail, name, battery icon + percent or "Not connected"); footer: Docs ↗, What's new,
-  Help & feedback (Discord), Settings; Bridge status line, which opens a small card with Bridge's
+  Help & feedback, Settings; Bridge status line, which opens a small card with Bridge's
   status, update notice and download link (`features/bridge/BridgeStatus.tsx`).
-- **Main column**: news strip on top, then the scrolling page (`.om-content` > `.om-page`: 28px
-  top and 32px side padding around a content box of at most 1160px). The pending-changes bar floats at the bottom of the main column. A help button floats
+- **Main column**: news strip on top, then the scrolling page (`.om-content` > `.om-page`: 36px
+  top and 40px side padding around a content box of at most 1260px). The pending-changes bar floats at the bottom of the main column. A help button floats
   bottom right and opens a small panel of common questions with instant answers, plus links to
-  the site FAQ and Discord (`app/HelpPanel.tsx`).
+  Orbit Hub documentation and issues (`app/HelpPanel.tsx`).
 - **Devices home** (`features/devices/DevicesHome.tsx`): a swipeable shelf of device blocks, each
   one surface (render on a stage, name, connection badge, live stats with icons, Configure/Open,
   and a ⋯ menu to remove the device) ending in an Add device block with the supported mice
-  crossfading. Drag, swipe, arrow buttons, dots and arrow keys all move it. The shelf sits in the
-  middle of the page and centres when it doesn't fill the width. No devices: the same shelf with
-  only the Add device block, larger, in the middle of the page; its button becomes the primary
-  action.
+  crossfading. Drag, swipe, arrow buttons, dots and arrow keys all move it. The shelf aligns with the page title. With no devices, the pairing panel puts the action on the leading side and the device artwork on the trailing side.
 - **Device page** (`features/devices/DeviceHero.tsx`): the device rail on the left (breadcrumb, name,
-  "Connected" + connection type, then the contained render alone on the page, no stage), the
+  "Connected" + connection type, then the contained render over its orbit outline), the
   workspace beside it (tabs in a 40px well, then the panels). The rail is 280px when the page's
   content box is at least 1000px wide, 220px from 760px, and stacks above the tabs below that
-  (container query on `.om-device-page`); 16px gap. Overview: Current setup figures + DPI stage
+  (container query on `.om-device-page`); 22px gap. Overview: Current setup figures + DPI stage
   chips, Battery over time chart (recorded samples), Firmware.
 - **Setting cards** flow in a masonry column layout (`CardSlot`, `styles/instrument.css`) so there
   are no holes; every card heading carries a glyph, and feature switches are tiles
@@ -83,7 +78,7 @@ Use tokens only; no hex in components or area CSS. Alpha mixes use the `-rgb` tr
 | `--ok`, `--bad`, `--warn`, `--info` | Real states only |
 | `--stage-light` | The light behind a device render |
 
-Themes: all 12 (Emerald default, Matt, Violet, Ice, Ember, Mono, Miku, Catppuccin Mocha /
+Themes: all 12 (Orbit default, Matt, Violet, Ice, Ember, Mono, Miku, Catppuccin Mocha /
 Macchiato / Frappé, NieR: Automata, Light) are full token sets in `tokens.css`, selected by
 `data-interface-theme` on the shell (and mirrored on `<html>`). Derived tokens are declared on every
 themed element, so any element carrying `data-interface-theme` paints itself in that theme.
@@ -94,8 +89,7 @@ No component may fork on a theme name.
 - DM Sans for everything, self-hosted from `public/fonts/DMSans-Variable.ttf` (SIL OFL 1.1, licence
   and source record beside it), pinned to optical size 14 (`--font-opsz`) so it renders the same
   named instance as the Desktop app. JetBrains Mono only for raw identifiers, hex and HID logs.
-  The ASCII field uses Cascadia Mono 11/500 at a 15.4px line.
-- Scale: page title 22, panel title 15, body 13, meta 12, small 11. Figures 30 at 600.
+- Scale: page title 27, panel title 15, body 13, meta 12, small 11. Figures 30 at 600.
 - Sentence case everywhere. No uppercase tracked labels. Weights 400–600 (the Desktop renderer
   only has the 100-step named instances), no negative tracking on titles or figures.
 
@@ -128,17 +122,8 @@ is the custom `BatteryIcon` (fill tracks the level; low and charging change its 
 ## Motion
 
 120–260ms washes and fades. The device page body fades in; panels and bars rise 8px once. The
-ASCII field sweeps in once (520ms, rows staggered top-down) when the page loads and when the theme
-changes. No loops except the add-device crossfade, which stops with reduced motion. The Animations
+The pairing artwork crossfades when motion is enabled. No loops except the add-device crossfade, which stops with reduced motion. The Animations
 preference and `prefers-reduced-motion` both stop motion.
-
-## ASCII field
-
-The same field as the Desktop app, ported from its Rust source (`shared/ascii.ts`, checked line
-for line against a reference generated by the Rust code, `shared/ascii-golden.json`): ramp
-` .:-=+*#%@`, an accent glow from the top-right corner shaped by value noise, up to 42% of the
-window width (24 to 104 columns), 40 rows, alpha 0.24 fading out below the middle. The seed is
-chosen once per page session; rows are rebuilt only when the column count changes.
 
 ## Checklist before shipping a page
 

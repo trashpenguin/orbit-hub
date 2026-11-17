@@ -246,36 +246,22 @@ export function deviceImage(
 
 /** The placeholder an image falls back to when its own art fails to load. */
 export function placeholderImage(kind: DeviceImageKind = "mouse"): string {
-  return imageUrl(kind === "keyboard" ? UNKNOWN_KEYBOARD_FILENAME : UNKNOWN_DEVICE_FILENAME);
+  return (import.meta.env?.BASE_URL ?? "/") + "devices/"
+    + (kind === "keyboard" ? UNKNOWN_KEYBOARD_FILENAME : UNKNOWN_DEVICE_FILENAME);
 }
 
 export function deviceImageFilename(displayName = ""): string {
   return resolveDeviceImageFilename(null, displayName);
 }
 
-// Every filename here is checked against the R2 bucket directly (curl -o
-// /dev/null -w '%{http_code}') before landing on this list — several
-// filenames resolveDeviceImageFilename can return above 404 because the art
-// was never uploaded (attackshark-r2.png, mchose-a7-v2.png, atk-zero.png,
-// and the Microsoft IntelliMouse renders among them), which silently fails
-// on the device panel but breaks a showcase that's shown unconditionally.
-const SHOWCASE_DEVICE_FILENAMES: readonly string[] = [
-  "logitech-g502-x-plus.png",
-  "razer-viper-v3-pro.png",
-  "endgame-gear-xm2-8k.png",
-  "finalmouse-ulx.png",
-  "pulsar-x2-v2.png",
-  "lamzu-maya-x.png",
-  "zaunkoenig-m3k.png",
-  "attackshark-r5-ultra.png",
-  "logitech-g-pro-2.png",
-  "razer-deathadder-v3.png",
-  "wlmouse-sword-x.png",
-  "wlmouse-beast-max.png",
+const SHOWCASE_DEVICE_FILENAMES = [
+  "asus-rog-harpe-ace-aim-lab.png",
+  "attackshark-r2.png",
+  "delux-m800-mini.png",
 ];
 
 export function showcaseDeviceImageUrls(): readonly string[] {
-  return SHOWCASE_DEVICE_FILENAMES.map((filename) => DEVICE_IMAGE_BASE_URL + filename);
+  return SHOWCASE_DEVICE_FILENAMES.map(imageUrl);
 }
 
 export const UNKNOWN_DEVICE_FILENAME = "unknown-device.png";

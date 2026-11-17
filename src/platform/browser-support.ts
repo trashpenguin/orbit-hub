@@ -16,13 +16,13 @@ export function unsupportedNotice(env: BrowserEnvironment): UnsupportedNotice | 
   if (env.handheld) {
     return {
       headline: "Use a desktop.",
-      detail: "OpenMouse cannot reach your mouse from a phone or tablet.",
+      detail: "Orbit Hub cannot reach your mouse from a phone or tablet.",
     };
   }
   if (!env.chromium) {
     return {
       headline: "Install Bridge, or use a Chromium browser.",
-      detail: "This browser has no WebHID. OpenMouse Bridge gives it native access to your mouse; without it, use Chrome, Edge, or Helium.",
+      detail: "This browser has no WebHID. Bridge gives it native access to your mouse; without it, use Chrome, Edge, or Helium.",
       offerBridge: true,
     };
   }
@@ -34,6 +34,6 @@ export function unsupportedNotice(env: BrowserEnvironment): UnsupportedNotice | 
   }
   return {
     headline: "Update your browser.",
-    detail: "OpenMouse needs WebHID, added in Chrome and Edge 89. Update to the latest version.",
+    detail: "Orbit Hub needs WebHID, added in Chrome and Edge 89. Update to the latest version.",
   };
 }

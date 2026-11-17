@@ -60,7 +60,7 @@ export interface BridgeProfile {
     /**
      * Every other setting the profile changes. Bridge stores it untouched;
      * only DPI and polling rate above are applied natively (Pulsar), the rest
-     * is applied by an open OpenMouse tab over WebHID.
+     * is applied by an open Orbit Hub tab over WebHID.
      */
     snapshot?: GameProfileSnapshot | null;
   };

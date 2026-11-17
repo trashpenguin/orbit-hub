@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { deviceImage, isUnknownDevice, placeholderImage } from "./device-images.ts";
+import { deviceImage, isUnknownDevice, placeholderImage, showcaseDeviceImageUrls } from "./device-images.ts";
 
 const CDN = "https://img.openmouse.app/";
 
@@ -369,7 +369,16 @@ test("a keyboard with its own art keeps it", () => {
 });
 
 test("the load-error placeholder follows the device kind", () => {
-  assert.equal(placeholderImage(), CDN + "unknown-device.png");
-  assert.equal(placeholderImage("mouse"), CDN + "unknown-device.png");
+  assert.equal(placeholderImage(), "/devices/unknown-device.png");
+  assert.equal(placeholderImage("mouse"), "/devices/unknown-device.png");
   assert.equal(placeholderImage("keyboard"), "/devices/unknown-keyboard.png");
+});
+
+
+test("the pairing artwork ships with Orbit Hub", () => {
+  assert.deepEqual(showcaseDeviceImageUrls(), [
+    "/devices/asus-rog-harpe-ace-aim-lab.png",
+    "/devices/attackshark-r2.png",
+    "/devices/delux-m800-mini.png",
+  ]);
 });

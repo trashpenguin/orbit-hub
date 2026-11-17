@@ -5,7 +5,7 @@ import type { MouseStatus } from "@openmouse/protocol/drivers/mouse-types";
 const CAPTURED_FACTORY_SECTOR_SIZE = 255;
 
 /**
- * Whether OpenMouse can give this mouse the factory onboard profiles. A factory
+ * Whether Orbit Hub can give this mouse the factory onboard profiles. A factory
  * image exists only for the profile format whose sectors were captured:
  * `factoryDirectoryForFormat` returns null for every other format and sector
  * size. `supportsFactoryReset` is the wrong question here because it is also true

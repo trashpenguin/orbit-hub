@@ -10,7 +10,7 @@
   display: grid; gap: 8px; align-content: start; justify-items: start;
   min-width: 0;
 }
-.om-device-name { font-size: var(--fs-title); font-weight: 600; letter-spacing: 0; line-height: 28px; overflow-wrap: anywhere; }
+.om-device-name { font-size: var(--fs-title); font-weight: 600; letter-spacing: 0; line-height: 1.15; overflow-wrap: anywhere; }
 .om-device-status { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; color: var(--text-2); font-size: var(--fs-connection); }
 .om-device-fact { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .om-device-fact > svg { width: 15px; height: 15px; color: var(--text-3); }

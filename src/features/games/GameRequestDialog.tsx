@@ -1,4 +1,4 @@
-import { DISCORD_URL } from "../../shared/social-links";
+import { PROJECT_ISSUES_URL } from "../../shared/project-links";
 import { displayText } from "../../i18n/index";
 import { track } from "../../platform/analytics";
 import { useUiLocale } from "../../shared/ui-locale";
@@ -14,8 +14,6 @@ const MAX_NAME_LENGTH = 80;
 const MAX_PATH_LENGTH = 400;
 const COOLDOWN_KEY = "openmouse.gamereq.sentAt";
 const COOLDOWN_MS = 60_000;
-// Discord's current username rules: 2–32 of lowercase letters, digits, `_` and `.`.
-const DISCORD_USERNAME = /^[a-z0-9_.]{2,32}$/;
 
 type Platform = "windows" | "macos" | "linux";
 type RequestKind = "game" | "app";
@@ -122,7 +120,6 @@ export function GameRequestDialog({ open, onClose, locale = "en", bridgeActive, 
   const [kind, setKind] = useState<RequestKind>("game");
   const [name, setName] = useState("");
   const [path, setPath] = useState("");
-  const [discord, setDiscord] = useState("");
   const [platform, setPlatform] = useState<Platform>(detectPlatform);
   const [apps, setApps] = useState<BridgeApplication[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -161,9 +158,7 @@ export function GameRequestDialog({ open, onClose, locale = "en", bridgeActive, 
   const trimmedName = name.trim().slice(0, MAX_NAME_LENGTH);
   const cleanedPath = cleanPath(path).slice(0, MAX_PATH_LENGTH);
   const exe = executableName(cleanedPath);
-  const handle = discord.trim().replace(/^@/, "").toLowerCase();
-  const handleValid = DISCORD_USERNAME.test(handle);
-  const canPreview = trimmedName.length > 0 && exe.length > 0 && handleValid;
+  const canPreview = trimmedName.length > 0 && exe.length > 0;
 
   const alreadySupported = knownGames.find((game) =>
     game.name.toLowerCase() === trimmedName.toLowerCase()
@@ -196,7 +191,6 @@ export function GameRequestDialog({ open, onClose, locale = "en", bridgeActive, 
         `Executable: ${exe}`,
         `Platform: ${PLATFORM_LABELS[platform]}`,
         `Path: ${cleanedPath}`,
-        `Discord: @${handle}`,
       ].join("\n");
       const url = URL.createObjectURL(new Blob([report], { type: "text/plain;charset=utf-8" }));
       const link = document.createElement("a");
@@ -223,7 +217,6 @@ export function GameRequestDialog({ open, onClose, locale = "en", bridgeActive, 
               { name: "Platform", value: PLATFORM_LABELS[platform], inline: true },
               { name: "Path", value: codeSpan(cleanedPath), inline: false },
             ],
-            footer: { text: `@${handle}` },
           }],
         }),
       });
@@ -385,23 +378,6 @@ export function GameRequestDialog({ open, onClose, locale = "en", bridgeActive, 
               </div>
             </div>
 
-            <label className="feedback-handle" htmlFor="gamereq-discord">
-              <span>{t(locale, "gamereq.discordLabel")}</span>
-              <input
-                id="gamereq-discord"
-                type="text"
-                required
-                maxLength={33}
-                autoComplete="off"
-                spellcheck={false}
-                placeholder={t(locale, "fb.handlePlaceholder")}
-                value={discord}
-                onChange={(event) => setDiscord(event.currentTarget.value)}
-              />
-            </label>
-            {handle && !handleValid ? (
-              <p className="feedback-error" role="alert">{t(locale, "gamereq.discordInvalid")}</p>
-            ) : null}
 
             <div className="om-dialog-foot feedback-actions">
               <button className="om-btn is-ghost" type="button" onClick={onClose}>{t(locale, "common.cancel")}</button>
@@ -434,9 +410,6 @@ export function GameRequestDialog({ open, onClose, locale = "en", bridgeActive, 
                   <code className="gamereq-mono">{cleanedPath}</code>
                 </div>
               </div>
-              <p className="gamereq-embed-footer">
-                <Gamepad2 size={13} aria-hidden="true" /> @{handle}
-              </p>
             </div>
 
             {alreadySupported ? (
@@ -459,7 +432,7 @@ export function GameRequestDialog({ open, onClose, locale = "en", bridgeActive, 
               <button className="om-btn is-ghost" type="button" onClick={() => setStep("form")} disabled={busy}>
                 {t(locale, "gamereq.edit")}
               </button>
-              {!REQUEST_URL ? <a className="om-btn" href={DISCORD_URL} target="_blank" rel="noreferrer">{t(locale, "hw.discord")}</a> : null}
+              {!REQUEST_URL ? <a className="om-btn" href={PROJECT_ISSUES_URL} target="_blank" rel="noreferrer">{t(locale, "nav.support")}</a> : null}
               <button type="submit" className="om-btn is-primary" disabled={busy || cooldown > 0}>
                 {displayText(locale, busy ? "…" : t(locale, REQUEST_URL ? "gamereq.send" : "fw.download"))}
               </button>
