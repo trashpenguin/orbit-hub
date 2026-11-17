@@ -1,6 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 const port = process.env.ORBIT_BROWSER_PORT ?? "4178";
+const fixturePort = Number(port) + 1;
 const baseURL = `http://localhost:${port}/orbit-hub/`;
 
 export default defineConfig({
@@ -10,9 +11,13 @@ export default defineConfig({
     channel: process.env.ORBIT_BROWSER_CHANNEL,
     trace: "retain-on-failure",
   },
-  webServer: {
+  webServer: [{
     command: `node node_modules/vite/bin/vite.js preview --host localhost --port ${port} --strictPort`,
     env: { ORBIT_BASE_PATH: "/orbit-hub/" },
     url: baseURL,
-  },
+  }, {
+    command: `node node_modules/vite/bin/vite.js --host localhost --port ${fixturePort} --strictPort`,
+    env: { ORBIT_BASE_PATH: "/orbit-hub/" },
+    url: `http://localhost:${fixturePort}/orbit-hub/`,
+  }],
 });

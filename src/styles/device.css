@@ -45,7 +45,7 @@
 .om-tab.is-active svg { color: var(--accent); }
 .om-tab:focus-visible { box-shadow: var(--focus); }
 
-.om-device-body { display: grid; gap: 16px; min-width: 0; animation: om-fade var(--t-base) var(--ease) both; }
+.om-device-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; animation: om-fade var(--t-base) var(--ease) both; }
 .device-data { min-width: 0; }
 
 @keyframes om-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -83,7 +83,7 @@
 .performance-layout { display: grid; gap: 16px; grid-template-columns: 260px minmax(0, 1fr); align-items: start; }
 .performance-layout.has-no-sidebar { grid-template-columns: minmax(0, 1fr); }
 .performance-sidebar { position: sticky; top: 16px; }
-.performance-main { display: grid; gap: 16px; min-width: 0; }
+.performance-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
 .performance-controls { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); align-items: start; }
 
 .showcase-sidebar {

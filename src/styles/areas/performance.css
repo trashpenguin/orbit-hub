@@ -386,4 +386,6 @@
 }
 #host-lod-row .segmented.lod-steps > button { min-width: 0; height: 30px; padding-inline: 4px; font-variant-numeric: tabular-nums; }
 
-.dpi-readbacks { list-style: none; display: grid; gap: 4px; padding: 8px var(--panel-pad); color: var(--text-2); }
+.setting-write-status ul { list-style: none; margin: 6px 0; padding: 0; color: var(--text-2); overflow-wrap: anywhere; }
+.setting-write-status button { margin-inline-start: 8px; }
+.setting-write-status li + li { margin-block-start: 4px; }

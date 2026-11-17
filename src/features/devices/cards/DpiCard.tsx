@@ -1,3 +1,4 @@
+import { SettingWriteStatus } from "./SettingWriteStatus";
 import { displayText } from "../../../i18n/index";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Check, Link2, Unlink2 } from "lucide-react";
@@ -768,16 +769,7 @@ export function DpiCard({ snapshot }: { snapshot: ControlSnapshot }): ReactNode 
           editorView={stageCapable && singleDpiAvailable ? editorView : stageCapable ? "stage" : undefined}
         />
 
-        {snapshot.pending.dpiReadbacks?.length ? (
-          <ul className="dpi-readbacks" role="status">
-            {snapshot.pending.dpiReadbacks.map(({ key, label, result }) => (
-              <li key={key}>
-                {label}{" · "}{t(locale, result === "confirmed" ? "dpi.readbackConfirmed"
-                  : result === "mismatch" ? "dpi.readbackMismatch" : "dpi.readbackUnavailable")}
-              </li>
-            ))}
-          </ul>
-        ) : null}
+        <SettingWriteStatus snapshot={snapshot} keyPrefix="dpi" />
         <div className="setting-action">
           <span id="dpi-pending">
             {displayText(locale, staged ? tp(locale, "common.staged", { v: label(status) }) : tp(locale, "common.current", { v: label(deviceStatus) }))}

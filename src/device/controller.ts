@@ -38,7 +38,6 @@ import {
   isPendingChange,
   onPendingChanges,
   pendingReadback,
-  type ReadbackResult,
   pendingChangeBatches,
   pendingChanges,
   restorePendingChanges,
@@ -158,7 +157,7 @@ import type {
   AnalogTuning,
   AnalogTuningState,
   MagneticCalibrationView,
-  ControlSnapshot,
+  ControlSnapshot, PendingView,
   KeyboardIdentityView,
   KeyboardKeyRef,
   KeyboardPollingView,
@@ -484,8 +483,10 @@ export interface GameProfileOwner {
   readonly device: HIDDevice | null;
 }
 
+type SettingWriteFeedback = NonNullable<PendingView["writeFeedback"]>[number];
+
 let gameProfileOwner: GameProfileOwner | null = null;
-let dpiReadbacks: { owner: GameProfileOwner; entries: { key: string; label: string; result: ReadbackResult }[] } | null = null;
+let writeFeedback: { owner: GameProfileOwner; entries: SettingWriteFeedback[] } | null = null;
 
 export function getGameProfileOwner(): GameProfileOwner | null {
   if (!active || !latestDeviceStatus) return null;
@@ -714,7 +715,7 @@ function buildSnapshot(): ControlSnapshot {
       labels: suppressedPending ? EMPTY_PENDING_LABELS : changes.map((change) => change.label),
       busy: pendingBusy,
       statusText: pendingStatusText,
-      dpiReadbacks: dpiReadbacks && isGameProfileOwner(dpiReadbacks.owner) ? dpiReadbacks.entries : undefined,
+      writeFeedback: writeFeedback && isGameProfileOwner(writeFeedback.owner) ? writeFeedback.entries : undefined,
       suppressed: interfacePreferences.instantFlash || gameProfileDraft !== null,
       keys: changes.map((change) => change.key),
     },
@@ -1521,6 +1522,9 @@ function stageChange(change: PendingChange): void {
     if (settingInProgress) {
       setReadStatus(st("ctl.waitFlash"));
       return;
+    }
+    if (writeFeedback && isGameProfileOwner(writeFeedback.owner)) {
+      writeFeedback = { ...writeFeedback, entries: writeFeedback.entries.filter(({ key }) => key !== change.key) };
     }
     if (gameProfileDraft) {
       const fields = gameProfileFieldsOf(change);
@@ -2467,13 +2471,18 @@ async function flashStagedChanges(): Promise<FlashResult> {
     setReadStatus(st("ctl.waitFlash"));
     return "busy";
   }
-  if (batches.some((group) => group.some((change) => change.readback))) dpiReadbacks = null;
+  const attemptedKeys = new Set(batches.flatMap((group) => group.map((change) => change.key)));
+  const feedback = writeFeedback?.owner === owner
+    ? writeFeedback.entries.filter(({ key }) => !attemptedKeys.has(key))
+    : [];
+  writeFeedback = { owner, entries: feedback };
   settingInProgress = true;
   pendingBusy = true;
   emit();
   let written = 0;
   const checked: PendingChange[] = [];
   let failure: string | null = null;
+  let writing = batches[0] ?? [];
   // HID++ replies are matched by feature and function only, so a profile read
   // still running in the background would take the write's sector reads and
   // fail its checksum check. Let every read finish first.
@@ -2493,6 +2502,7 @@ async function flashStagedChanges(): Promise<FlashResult> {
   try {
     for (const group of batches) {
       if (failure) break;
+      writing = group;
       const writer = group[group.length - 1];
       if (!writer) continue;
       pendingStatusText = `${writer.progress} (${written + 1} of ${batches.length})`;
@@ -2521,19 +2531,24 @@ async function flashStagedChanges(): Promise<FlashResult> {
   const status = client ? await statusAfterWrite(client).catch(() => null) : null;
   if (isGameProfileOwner(owner)) {
     if (status) applyStatus(status);
+    if (failure) {
+      for (const change of writing) {
+        if (change.readback) feedback.push({ key: change.key, label: change.label, result: "failed", detail: failure });
+      }
+    }
     if (checked.length) {
       const entries = checked.map((change) => ({
         key: change.key, label: change.label, result: pendingReadback(change, status),
       }));
-      dpiReadbacks = { owner, entries };
+      feedback.push(...entries);
       const mismatched = checked.filter((_, index) => entries[index]?.result === "mismatch");
       if (mismatched.length) {
-        if (!interfacePreferences.instantFlash && !gameProfileDraft) {
+        if (!gameProfileDraft) {
           batch(() => {
             for (const change of mismatched) stagePendingChange(change);
           });
         }
-        failure ??= st("dpi.readbackMismatch");
+        failure ??= st("ctl.writeReadbackMismatch");
       }
     }
   }
@@ -3286,7 +3301,7 @@ export async function openDeviceOverview(index: number): Promise<void> {
     }
     if (latestDeviceStatus !== null || activeKeyboard !== null) {
       deviceListView = "device";
-      activeWorkspaceTab = "overview";
+      activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
       emit();
     }
     return;
@@ -3301,14 +3316,14 @@ export async function openDeviceOverview(index: number): Promise<void> {
   }
   if (group.some((device) => device === activeDevice) && (latestDeviceStatus !== null || activeKeyboard !== null)) {
     deviceListView = "device";
-    activeWorkspaceTab = "overview";
+    activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
     emit();
     return;
   }
   await selectAuthorizedDevice(index);
   if (latestDeviceStatus !== null || activeKeyboard !== null) {
     deviceListView = "device";
-    activeWorkspaceTab = "overview";
+    activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
     emit();
   }
 }
@@ -3538,7 +3553,7 @@ export async function showDeviceDashboard(): Promise<void> {
     return;
   }
   deviceListView = "device";
-  activeWorkspaceTab = "overview";
+  activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
   emit();
 }
 
@@ -3801,7 +3816,7 @@ async function activateClientNow(client: SupportedClient, options: { rememberRec
   recordDiagnosticCommand("Read device status");
   lastRenderedStatusKey = null;
   active = client;
-  activeWorkspaceTab = "overview";
+  activeWorkspaceTab = "performance";
 
   try {
     if (C().isEggWeClient(client)) await C().eggWePrepare(client);
@@ -4014,6 +4029,7 @@ async function showPulsarExplorer(client: PulsarClient): Promise<void> {
 }
 
 function showDisconnectedState(): void {
+  writeFeedback = null;
   if (refreshTimer !== null) {
     window.clearInterval(refreshTimer);
     refreshTimer = null;
@@ -6085,6 +6101,7 @@ export function applyPollingRate(rate: number): void {
     label: `${rate.toLocaleString()} Hz`,
     command: `Set polling rate to ${rate.toLocaleString()} Hz`,
     progress: `Setting ${rate.toLocaleString()} Hz…`,
+    readback: (status) => nativeX11 || status.pollingRateHz <= 0 ? null : status.pollingRateHz === rate,
     preview: (status) => {
       status.pollingRateHz = rate;
     },
@@ -7576,6 +7593,7 @@ function previewClient(): LogitechHidppClient {
 
 function steelseriesStagePreviewClient(initial: MouseStatus): SupportedClient {
   const status = structuredClone(initial);
+  let failNextPollingWrite = new URLSearchParams(location.search).get("fault") === "write";
   const stages = (): number[] => status.dpiStages ?? [];
   const stagesY = (): number[] => status.dpiStagesY ?? [];
   const write = (stage: number, x: number | null, y: number | null): void => {
@@ -7611,6 +7629,10 @@ function steelseriesStagePreviewClient(initial: MouseStatus): SupportedClient {
       return stage;
     },
     setPollingRate: async (hz: number) => {
+      if (failNextPollingWrite) {
+        failNextPollingWrite = false;
+        throw new Error("Simulated polling write failed.");
+      }
       status.pollingRateHz = hz;
       return hz;
     },
@@ -7864,7 +7886,10 @@ export function start(): void {
     void showKeyboardPreview(previewMode);
   } else if (previewMode !== null && previewMode !== "list") {
     void showFixturePreview(previewMode).then(() => {
-      if (latestDeviceStatus !== null) deviceListView = "device";
+      if (latestDeviceStatus !== null) {
+        deviceListView = "device";
+        activeWorkspaceTab = "performance";
+      }
       emit();
     });
   } else if (previewMode === "list") {

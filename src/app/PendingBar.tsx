@@ -1,6 +1,6 @@
 import { displayText } from "../i18n/index";
 import { PenLine } from "lucide-react";
-import { memo, type ReactNode } from "react";
+import { memo, useLayoutEffect, useRef, type ReactNode } from "react";
 import * as control from "../device/controller";
 import { t } from "../i18n/index";
 import { useControlSelector } from "./useControl";
@@ -14,7 +14,18 @@ export const PendingBar = memo(function PendingBar(): ReactNode {
   const locale = useUiLocale();
   // Text comes from the lazy locale table, not just the locale code.
   useControlSelector((snapshot) => snapshot.localeTableRevision);
-  if (suppressed || count === 0) return null;
+  const status = useControlSelector((snapshot) => snapshot.pending.statusText);
+  const returnFocus = useRef(false);
+  const visible = !suppressed && count > 0;
+  useLayoutEffect(() => {
+    if (visible || !returnFocus.current) return;
+    returnFocus.current = false;
+    if (document.activeElement === document.body) {
+      const tab = document.querySelector<HTMLElement>('.om-device-page [role="tab"][aria-selected="true"]');
+      (tab ?? document.querySelector<HTMLElement>(".om-content"))?.focus();
+    }
+  }, [visible]);
+  if (!visible) return null;
   const label = count === 1
     ? t(locale, "pend.one")
     : `${count} ${t(locale, "pend.many")}`;
@@ -30,13 +41,18 @@ export const PendingBar = memo(function PendingBar(): ReactNode {
         {displayText(locale, label)}
         {labelsKey.length > 0 ? <em className="apply-bar-summary">{displayText(locale, labelsKey)}</em> : null}
       </span>
+      {status ? <span className="apply-bar-status">{displayText(locale, status)}</span> : null}
       <div className="apply-bar-actions">
         <button
           id="pending-revert"
           className="apply-bar-revert"
           type="button"
-          disabled={busy}
-          onClick={control.revertPendingChanges}
+          aria-disabled={busy}
+          onClick={(event) => {
+            if (busy) return;
+            returnFocus.current = document.activeElement === event.currentTarget;
+            control.revertPendingChanges();
+          }}
         >
           {t(locale, "pend.revert")}
         </button>
@@ -44,8 +60,12 @@ export const PendingBar = memo(function PendingBar(): ReactNode {
           id="pending-flash"
           className="apply-bar-apply"
           type="button"
-          disabled={busy}
-          onClick={() => void control.flashPendingChanges()}
+          aria-disabled={busy}
+          onClick={(event) => {
+            if (busy) return;
+            returnFocus.current = document.activeElement === event.currentTarget;
+            void control.flashPendingChanges();
+          }}
         >
           {displayText(locale, busy ? t(locale, "pend.applying") : t(locale, "pend.apply"))}
         </button>

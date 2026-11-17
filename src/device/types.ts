@@ -85,7 +85,7 @@ export interface PendingView {
   labels: string[];
   busy: boolean;
   statusText: string | null;
-  dpiReadbacks?: readonly { key: string; label: string; result: "confirmed" | "unavailable" | "mismatch" }[];
+  writeFeedback?: readonly { key: string; label: string; result: "confirmed" | "unavailable" | "mismatch" | "failed"; detail?: string }[];
   suppressed: boolean;
   keys: readonly string[];
 }

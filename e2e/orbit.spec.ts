@@ -152,3 +152,75 @@ test("the mouse activity lab samples browser events without a connected device",
   await expect(stats.getByText("Scroll events").locator("..").locator("dd")).toHaveText("1");
   await expect(lab.getByRole("button", { name: "Start sample" })).toBeEnabled();
 });
+
+const fixtureBase = `http://localhost:${Number(process.env.ORBIT_BROWSER_PORT ?? "4178") + 1}/orbit-hub/`;
+
+test("a failed polling write has an inline explanation and can be retried by keyboard", async ({ page }) => {
+  await page.goto(fixtureBase + "?preview=steelseries-gen2&fault=write");
+  const polling = page.locator("#polling-card");
+  await expect(page.locator("#workspace-tab-performance")).toHaveAttribute("aria-selected", "true");
+  const option = polling.getByRole("button", { name: "500", exact: true });
+  await option.focus();
+  await page.keyboard.press("Enter");
+  const apply = page.locator("#pending-flash");
+  await apply.focus();
+  await page.keyboard.press("Enter");
+  const feedback = polling.locator(".setting-write-status");
+  await expect(feedback).toHaveAttribute("role", "status");
+  await expect(feedback).toContainText("Simulated polling write failed.");
+  await expect(feedback).toContainText("Choose Apply changes to retry.");
+  await expect(apply).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(feedback).toContainText("Sent, readback unavailable");
+  await expect(apply).toBeHidden();
+  await expect(page.locator("#workspace-tab-performance")).toBeFocused();
+});
+
+for (const locale of ["en", "ar"]) {
+  for (const theme of ["Emerald", "Light"]) {
+    test(`device controls reflow at 320 px with ${locale} and ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width: 320, height: 650 });
+      await page.addInitScript(({ locale, theme }) => {
+        localStorage.setItem("openmouse-interface-settings-v1", JSON.stringify({ locale, theme, colorMode: theme === "Light" ? "Light" : "Dark", reducedMotion: true }));
+      }, { locale, theme });
+      await page.goto(fixtureBase + "?preview=steelseries-gen2");
+      const root = page.locator("html");
+      await expect(root).toHaveAttribute("dir", locale === "ar" ? "rtl" : "ltr");
+      await expect(root).toHaveAttribute("data-interface-theme", theme === "Light" ? "light" : "emerald");
+      await expect(root).toHaveAttribute("data-color-scheme", theme === "Light" ? "light" : "dark");
+      const rate = page.locator("#host-rate-slider button[aria-pressed=false]").first();
+      await rate.focus();
+      await page.keyboard.press("Enter");
+      const apply = page.locator("#pending-flash");
+      await expect(apply).toBeVisible();
+      const overflow = await page.locator(".om-content").evaluate((content) => ({
+        width: content.scrollWidth,
+        outside: [...content.querySelectorAll<HTMLElement>("*")]
+          .filter((node) => {
+            const bounds = node.getBoundingClientRect();
+            return bounds.width > 0 && (bounds.right > innerWidth + 1 || bounds.left < -1)
+              && !node.closest(".om-device-tabs, .sr-only, .app-live-region");
+          })
+          .slice(0, 8).map((node) => node.id || node.getAttribute("class") || node.tagName),
+      }));
+      expect(overflow.width, overflow.outside.join(", ")).toBe(320);
+      await expect(root).toHaveJSProperty("scrollWidth", 320);
+      // Tab into a neighboring control after staging and confirm the bar sits
+      // below the scroll viewport instead of overlaying the keyboard focus.
+      await rate.focus();
+      await page.keyboard.press("Tab");
+      const geometry = await page.evaluate(() => {
+        const target = document.activeElement!.getBoundingClientRect();
+        const bar = document.querySelector("#pending-changes-bar")!.getBoundingClientRect();
+        const apply = document.querySelector("#pending-flash")!.getBoundingClientRect();
+        return { bottom: target.bottom, barTop: bar.top, applyWidth: apply.width, applyHeight: apply.height };
+      });
+      expect(geometry.bottom).toBeLessThanOrEqual(geometry.barTop);
+      expect(geometry.applyWidth).toBeGreaterThanOrEqual(24);
+      expect(geometry.applyHeight).toBeGreaterThanOrEqual(24);
+      await apply.focus();
+      await expect(apply).toBeFocused();
+      await expect(apply).toHaveCSS("outline-style", "solid");
+    });
+  }
+}

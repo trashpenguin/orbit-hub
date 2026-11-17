@@ -210,7 +210,7 @@ function DeviceShelf({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
   const track = useRef<HTMLUListElement>(null);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   const [state, setState] = useState({ index: 0, overflow: false, start: true, end: true });
-  const devices = snapshot.devices;
+  const devices = [...snapshot.devices].sort((a, b) => Number(b.selected) - Number(a.selected));
   const count = devices.length + 1;
   const rtl = typeof document !== "undefined" && document.documentElement.dir === "rtl";
 
@@ -392,10 +392,10 @@ export function DevicesHome({ snapshot }: { snapshot: ControlSnapshot }): ReactN
           <h1>{t(locale, "nav.devices")}</h1>
           <p className="om-meta">{t(locale, hasDevices ? "home.subtitle" : "empty.title")}</p>
         </div>
-        <a className="om-btn" href={import.meta.env.BASE_URL + "?demo=1"}>{t(locale, "demo.try")}</a>
       </header>
       <ConnectionIssueNotice snapshot={snapshot} />
       <DeviceShelf snapshot={snapshot} />
+      {!hasDevices ? <a className="om-home-demo" href={import.meta.env.BASE_URL + "?demo=1"}>{t(locale, "demo.try")}</a> : null}
     </div>
   );
 }

@@ -151,11 +151,10 @@ a.news-banner-link:hover { text-decoration-color: var(--text-2); }
 .news-banner-dismiss:hover { background: var(--glint); color: var(--text-1); }
 
 .apply-bar {
-  position: absolute; z-index: 30;
-  inset-inline: 0; bottom: 20px;
+  flex: none;
   width: min(680px, calc(100% - 48px));
-  margin-inline: auto;
-  display: flex; align-items: center; gap: 14px;
+  margin: 8px auto;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
   padding: 10px 10px 10px 16px;
   border-radius: var(--r-md);
   background: var(--solid-2);
@@ -165,18 +164,19 @@ a.news-banner-link:hover { text-decoration-color: var(--text-2); }
 .apply-bar-label { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; font-weight: 600; }
 .apply-bar-label svg { width: 17px; height: 17px; color: var(--accent); }
 .apply-bar-summary { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-3); font-size: var(--fs-meta); font-style: normal; font-weight: 500; }
-.apply-bar-actions { display: flex; gap: 6px; flex: none; }
+.apply-bar-status { order: 1; flex-basis: 100%; color: var(--text-2); overflow-wrap: anywhere; }
+.apply-bar-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .apply-bar-revert, .apply-bar-apply {
-  height: 32px; padding-inline: 14px;
+  min-height: 36px; padding-inline: 14px;
   border-radius: var(--r-sm);
   font-size: 12.5px; font-weight: 600;
 }
 .apply-bar-revert { color: var(--text-2); }
-.apply-bar-revert:hover:not(:disabled) { background: var(--glint); color: var(--text-1); }
+.apply-bar-revert:hover:not([aria-disabled="true"]) { background: var(--glint); color: var(--text-1); }
 .apply-bar-apply { background: var(--accent); color: var(--on-accent); box-shadow: var(--primary-shadow); }
-.apply-bar-apply:hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 88%, white); }
+.apply-bar-apply:hover:not([aria-disabled="true"]) { background: color-mix(in srgb, var(--accent) 88%, white); }
 .apply-bar.is-applying .apply-bar-apply { opacity: 0.7; }
-.has-pending-changes .om-page { padding-bottom: 140px; }
+.apply-bar button:focus-visible { outline: 2px solid var(--text-1); outline-offset: 2px; }
 
 @keyframes om-rise {
   from { opacity: 0; transform: translateY(8px); }
