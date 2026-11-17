@@ -3,10 +3,8 @@ import { PROJECT_URL } from "../shared/project-links";
 import { displayText, t } from "../i18n/index";
 import {
   Activity,
-  BookOpen,
   Gamepad2,
   LayoutGrid,
-  Megaphone,
   Settings as SettingsIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -25,36 +23,18 @@ const NavItem = memo(function NavItem({
   icon: Icon,
   label,
   active = false,
-  external = false,
-  href,
   onClick,
 }: {
   icon: LucideIcon;
   label: string;
   active?: boolean;
-  external?: boolean;
-  href?: string;
-  onClick?: () => void;
+  onClick: () => void;
 }): ReactNode {
-  const body = (
-    <>
+  const className = `om-nav-item${active ? " is-active" : ""}`;
+  return (
+    <button className={className} title={label} aria-current={active ? "page" : undefined} type="button" onClick={onClick}>
       <Icon className="om-nav-icon" strokeWidth={1.8} aria-hidden="true" />
       <span className="om-nav-label">{label}</span>
-      {external ? <span className="om-nav-ext" aria-hidden="true">↗</span> : null}
-    </>
-  );
-  const className = `om-nav-item${active ? " is-active" : ""}`;
-  const title = label;
-  if (href) {
-    return (
-      <a className={className} title={title} href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined}>
-        {body}
-      </a>
-    );
-  }
-  return (
-    <button className={className} title={title} aria-current={active ? "page" : undefined} type="button" onClick={onClick}>
-      {body}
     </button>
   );
 });
@@ -146,13 +126,11 @@ export function AppHeader({
   snapshot,
   page,
   onNavigate,
-  onOpenWhatsNew,
   onOpenDevice,
 }: {
   snapshot: ControlSnapshot;
   page: DesktopPage;
   onNavigate: (page: DesktopPage) => void;
-  onOpenWhatsNew: () => void;
   onOpenDevice: (index: number) => void;
 }): ReactNode {
   const locale = snapshot.preferences.locale;
@@ -180,11 +158,9 @@ export function AppHeader({
           <NavItem icon={SettingsIcon} label={t(locale, "nav.settings")} active={page === "settings"} onClick={goSettings} />
         </nav>
 
-        <nav className="om-nav orbit-utility-nav" aria-label={t(locale, "nav.more")}>
-          <NavItem icon={BookOpen} label={t(locale, "nav.docs")} href={PROJECT_URL + "#readme"} external />
-          <NavItem icon={Megaphone} label={t(locale, "nav.whatsNew")} onClick={onOpenWhatsNew} />
+        <div className="orbit-toolbar-bridge">
           <BridgeStatusButton locale={locale} />
-        </nav>
+        </div>
       </div>
 
       {devices.length > 0 ? (

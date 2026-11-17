@@ -29,8 +29,6 @@ const CaptureDialog = lazy(() =>
   import("../features/capture/CaptureDialog").then((m) => ({ default: m.CaptureDialog })));
 const ShareProfileDialog = lazy(() =>
   import("../features/profiles/ShareProfileDialog").then((m) => ({ default: m.ShareProfileDialog })));
-const WhatsNewDialog = lazy(() =>
-  import("../features/news/WhatsNewDialog").then((m) => ({ default: m.WhatsNewDialog })));
 
 export function App(): ReactNode {
   const snapshot = useControl();
@@ -39,7 +37,6 @@ export function App(): ReactNode {
   const panel = useRef<HTMLDivElement>(null);
   const [captureOpen, setCaptureOpen] = useState(false);
   const [shareProfileOpen, setShareProfileOpen] = useState(false);
-  const [whatsNewOpen, setWhatsNewOpen] = useState(false);
   const [page, setPage] = useState<DesktopPage>("home");
   const { preferences, status } = snapshot;
   const locale = preferences.locale;
@@ -136,10 +133,6 @@ export function App(): ReactNode {
     void control.openDeviceOverview(index);
   }, []);
 
-  const openWhatsNew = useCallback((): void => {
-    setWhatsNewOpen(true);
-  }, []);
-
   return (
     <UiLocaleContext.Provider value={locale}>
     <div
@@ -156,7 +149,6 @@ export function App(): ReactNode {
         snapshot={snapshot}
         page={resolvedPage}
         onNavigate={navigate}
-        onOpenWhatsNew={openWhatsNew}
         onOpenDevice={openDevice}
       />
 
@@ -189,11 +181,6 @@ export function App(): ReactNode {
       {captureOpen ? (
         <Suspense fallback={null}>
           <CaptureDialog open onClose={() => setCaptureOpen(false)} locale={locale} />
-        </Suspense>
-      ) : null}
-      {whatsNewOpen ? (
-        <Suspense fallback={null}>
-          <WhatsNewDialog open onClose={() => setWhatsNewOpen(false)} locale={locale} />
         </Suspense>
       ) : null}
       {shareProfileOpen ? (

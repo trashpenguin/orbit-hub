@@ -41,9 +41,7 @@ html, body { background: var(--ink-1); }
 .orbit-primary-nav .om-nav-item.is-active { background: var(--accent-soft); color: var(--text-1); }
 .om-nav-icon { width: var(--nav-icon); height: var(--nav-icon); color: var(--text-3); }
 .om-nav-item.is-active .om-nav-icon { color: var(--accent); }
-.orbit-utility-nav { justify-self: end; }
-.orbit-utility-nav .om-nav-item { width: 36px; min-height: 36px; padding: 0; justify-content: center; }
-.orbit-utility-nav :is(.om-nav-label, .om-nav-ext) { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); }
+.orbit-toolbar-bridge { justify-self: end; }
 .orbit-device-strip {
   display: flex; align-items: center; gap: 14px;
   min-width: 0;
