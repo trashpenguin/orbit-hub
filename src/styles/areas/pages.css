@@ -252,3 +252,37 @@
   .games-needs-bridge { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
   .games-needs-bridge > .om-btn { grid-column: 2; justify-self: start; }
 }
+
+.orbit-activity-lab {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 16px;
+  padding: clamp(12px, 3vw, 20px);
+  margin-block-end: 16px;
+}
+.orbit-activity-lab h2 { margin: 0 0 4px; font-size: 1.05rem; }
+.orbit-activity-lab p { margin: 0; }
+.orbit-activity-target {
+  grid-column: 1 / -1;
+  display: grid;
+  min-height: 100px;
+  place-items: center;
+  padding: 12px;
+  text-align: center;
+  border: 1px dashed var(--line-2);
+  border-radius: 8px;
+}
+.orbit-activity-results {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin: 0;
+}
+.orbit-activity-results dt { color: var(--text-2); }
+.orbit-activity-results dd { margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) {
+  .orbit-activity-lab { grid-template-columns: minmax(0, 1fr); }
+  .orbit-activity-lab > button { justify-self: start; }
+}

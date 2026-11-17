@@ -126,3 +126,29 @@ test("the Bridge release check can retry and the panel returns keyboard focus", 
   await expect(panel).toBeHidden();
   await expect(trigger).toBeFocused();
 });
+
+test("the mouse activity lab samples browser events without a connected device", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("./");
+  await page.getByRole("banner").getByRole("button", { name: "Hardware test" }).click();
+  const lab = page.locator(".orbit-activity-lab");
+  await lab.getByRole("button", { name: "Start sample" }).click();
+  const target = lab.locator(".orbit-activity-target");
+  await expect(target.getByText("Sampling mouse activity…")).toBeVisible();
+  await target.evaluate((element) => {
+    for (const time of [10, 20, 30]) {
+      const movement = new PointerEvent("pointermove", { bubbles: true, pointerType: "mouse" });
+      Object.defineProperty(movement, "timeStamp", { value: time });
+      element.dispatchEvent(movement);
+    }
+  });
+  await target.dispatchEvent("pointerdown", { pointerType: "mouse", button: 0 });
+  await target.dispatchEvent("pointerdown", { pointerType: "mouse", button: 2 });
+  await target.dispatchEvent("wheel", { deltaY: 120 });
+  await page.clock.runFor(5_100);
+  const stats = lab.locator(".orbit-activity-results");
+  await expect(stats.getByText("100 Hz", { exact: true })).toBeVisible();
+  await expect(stats.getByText("Button presses").locator("..").locator("dd")).toHaveText("2");
+  await expect(stats.getByText("Scroll events").locator("..").locator("dd")).toHaveText("1");
+  await expect(lab.getByRole("button", { name: "Start sample" })).toBeEnabled();
+});

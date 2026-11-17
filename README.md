@@ -15,7 +15,7 @@ Orbit Hub is a browser-based control panel for supported mice and keyboards. Tun
 | Mouse tuning | Adjust DPI, polling rate, sensor settings, button mappings, and lighting where supported. |
 | Keyboard tuning | Configure keymaps, lighting, and model-specific settings on supported keyboards. |
 | Profiles | Manage onboard profiles where supported and share device setups. |
-| Diagnostics | Run hardware tests and download reports for troubleshooting. |
+| Diagnostics | Sample mouse activity without connecting a device, or run hardware tests and download reports. |
 
 Available controls vary by device and connection type. See the [Orbit Hub device compatibility guide](docs/device-compatibility.md). Existing profiles and backups from the original Logitech app can still be opened in the [legacy workspace](LEGACY.md).
 
