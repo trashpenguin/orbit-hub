@@ -53,7 +53,7 @@ import {
   pickSnapshot,
   type GameProfileSnapshot,
 } from "./game-profile-snapshot";
-import { deviceImage } from "../shared/device-images";
+import { deviceImage, saveMouseArtworkChoice } from "../shared/device-images";
 import { batteryNeedsCharging } from "../shared/battery-icon";
 import {
   isVxeR1SePlusReceiver,
@@ -524,17 +524,15 @@ function buildProfileView(): ProfileView {
   return gameProfileDraft ? { ...view, entry: null, slotsAvailable: false, bunnyHopSupported: false } : view;
 }
 
-let artworkKey: string | null = null;
-let artworkValue: string | null = null;
-
 function deviceArtwork(status: MouseStatus | null): string | null {
   if (!status) return null;
-  const key = `${activeDevice?.vendorId ?? 0}:${activeDevice?.productId ?? 0}:${status.name}`;
-  if (key !== artworkKey) {
-    artworkKey = key;
-    artworkValue = deviceImage(activeDevice, status.name);
-  }
-  return artworkValue;
+  const device = activeDevice ?? sidebarDevices.find((entry) => entry.selected);
+  return deviceImage(device, status.name);
+}
+
+export function setMouseArtwork(device: Pick<HIDDevice, "vendorId" | "productId">, name: string, choice: string): void {
+  saveMouseArtworkChoice(device, name, choice);
+  emit();
 }
 
 /** Keyboard view for the snapshot; null unless a keyboard is active and identified. */

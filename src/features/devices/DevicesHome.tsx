@@ -5,6 +5,7 @@ import * as control from "../../device/controller";
 import type { ControlSnapshot, SidebarDevice } from "../../device/types";
 import { deviceImage, deviceImageFilename, placeholderImage, showcaseDeviceImageUrls } from "../../shared/device-images";
 import { DeviceStats } from "./DeviceStats";
+import { ArtworkPicker } from "./ArtworkPicker";
 
 const SHOWCASE_IMAGES = showcaseDeviceImageUrls();
 const SHOWCASE_INTERVAL_MS = 3800;
@@ -41,7 +42,7 @@ function useConnect(snapshot: ControlSnapshot): { busy: boolean; disabled: boole
 }
 
 function DeviceArt({ device }: { device: SidebarDevice }): ReactNode {
-  const src = deviceImage({ vendorId: device.vendorId, productId: device.productId } as HIDDevice, device.name, device.kind);
+  const src = deviceImage(device, device.name, device.kind);
   const file = deviceImageFilename(device.name);
   const portrait = file === "noir-m2-nex.png" || file === "noir-s1.png" || file === "noir-e1.png";
   return (
@@ -139,7 +140,7 @@ function DeviceBlock({ snapshot, device }: { snapshot: ControlSnapshot; device: 
   const locale = snapshot.preferences.locale;
   const live = device.selected && (snapshot.deviceStatus !== null || snapshot.keyboard !== null);
   const status = live ? snapshot.deviceStatus : null;
-  const brand = status?.brand ?? null;
+  const brand = /^attack[\s-]*shark\b/i.test(device.name) ? "Attack Shark" : status?.brand ?? null;
   const open = (): void => void control.openDeviceOverview(device.index);
   return (
     <article className={`om-device-block${live ? " is-live" : ""}`}>
@@ -171,6 +172,7 @@ function DeviceBlock({ snapshot, device }: { snapshot: ControlSnapshot; device: 
       <span className="om-device-block-art">
         <DeviceArt device={device} />
       </span>
+      {device.kind === "mouse" ? <ArtworkPicker device={device} name={device.name} locale={locale} /> : null}
       <span className={`om-btn${live ? " is-primary" : ""} om-device-block-action`} aria-hidden="true">
         {t(locale, live ? "home.configure" : "home.open")}
       </span>

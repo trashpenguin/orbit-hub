@@ -284,7 +284,7 @@ export function DeviceShowcaseSidebar({ snapshot }: { snapshot: ControlSnapshot 
       </div>
       <div className="showcase-sidebar-info">
         <h2 className="showcase-sidebar-name">{status.name}</h2>
-        <p className="showcase-sidebar-brand">{displayText(locale, noirBrandLabel(status))}</p>
+        <p className="showcase-sidebar-brand">{displayText(locale, (/^attack[\s-]*shark\b/i.test(status.name) ? "Attack Shark" : noirBrandLabel(status)))}</p>
       </div>
       <div className="showcase-sidebar-status">
         <span className="device-showcase-dot" aria-hidden="true" />

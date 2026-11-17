@@ -22,7 +22,7 @@
 
 const filenameCache = new Map<string, string>();
 
-function resolveDeviceImageFilename(_device: HIDDevice | null | undefined, displayName = ""): string {
+function resolveDeviceImageFilename(_device: ArtworkDevice | null | undefined, displayName = ""): string {
   const cached = filenameCache.get(displayName);
   if (cached !== undefined) return cached;
   const resolved = computeDeviceImageFilename(displayName);
@@ -245,12 +245,56 @@ function imageUrl(filename: string): string {
   return local ? (import.meta.env?.BASE_URL ?? "/") + local.slice(1) : DEVICE_IMAGE_BASE_URL + filename;
 }
 
+export const ATTACK_SHARK_ARTWORK = [
+  { file: "attackshark-v5.webp", label: "Attack Shark V5", color: "artreq.black" },
+  { file: "attackshark-v5-white.webp", label: "Attack Shark V5", color: "artreq.white" },
+  { file: "attackshark-x11.webp", label: "Attack Shark X11" },
+  { file: "attackshark-x11-se.webp", label: "Attack Shark X11 SE" },
+] as const;
+
+type ArtworkDevice = Pick<HIDDevice, "vendorId" | "productId">;
+const artworkPreferences = new Map<string, string>();
+
+export function canChooseMouseArtwork(name: string): boolean {
+  return /^attack[\s-]*shark(?:\s+(?:wireless\s+)?(?:gaming\s+)?mouse)?$/i.test(name.trim());
+}
+
+function artworkPreferenceKey(device: ArtworkDevice): string {
+  return "orbit-device-artwork:" + device.vendorId + ":" + device.productId;
+}
+
+export function mouseArtworkChoice(device: ArtworkDevice, name: string): string {
+  if (!canChooseMouseArtwork(name)) return "";
+  const key = artworkPreferenceKey(device);
+  if (artworkPreferences.has(key)) return artworkPreferences.get(key) ?? "";
+  let value = "";
+  try {
+    const saved = globalThis.localStorage?.getItem(key);
+    if (ATTACK_SHARK_ARTWORK.some(({ file }) => file === saved)) value = saved ?? "";
+  } catch {
+  }
+  artworkPreferences.set(key, value);
+  return value;
+}
+
+export function saveMouseArtworkChoice(device: ArtworkDevice, name: string, choice: string): void {
+  if (!canChooseMouseArtwork(name) || (choice && !ATTACK_SHARK_ARTWORK.some(({ file }) => file === choice))) return;
+  const key = artworkPreferenceKey(device);
+  artworkPreferences.set(key, choice);
+  try {
+    if (choice) globalThis.localStorage?.setItem(key, choice);
+    else globalThis.localStorage?.removeItem(key);
+  } catch {
+  }
+}
+
 export function deviceImage(
-  device: HIDDevice | null | undefined,
+  device: ArtworkDevice | null | undefined,
   displayName = "",
   kind: DeviceImageKind = "mouse",
 ): string {
-  return imageUrl(withPlaceholder(resolveDeviceImageFilename(device, displayName), displayName, kind));
+  const choice = device && kind === "mouse" ? mouseArtworkChoice(device, displayName) : "";
+  return imageUrl(choice || withPlaceholder(resolveDeviceImageFilename(device, displayName), displayName, kind));
 }
 
 /** The placeholder an image falls back to when its own art fails to load. */
@@ -278,6 +322,7 @@ export function showcaseDeviceImageUrls(): readonly string[] {
 export const UNKNOWN_DEVICE_FILENAME = "unknown-device.png";
 export const UNKNOWN_KEYBOARD_FILENAME = "unknown-keyboard.png";
 
-export function isUnknownDevice(device: HIDDevice | null | undefined, displayName = ""): boolean {
-  return resolveDeviceImageFilename(device, displayName) === UNKNOWN_DEVICE_FILENAME;
+export function isUnknownDevice(device: ArtworkDevice | null | undefined, displayName = ""): boolean {
+  return !(device && mouseArtworkChoice(device, displayName))
+    && resolveDeviceImageFilename(device, displayName) === UNKNOWN_DEVICE_FILENAME;
 }

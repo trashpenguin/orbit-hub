@@ -6,6 +6,7 @@ import { cachedBatterySamples, type BatterySample } from "./battery-history";
 import type { ControlSnapshot, WorkspaceTab } from "../../device/types";
 import { deviceImage, isUnknownDevice, placeholderImage } from "../../shared/device-images";
 import { ConnectionIcon } from "./DeviceStats";
+import { ArtworkPicker } from "./ArtworkPicker";
 
 import { PROJECT_ISSUES_URL } from "../../shared/project-links";
 
@@ -28,14 +29,12 @@ export function DeviceHero({
   const [imageFailed, setImageFailed] = useState(false);
   const active = control.getActiveDevice();
   const activeEntry = snapshot.devices.find((device) => device.selected) ?? null;
+  const artworkDevice = active ?? activeEntry;
   const name = status?.name ?? keyboard?.name ?? activeEntry?.name ?? "";
   // A keyboard with no render of its own gets the keyboard placeholder, never the mouse one.
   const image = snapshot.deviceArtwork
     ?? (keyboard ? deviceImage({ vendorId: keyboard.vendorId, productId: keyboard.productId } as HIDDevice, keyboard.name, "keyboard") : null);
-  const needsArtwork = Boolean(status && active && (imageFailed || isUnknownDevice(
-    { vendorId: active.vendorId, productId: active.productId } as HIDDevice,
-    status.name,
-  )));
+  const needsArtwork = Boolean(status && artworkDevice && (imageFailed || isUnknownDevice(artworkDevice, status.name)));
   const artworkHref = `${PROJECT_ISSUES_URL + "/new"}${name ? `?title=${encodeURIComponent(`Artwork request: ${name}`)}` : ""}`;
 
   const onTabKey = (event: KeyboardEvent<HTMLButtonElement>, current: WorkspaceTab): void => {
@@ -87,6 +86,7 @@ export function DeviceHero({
             />
           </div>
         ) : null}
+        {status && artworkDevice ? <ArtworkPicker device={artworkDevice} name={status.name} locale={locale} /> : null}
         {needsArtwork ? (
           <a className="om-btn is-ghost is-sm om-device-artreq" href={artworkHref} target="_blank" rel="noopener noreferrer">
             <ImageUp strokeWidth={1.9} aria-hidden="true" />

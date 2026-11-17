@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { deviceImage, isUnknownDevice, placeholderImage, showcaseDeviceImageUrls } from "./device-images.ts";
+import { deviceImage, isUnknownDevice, placeholderImage, saveMouseArtworkChoice, showcaseDeviceImageUrls } from "./device-images.ts";
 
 const CDN = "https://img.openmouse.app/";
 
@@ -390,4 +390,20 @@ test("Attack Shark V5 variants resolve independently of the R5 Ultra", () => {
   assert.equal(deviceImage(null, "Attack Shark V5 Wireless Mouse White"), "/devices/attackshark-v5-white.webp");
   assert.equal(deviceImage(null, "Attack Shark V50"), CDN + "unknown-device.png");
   assert.equal(deviceImage(null, "Attack Shark X11 Pro V2"), CDN + "unknown-device.png");
+});
+
+test("a generic Attack Shark name can use saved artwork for its device IDs", () => {
+  const name = "ATTACK SHARK Mouse";
+  const first = dev(17, 25);
+  const second = dev(17, 26);
+  assert.equal(isUnknownDevice(first, name), true);
+  saveMouseArtworkChoice(first, name, "attackshark-v5.webp");
+  assert.equal(deviceImage(first, name), "/devices/attackshark-v5.webp");
+  assert.equal(isUnknownDevice(first, name), false);
+  assert.equal(isUnknownDevice(second, name), true);
+  assert.equal(deviceImage(first, "Attack Shark X11"), "/devices/attackshark-x11.webp");
+  saveMouseArtworkChoice(first, name, "invalid.webp");
+  assert.equal(deviceImage(first, name), "/devices/attackshark-v5.webp");
+  saveMouseArtworkChoice(first, name, "");
+  assert.equal(isUnknownDevice(first, name), true);
 });

@@ -42,12 +42,14 @@ const NavItem = memo(function NavItem({
 const DeviceStripRow = memo(function DeviceStripRow({
   device,
   live,
+  image,
   batteryPercent,
   batteryState,
   open,
 }: {
   device: SidebarDevice;
   live: boolean;
+  image: string;
   batteryPercent: number | null;
   batteryState: MouseStatus["batteryState"];
   open: (index: number) => void;
@@ -56,7 +58,6 @@ const DeviceStripRow = memo(function DeviceStripRow({
   localeTableRevision: number;
 }): ReactNode {
   const locale = useUiLocale();
-  const image = deviceImage({ vendorId: device.vendorId, productId: device.productId } as HIDDevice, device.name, device.kind);
   const openDevice = useCallback(() => open(device.index), [open, device.index]);
   return (
     <li>
@@ -113,6 +114,7 @@ function DeviceStripRowOutlet({
   return (
     <DeviceStripRow
       device={device}
+      image={deviceImage(device, device.name, device.kind)}
       live={live}
       batteryPercent={status?.batteryPercent ?? null}
       batteryState={status?.batteryState ?? "Unknown"}

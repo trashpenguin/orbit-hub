@@ -1,5 +1,5 @@
 .page:has(> .om-home) { display: grid; min-height: 100%; }
-.om-home { max-width: 1720px; gap: 22px; grid-template-rows: auto 1fr; padding-bottom: 48px; }
+.om-home { gap: 22px; grid-template-rows: auto 1fr; padding-bottom: 48px; }
 .om-home > .om-shelf { align-content: start; }
 
 .om-shelf { position: relative; display: grid; gap: 14px; min-width: 0; }
@@ -70,12 +70,14 @@
 }
 .om-device-block-hit:focus-visible { outline: 2px solid var(--accent-line); outline-offset: 2px; }
 .om-device-block > :not(.om-device-block-hit) { position: relative; z-index: 1; pointer-events: none; }
-.om-device-block > :is(.om-device-block-top, button.om-device-block-action) { pointer-events: auto; }
+.om-device-block > :is(.om-device-block-top, button.om-device-block-action, .orbit-artwork-picker) { pointer-events: auto; }
 .om-device-block-top > :not(.om-device-menu) { pointer-events: none; }
 
-.om-device-block-top { display: flex; align-items: center; gap: 8px; min-height: 28px; }
+.om-device-block-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 8px; align-items: start; min-height: 28px; }
+.om-device-block-top > .om-badge { grid-column: 1; grid-row: 2; justify-self: start; }
+.om-device-block-top > .om-device-menu { grid-column: 2; grid-row: 1 / span 2; }
 .om-device-block > .om-device-block-top { z-index: 3; }
-.om-device-block-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 650; letter-spacing: -0.015em; }
+.om-device-block-name { min-width: 0; overflow-wrap: anywhere; font-size: 16px; font-weight: 650; letter-spacing: -0.015em; }
 .om-device-block-meta { color: var(--text-3); font-size: var(--fs-meta); }
 .om-device-block .om-stats { min-height: 20px; }
 
