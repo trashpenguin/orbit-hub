@@ -31,6 +31,10 @@ On Windows the configuration directory is `%APPDATA%\OpenMouse\OpenMouse Bridge\
 
 To update an older companion, quit it, install the current package for your platform from the releases above, and launch it again. The release page also has the changelog and platform-specific installation details.
 
+## Back up mouse settings
+
+Open **Settings > Profile key** and select **Download profile backup** while a mouse is connected. On the same model, open that file, review the loaded key, and choose **Import**. With Instant flash enabled, importing can write settings to the mouse immediately. The backup contains the settings supported by profile keys.
+
 ## Development
 
 Use Node.js 24.

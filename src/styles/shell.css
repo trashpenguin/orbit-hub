@@ -113,8 +113,8 @@ html, body { background: var(--ink-1); }
 .om-bridge-pop-body { color: var(--text-2); font-size: var(--fs-meta); line-height: 1.55; }
 .om-bridge-pop-facts { padding: 0; font-size: var(--fs-meta); }
 .om-bridge-pop-facts bdi { unicode-bidi: isolate; direction: ltr; }
-.om-bridge-pop-foot { display: flex; }
-.om-bridge-pop-foot .om-btn { width: 100%; justify-content: center; }
+.om-bridge-pop-foot { display: flex; gap: 8px; flex-wrap: wrap; }
+.om-bridge-pop-foot .om-btn { flex: 1 0 max-content; justify-content: center; }
 @keyframes om-pop-in { from { opacity: 0; transform: translateY(4px); } }
 .reduce-interface-motion .om-bridge-pop { animation: none; }
 @media (prefers-reduced-motion: reduce) { .om-bridge-pop { animation: none; } }

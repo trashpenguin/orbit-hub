@@ -5,7 +5,7 @@ import type { BridgeStatus } from "./bridge";
 import { displayText, t } from "../../i18n/index";
 import type { InterfaceLocale } from "../settings/interface-preferences";
 import { BRIDGE_SETUP_URL } from "../../shared/project-links";
-import { latestRelease } from "./updates";
+import { compareVersions, latestRelease } from "./updates";
 import { useBridgeActive } from "../games/GamesPage";
 
 export const BRIDGE_REPOSITORY = "OpenMouse-Project/OpenMouse-Bridge";
@@ -17,29 +17,34 @@ function useBridgeStatus(active: boolean): BridgeStatus | null {
   return status;
 }
 
-function useLatestBridge(enabled: boolean): string | null | undefined {
-  const [latest, setLatest] = useState<string | null | undefined>(undefined);
-  useEffect(() => {
-    if (!enabled || latest !== undefined) return;
-    const controller = new AbortController();
-    latestRelease(BRIDGE_REPOSITORY, controller.signal)
-      .then((release) => setLatest(release?.version ?? null))
-      .catch(() => setLatest(null));
-    return () => controller.abort();
-  }, [enabled]);
-  return latest;
-}
-
 export function BridgeStatusButton({ locale }: { locale: InterfaceLocale }): ReactNode {
   const active = useBridgeActive();
   const status = useBridgeStatus(active);
   const [open, setOpen] = useState(false);
-  const latest = useLatestBridge(open);
+  const [latest, setLatest] = useState<string | null | undefined>(undefined);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const close = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open || latest !== undefined) return;
+    const controller = new AbortController();
+    setFailed(false);
+    void latestRelease(BRIDGE_REPOSITORY, controller.signal)
+      .then((release) => {
+        if (!controller.signal.aborted) setLatest(release?.version ?? null);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setFailed(true);
+      });
+    return () => controller.abort();
+  }, [open, attempt, latest]);
 
   useEffect(() => {
     if (!open) return;
+    close.current?.focus();
     const key = (event: KeyboardEvent): void => {
       if (event.key === "Escape") {
         setOpen(false);
@@ -58,7 +63,7 @@ export function BridgeStatusButton({ locale }: { locale: InterfaceLocale }): Rea
   }, [open]);
 
   const label = t(locale, active ? "bridge.statusOn" : "bridge.statusOff");
-  const outdated = Boolean(status?.version && latest && status.version !== latest);
+  const outdated = Boolean(status?.version && latest && compareVersions(status.version, latest) === "update-available");
 
   return (
     <div className="om-bridge" ref={root}>
@@ -79,7 +84,10 @@ export function BridgeStatusButton({ locale }: { locale: InterfaceLocale }): Rea
           <header className="om-bridge-pop-head">
             <span className={`om-dot${active ? " is-ok" : ""}`} aria-hidden="true" />
             <h2 id="om-bridge-pop-title">{t(locale, "bridge.title")}</h2>
-            <button type="button" className="om-icon-btn" aria-label={t(locale, "common.close")} onClick={() => setOpen(false)}>
+            <button ref={close} type="button" className="om-icon-btn" aria-label={t(locale, "common.close")} onClick={() => {
+              setOpen(false);
+              trigger.current?.focus();
+            }}>
               <X strokeWidth={2} aria-hidden="true" />
             </button>
           </header>
@@ -97,10 +105,16 @@ export function BridgeStatusButton({ locale }: { locale: InterfaceLocale }): Rea
             ) : null}
             <li>
               <span>{t(locale, "bridge.latest")}</span>
-              <span><bdi>{latest === undefined ? "…" : latest ?? "–"}</bdi></span>
+              <span aria-live="polite">
+                {failed ? t(locale, "bridge.releaseUnavailable") : <bdi>{latest === undefined ? "…" : latest ?? "–"}</bdi>}
+              </span>
             </li>
           </ul>
           <footer className="om-bridge-pop-foot">
+            {failed ? <button type="button" className="om-btn" onClick={() => {
+              close.current?.focus();
+              setAttempt((value) => value + 1);
+            }}>{t(locale, "set.retry")}</button> : null}
             <a className={`om-btn${active && !outdated ? "" : " is-primary"}`} href={BRIDGE_SETUP_URL} target="_blank" rel="noreferrer">
               <ExternalLink strokeWidth={1.9} aria-hidden="true" />
               {t(locale, "nav.docs")}

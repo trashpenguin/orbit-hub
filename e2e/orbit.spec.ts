@@ -90,3 +90,39 @@ test("the mouse demo applies simulated settings without contacting hardware or B
   await expect(page.getByRole("status").filter({ hasText: /Applied in demo.*1600/ })).toBeVisible();
   expect(bridgeRequests).toEqual([]);
 });
+
+test("a profile backup loads into the review field and rejects an invalid file", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("banner").getByRole("button", { name: "Settings" }).click();
+  await page.getByRole("button", { name: "Profile key", exact: true }).click();
+  const input = page.getByLabel("Open profile backup");
+  const review = page.getByLabel("Import a key");
+  const key = "OMK1:" + Buffer.from(JSON.stringify({ v: 1, brand: "Pulsar", name: "Fixture", dpi: 800 })).toString("base64");
+  await input.setInputFiles({ name: "orbit-hub-profile.txt", mimeType: "text/plain", buffer: Buffer.from(key) });
+  await expect(review).toHaveValue(key);
+  await expect(page.getByRole("button", { name: "Import", exact: true })).toBeDisabled();
+  await input.setInputFiles({ name: "bad.txt", mimeType: "text/plain", buffer: Buffer.from("invalid") });
+  await expect(page.getByRole("alert").filter({ hasText: "This profile backup could not be read." })).toBeVisible();
+  await expect(review).toHaveValue("");
+});
+
+test("the Bridge release check can retry and the panel returns keyboard focus", async ({ page }) => {
+  let attempts = 0;
+  await page.route("https://api.github.com/repos/OpenMouse-Project/OpenMouse-Bridge/releases/latest", async (route) => {
+    attempts++;
+    await route.fulfill(attempts === 1 ? { status: 503 } : {
+      json: { tag_name: "v1.2.3", name: "Bridge", body: "", html_url: "", published_at: "", assets: [] },
+    });
+  });
+  await page.goto("./");
+  const trigger = page.getByRole("button", { name: "Bridge not running" });
+  await trigger.click();
+  const panel = page.getByRole("dialog", { name: "Bridge" });
+  await expect(panel.getByRole("button", { name: "Close" })).toBeFocused();
+  await expect(panel.getByText("Release check unavailable")).toBeVisible();
+  await panel.getByRole("button", { name: "Retry" }).click();
+  await expect(panel.getByText("1.2.3", { exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(panel).toBeHidden();
+  await expect(trigger).toBeFocused();
+});
