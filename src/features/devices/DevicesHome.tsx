@@ -392,6 +392,7 @@ export function DevicesHome({ snapshot }: { snapshot: ControlSnapshot }): ReactN
           <h1>{t(locale, "nav.devices")}</h1>
           <p className="om-meta">{t(locale, hasDevices ? "home.subtitle" : "empty.title")}</p>
         </div>
+        <a className="om-btn" href={import.meta.env.BASE_URL + "?demo=1"}>{t(locale, "demo.try")}</a>
       </header>
       <ConnectionIssueNotice snapshot={snapshot} />
       <DeviceShelf snapshot={snapshot} />

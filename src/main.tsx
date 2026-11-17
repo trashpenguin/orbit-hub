@@ -31,29 +31,35 @@ mountOfflineBanner();
 if (import.meta.env.PROD) startSelfXssGuard();
 
 const root = createRoot(controlApp);
-// Prefer Bridge when it is installed: native HID can reach protected mouse
-// collections that Chrome 153+ correctly withholds from WebHID. If Bridge is
-// absent, installation falls back to the browser's own WebHID implementation.
-void installBridgeHid({ force: true }).then(async (hasHid) => {
-  await ensureDisplayLocale(initialUiLocale());
-  const notice = unsupportedNotice({
-    hasWebHid: hasHid,
-    handheld: window.matchMedia("(pointer: coarse) and (hover: none)").matches,
-    secureContext: window.isSecureContext,
-    chromium: isChromium(),
+if (new URLSearchParams(location.search).get("demo") === "1") {
+  void Promise.all([ensureDisplayLocale(initialUiLocale()), import("./app/MouseDemo")]).then(([, { MouseDemo }]) => {
+    root.render(<MouseDemo />);
   });
-  if (notice) {
-    root.render(<UnsupportedNotice notice={notice} />);
-    return;
-  }
-  if (import.meta.env.DEV) {
-    try {
-      const { installKeychronPreview } = await import("./device/preview/keychron-preview");
-      if (!installKeychronPreview(location.search)) return;
-    } catch (error) {
-      console.error("Keychron preview unavailable:", error);
+} else {
+  // Prefer Bridge when it is installed: native HID can reach protected mouse
+  // collections that Chrome 153+ correctly withholds from WebHID. If Bridge is
+  // absent, installation falls back to the browser's own WebHID implementation.
+  void installBridgeHid({ force: true }).then(async (hasHid) => {
+    await ensureDisplayLocale(initialUiLocale());
+    const notice = unsupportedNotice({
+      hasWebHid: hasHid,
+      handheld: window.matchMedia("(pointer: coarse) and (hover: none)").matches,
+      secureContext: window.isSecureContext,
+      chromium: isChromium(),
+    });
+    if (notice) {
+      root.render(<UnsupportedNotice notice={notice} />);
+      return;
     }
-  }
-  start();
-  root.render(<App />);
-});
+    if (import.meta.env.DEV) {
+      try {
+        const { installKeychronPreview } = await import("./device/preview/keychron-preview");
+        if (!installKeychronPreview(location.search)) return;
+      } catch (error) {
+        console.error("Keychron preview unavailable:", error);
+      }
+    }
+    start();
+    root.render(<App />);
+  });
+}

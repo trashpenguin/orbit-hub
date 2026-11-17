@@ -65,3 +65,28 @@ test("device identification failure exports a report with the failed stage", asy
     device: { vendorId: 65535, productId: 65534 },
   });
 });
+
+test("the mouse demo applies simulated settings without contacting hardware or Bridge", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "hid", {
+      get() { throw new Error("The demo accessed WebHID"); },
+      configurable: true,
+    });
+  });
+  const bridgeRequests: string[] = [];
+  const isBridgeUrl = (url: string) => new URL(url).port === "17846";
+  page.on("request", (request) => {
+    if (isBridgeUrl(request.url())) bridgeRequests.push(request.url());
+  });
+  page.on("websocket", (socket) => {
+    if (isBridgeUrl(socket.url())) bridgeRequests.push(socket.url());
+  });
+  await page.goto("./?demo=1");
+  await expect(page.getByRole("heading", { name: "Mouse demo" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Attack Shark V5" })).not.toHaveJSProperty("naturalWidth", 0);
+  await page.getByRole("combobox").first().selectOption("1600");
+  await expect(page.getByRole("status").filter({ hasText: "800" })).toBeVisible();
+  await page.getByRole("button", { name: "Apply changes" }).click();
+  await expect(page.getByRole("status").filter({ hasText: /Applied in demo.*1600/ })).toBeVisible();
+  expect(bridgeRequests).toEqual([]);
+});

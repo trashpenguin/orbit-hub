@@ -2,7 +2,7 @@
 
 Orbit Hub is a browser-based control panel for supported mice and keyboards. Tune your hardware, manage onboard profiles, and run diagnostics from one workspace.
 
-[**Launch Orbit Hub**](https://trashpenguin.github.io/orbit-hub/) · [Report an issue](https://github.com/trashpenguin/orbit-hub/issues) · [Open the legacy Logitech app](https://trashpenguin.github.io/orbit-hub/legacy/)
+[**Launch Orbit Hub**](https://trashpenguin.github.io/orbit-hub/) · [Try the demo](https://trashpenguin.github.io/orbit-hub/?demo=1) · [Report an issue](https://github.com/trashpenguin/orbit-hub/issues) · [Open the legacy Logitech app](https://trashpenguin.github.io/orbit-hub/legacy/)
 
 ## Get started
 
