@@ -120,3 +120,10 @@
   .performance-layout { grid-template-columns: minmax(0, 1fr); }
   .performance-sidebar { position: static; }
 }
+
+@media (max-width: 560px) {
+  .om-device-rail { padding: 14px; gap: 7px 12px; }
+  .om-device-rail:has(.om-device-art) { grid-template-columns: minmax(0, 1fr) 78px; }
+  .om-device-art { width: 78px; height: 84px; }
+  .om-tab { gap: 5px; padding-inline: 7px; }
+}

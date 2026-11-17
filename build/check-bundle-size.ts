@@ -49,7 +49,8 @@ import { join } from "node:path";
 // Orbit Hub makes the game and app request dialog reachable from the Games page.
 // The separate request chunk and its entry point bring the JS total to 3,950,935 bytes.
 export const BUDGET_BYTES: Record<string, number> = {
-  ".css": 170_000,
+  // Responsive toolbars, cards, and settings measured 171,171 bytes.
+  ".css": 172_500,
   ".js": 3_960_000,
 };
 

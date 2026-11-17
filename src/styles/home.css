@@ -205,3 +205,12 @@
     column-gap: 24px;
   }
 }
+
+@media (max-width: 560px) {
+  .om-shelf-track { grid-auto-columns: minmax(0, 100%); }
+  .om-shelf-head { position: static; justify-self: end; }
+  .om-device-block { min-height: 380px; }
+  .om-home.is-empty .is-add { grid-template: auto auto minmax(145px, 1fr) auto / minmax(0, 1fr); gap: 10px; }
+  .om-home.is-empty .is-add .om-device-block-art { grid-area: 3 / 1; min-height: 145px; }
+  .om-home.is-empty .is-add .om-device-block-action { grid-area: 4 / 1; margin-top: 0; }
+}

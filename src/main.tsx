@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import "./platform/analytics";
 import "./styles/index.css";
@@ -10,7 +9,6 @@ import { start } from "./device/controller";
 import { mountOfflineBanner } from "./platform/offline-banner";
 import { registerServiceWorker } from "./platform/register-sw";
 import { startSelfXssGuard } from "./platform/self-xss-guard";
-import { MIN_HEIGHT, MIN_WIDTH, useViewportTooSmall } from "./app/useViewportTooSmall";
 import { ensureDisplayLocale } from "./i18n/index";
 import { initialUiLocale } from "./shared/ui-locale";
 
@@ -31,21 +29,6 @@ function isChromium(): boolean {
 registerServiceWorker();
 mountOfflineBanner();
 if (import.meta.env.PROD) startSelfXssGuard();
-
-function Root(): ReactNode {
-  const tooSmall = useViewportTooSmall();
-  if (tooSmall) {
-    return (
-      <UnsupportedNotice
-        notice={{
-          headline: "Make the window bigger.",
-          detail: `Orbit Hub lays its device controls out side by side and needs at least ${MIN_WIDTH} × ${MIN_HEIGHT} pixels. Resize the window, or move to a larger display.`,
-        }}
-      />
-    );
-  }
-  return <App />;
-}
 
 const root = createRoot(controlApp);
 // Prefer Bridge when it is installed: native HID can reach protected mouse
@@ -72,5 +55,5 @@ void installBridgeHid({ force: true }).then(async (hasHid) => {
     }
   }
   start();
-  root.render(<Root />);
+  root.render(<App />);
 });

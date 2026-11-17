@@ -48,7 +48,7 @@ Run `npm run build`, `npm test` and `npm run size` before finishing; CI runs all
 
 Previews: `?preview=list` opens the device shelf with fixtures, `?preview=<fixture>` opens one
 device (keys in `src/device/preview/preview-modes.ts`, e.g. `egg-op1-v2`, `steelseries-gen2`).
-The app needs a window of at least 900 × 600.
+Verify the app at wide and narrow desktop window sizes. Device access still requires WebHID or the desktop companion.
 
 ## Repo layout
 

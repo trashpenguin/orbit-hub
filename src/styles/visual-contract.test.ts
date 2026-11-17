@@ -32,9 +32,8 @@ test("toolbar, settings index and device geometry match the shared contract", ()
   assert.equal(px("nav-h"), contract.navHeight);
   assert.equal(px("nav-inline"), contract.navInline);
   assert.equal(px("nav-icon"), contract.navIcon);
-  assert.equal(px("page-x"), contract.pageX);
+  assert.equal(root.get("page-x"), contract.pageInset);
   assert.equal(px("page-top"), contract.pageTop);
-  assert.equal(px("content-w"), contract.contentMax);
   assert.equal(px("rail-gap"), contract.railGap);
 });
 

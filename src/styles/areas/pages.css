@@ -247,3 +247,8 @@
   .gamereq-dialog .om-btn, .gamereq-dialog .segmented > button { min-height: 44px; }
   .gamereq-command button, .gamereq-dialog .om-icon-btn { min-width: 44px; min-height: 44px; }
 }
+
+@media (max-width: 470px) {
+  .games-needs-bridge { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
+  .games-needs-bridge > .om-btn { grid-column: 2; justify-self: start; }
+}

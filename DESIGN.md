@@ -35,9 +35,8 @@ Orbit Hub uses a midnight-blue workspace, a warm accent, and an orbital stage fo
 
 ## App layout
 
-- **App bar** (`AppHeader.tsx`): Orbit Hub’s mark, four primary destinations and project utilities share a horizontal toolbar. The toolbar device picker shows the selected device and its battery when available. Its menu lists all authorized devices and their connection states. The Bridge button opens a popover below its trigger.
-- **Main column**: news strip on top, then the scrolling page (`.om-content` > `.om-page`: 36px
-  top and 40px side padding around a content box of at most 1260px). The pending-changes bar floats at the bottom of the main column.
+- **App bar** (`AppHeader.tsx`): Orbit Hub’s mark, four primary destinations and project utilities share a horizontal toolbar. In narrow windows, primary navigation moves below the brand and device actions. The toolbar device picker shows the selected device and its battery when available. Its menu lists all authorized devices and their connection states. The Bridge button opens a popover below its trigger.
+- **Main column**: news strip on top, then the scrolling page (`.om-content` > `.om-page`: 36px top padding and fluid side gutters shared with the toolbar). The pending-changes bar floats at the bottom of the main column.
 - **Devices home** (`features/devices/DevicesHome.tsx`): a swipeable shelf of device blocks, each
   one surface (render on a stage, name, connection badge, live stats with icons, Configure/Open,
   and a ⋯ menu to remove the device) ending in an Add device block with the supported mice
