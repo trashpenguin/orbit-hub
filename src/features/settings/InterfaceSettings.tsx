@@ -6,7 +6,6 @@ import * as control from "../../device/controller";
 import type { ControlSnapshot } from "../../device/types";
 import { LOCALE_NAME_KEYS, t } from "../../i18n/index";
 import { interfaceThemeSlug, type InterfaceTheme } from "./interface-preferences";
-import { PROJECT_URL } from "../../shared/project-links";
 import { OptionMenu, SwitchButton } from "../../shared/ui";
 
 const THEME_ORDER: readonly InterfaceTheme[] = [
@@ -259,14 +258,8 @@ export function InterfaceSettings({ snapshot }: { snapshot: ControlSnapshot }): 
           ) : null}
 
           <SettingsGroup selected={selected} id="settings-about" title={t(locale, "set.groupAbout")}>
-            <SettingRow title={t(locale, "set.version")} description={t(locale, "set.supportBody")}>
+            <SettingRow title={t(locale, "set.version")}>
               <span className="om-badge">{displayText(locale, snapshot.buildLabel)}</span>
-            </SettingRow>
-            <SettingRow title={t(locale, "set.supportTitle")}>
-              <span className="om-about-links">
-                <a className="om-btn is-sm" href={PROJECT_URL + "#readme"} target="_blank" rel="noreferrer">{t(locale, "nav.docs")}</a>
-                <a className="om-btn is-sm" href={PROJECT_URL} target="_blank" rel="noreferrer">{displayText(locale, "GitHub")}</a>
-              </span>
             </SettingRow>
             <SettingRow title={t(locale, "set.reset")} description={t(locale, "set.resetBody")}>
               <button id="reset-interface-settings" className="om-btn is-danger" type="button" onClick={control.resetInterfacePreferences}>

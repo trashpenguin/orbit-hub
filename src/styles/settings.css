@@ -86,7 +86,5 @@
 .preview-launcher-link:hover { background: var(--surface-2); }
 .preview-launcher-link.is-active { box-shadow: var(--row), inset 0 0 0 1px var(--accent-line); }
 
-.om-about-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
-.om-about-links .om-icon-btn svg { width: 16px; height: 16px; }
 
 .setting-row-block > .setting-label:only-child { display: none; }

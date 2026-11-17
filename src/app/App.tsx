@@ -8,7 +8,6 @@ import { OverviewPage } from "../features/devices/OverviewPage";
 import { NewsBanner } from "../features/news/NewsBanner";
 import { BridgeManualUpdate } from "../features/bridge/BridgeManualUpdate";
 import { PendingBar } from "./PendingBar";
-import { HelpPanel } from "./HelpPanel";
 import { ToastHost } from "./Toasts";
 import { useBridgeBatteryReporter } from "../features/bridge/useBridgeBatteryReporter";
 import { useBridgeProfileApplier } from "../features/bridge/useBridgeProfileApplier";
@@ -188,7 +187,6 @@ export function App(): ReactNode {
           <ShareProfileDialog open onClose={() => setShareProfileOpen(false)} snapshot={snapshot} />
         </Suspense>
       ) : null}
-      <HelpPanel locale={locale} />
       <ToastHost />
     </div>
     </UiLocaleContext.Provider>
