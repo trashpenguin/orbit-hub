@@ -3,7 +3,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type
 import * as control from "../device/controller";
 import { ensureDisplayLocale } from "../i18n/index";
 import { interfaceThemeSlug } from "../features/settings/interface-preferences";
-import { AppSidebar, type DesktopPage } from "./AppSidebar";
+import { AppHeader, type DesktopPage } from "./AppHeader";
 import { OverviewPage } from "../features/devices/OverviewPage";
 import { NewsBanner } from "../features/news/NewsBanner";
 import { BridgeManualUpdate } from "../features/bridge/BridgeManualUpdate";
@@ -32,16 +32,6 @@ const ShareProfileDialog = lazy(() =>
 const WhatsNewDialog = lazy(() =>
   import("../features/news/WhatsNewDialog").then((m) => ({ default: m.WhatsNewDialog })));
 
-const SIDEBAR_KEY = "openmouse-sidebar-collapsed-v1";
-
-function initialSidebarCollapsed(): boolean {
-  try {
-    return localStorage.getItem(SIDEBAR_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
 export function App(): ReactNode {
   const snapshot = useControl();
   useBridgeProfileApplier(snapshot);
@@ -51,7 +41,6 @@ export function App(): ReactNode {
   const [shareProfileOpen, setShareProfileOpen] = useState(false);
   const [whatsNewOpen, setWhatsNewOpen] = useState(false);
   const [page, setPage] = useState<DesktopPage>("home");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(initialSidebarCollapsed);
   const { preferences, status } = snapshot;
   const locale = preferences.locale;
   const themeSlug = useMemo(() => interfaceThemeSlug(preferences.theme), [preferences.theme]);
@@ -119,17 +108,6 @@ export function App(): ReactNode {
     setSoundsEnabled(preferences.enabledSounds);
   }, [preferences.enabledSounds]);
 
-  const toggleSidebar = useCallback((): void => {
-    setSidebarCollapsed((current) => {
-      const next = !current;
-      try {
-        localStorage.setItem(SIDEBAR_KEY, next ? "1" : "0");
-      } catch {
-      }
-      return next;
-    });
-  }, []);
-
   const navigate = useCallback((next: DesktopPage): void => {
     if (next === "settings") {
       control.openInterfaceSettings();
@@ -169,17 +147,14 @@ export function App(): ReactNode {
         "control-shell",
         "om-shell",
         status || snapshot.keyboard ? "" : "is-empty",
-        sidebarCollapsed ? "sidebar-collapsed" : "",
         preferences.reducedMotion ? "reduce-interface-motion" : "",
         snapshot.pending.count > 0 ? "has-pending-changes" : "",
       ].filter(Boolean).join(" ")}
       data-interface-theme={themeSlug}
     >
-      <AppSidebar
+      <AppHeader
         snapshot={snapshot}
         page={resolvedPage}
-        collapsed={sidebarCollapsed}
-        onToggleCollapsed={toggleSidebar}
         onNavigate={navigate}
         onOpenWhatsNew={openWhatsNew}
         onOpenDevice={openDevice}
