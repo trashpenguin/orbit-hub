@@ -17,7 +17,7 @@ Orbit Hub is a browser-based control panel for supported mice and keyboards. Tun
 | Profiles | Manage onboard profiles where supported and share device setups. |
 | Diagnostics | Run hardware tests and download reports for troubleshooting. |
 
-Available controls vary by device and connection type. See the [device compatibility list](https://openmouse.app/supported). Existing profiles and backups from the original Logitech app can still be opened in the [legacy workspace](LEGACY.md).
+Available controls vary by device and connection type. See the [Orbit Hub device compatibility guide](docs/device-compatibility.md). Existing profiles and backups from the original Logitech app can still be opened in the [legacy workspace](LEGACY.md).
 
 ## Desktop companion
 
