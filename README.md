@@ -21,13 +21,15 @@ Available controls vary by device and connection type. See the [Orbit Hub device
 
 ## Desktop companion
 
-Automatic game and app profile switching and devices that require native HID use the [desktop companion](https://github.com/OpenMouse-Project/OpenMouse-Bridge/releases/latest).
+Orbit Hub can use a desktop companion for automatic game and app profile switching and for devices that require native HID. Browser-based controls on supported WebHID devices work without it.
 
-1. Install and run the companion.
-2. Add `https://trashpenguin.github.io` to `allowedOrigins` in its `config.json`. Use the origin without a path or trailing slash.
-3. Restart the companion and reload Orbit Hub. Check the **Bridge** status in the sidebar.
+1. Download the package for your operating system from the [upstream Bridge releases](https://github.com/OpenMouse-Project/OpenMouse-Bridge/releases/latest). The companion is maintained upstream. Orbit Hub connects to it on your computer.
+2. Install and run the companion, then add `https://trashpenguin.github.io` to the `allowedOrigins` array in its `config.json`. Enter the origin without a path or trailing slash.
+3. Restart the companion and reload [Orbit Hub](https://trashpenguin.github.io/orbit-hub/). Open **Bridge** in the app bar to check its status.
 
-On Windows, the default configuration directory is `%APPDATA%\OpenMouse\OpenMouse Bridge\config`. For local development, allow the exact origin printed by Vite if it differs from the companion’s defaults. [Companion configuration guide](https://github.com/OpenMouse-Project/OpenMouse-Bridge#run-locally)
+On Windows the configuration directory is `%APPDATA%\OpenMouse\OpenMouse Bridge\config`. For local development, add the exact origin printed by Vite if needed.
+
+To update an older companion, quit it, install the current package for your platform from the releases above, and launch it again. The release page also has the changelog and platform-specific installation details.
 
 ## Development
 
