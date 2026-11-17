@@ -20,8 +20,11 @@ export const KEYCHRON_HID_FILTERS: HIDDeviceFilter[] = Object.keys(KEYCHRON_HE_P
   usage: KEYCHRON_CONFIG_USAGE,
 }));
 
+// This ID is shared by several Instant Micro mice. Offer it for diagnostics only.
+export const INSTANT_MOUSE_DIAGNOSTIC_FILTER = { vendorId: 0x30fa, productId: 0x1440 };
+
 /** Keychron filters are offered only behind the experimental flag, read when the app loads. */
 export const HID_FILTERS: HIDDeviceFilter[] = [
   ...SUPPORTED_HID_FILTERS, ...KEYBOARD_HID_FILTERS, ...(keychronHallEffectEnabled() ? KEYCHRON_HID_FILTERS : []),
-  TUF_M3_GEN_II_FILTER, BASILISK_V3_PRO_BLUETOOTH,
+  TUF_M3_GEN_II_FILTER, BASILISK_V3_PRO_BLUETOOTH, INSTANT_MOUSE_DIAGNOSTIC_FILTER,
 ];
