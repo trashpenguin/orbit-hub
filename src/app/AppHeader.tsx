@@ -3,12 +3,14 @@ import { PROJECT_URL } from "../shared/project-links";
 import { displayText, t } from "../i18n/index";
 import {
   Activity,
+  ChevronDown,
+  Mouse,
   Gamepad2,
   LayoutGrid,
   Settings as SettingsIcon,
   type LucideIcon,
 } from "lucide-react";
-import { memo, useCallback, type ReactNode } from "react";
+import { memo, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { ControlSnapshot, SidebarDevice } from "../device/types";
 import type { MouseStatus } from "@openmouse/protocol/drivers/mouse-types";
 import { deviceImage, placeholderImage } from "../shared/device-images";
@@ -39,7 +41,7 @@ const NavItem = memo(function NavItem({
   );
 });
 
-const DeviceStripRow = memo(function DeviceStripRow({
+const DeviceMenuRow = memo(function DeviceMenuRow({
   device,
   live,
   image,
@@ -98,7 +100,7 @@ const DeviceStripRow = memo(function DeviceStripRow({
   );
 });
 
-function DeviceStripRowOutlet({
+function DeviceMenuRowOutlet({
   snapshot,
   index,
   open,
@@ -112,7 +114,7 @@ function DeviceStripRowOutlet({
   const live = device.selected && (snapshot.deviceStatus !== null || snapshot.keyboard !== null);
   const status = live ? snapshot.deviceStatus : null;
   return (
-    <DeviceStripRow
+    <DeviceMenuRow
       device={device}
       image={deviceImage(device, device.name, device.kind)}
       live={live}
@@ -121,6 +123,75 @@ function DeviceStripRowOutlet({
       open={open}
       localeTableRevision={snapshot.localeTableRevision}
     />
+  );
+}
+
+function ToolbarDevicePicker({ snapshot, onOpenDevice }: {
+  snapshot: ControlSnapshot;
+  onOpenDevice: (index: number) => void;
+}): ReactNode {
+  const locale = snapshot.preferences.locale;
+  const devices = snapshot.devices;
+  const selected = devices.find((device) => device.selected);
+  const battery = selected ? snapshot.deviceStatus?.batteryPercent : null;
+  const [expanded, setExpanded] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const closeOutside = (event: PointerEvent): void => {
+      if (!root.current?.contains(event.target as Node)) setExpanded(false);
+    };
+    const closeWithEscape = (event: KeyboardEvent): void => {
+      if (event.key !== "Escape") return;
+      setExpanded(false);
+      trigger.current?.focus();
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeWithEscape, true);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", closeWithEscape, true);
+    };
+  }, [expanded]);
+
+  const openDevice = useCallback((index: number): void => {
+    setExpanded(false);
+    trigger.current?.focus();
+    onOpenDevice(index);
+  }, [onOpenDevice]);
+
+  if (!devices.length) return null;
+  return (
+    <div className="orbit-toolbar-devices" ref={root}>
+      <button ref={trigger} className="orbit-device-trigger" type="button"
+        aria-expanded={expanded} aria-controls={expanded ? "orbit-device-menu" : undefined}
+        aria-label={t(locale, "nav.yourDevices")} title={selected?.name ?? t(locale, "nav.yourDevices")}
+        onClick={() => setExpanded((open) => !open)}>
+        {selected ? (
+          <img src={deviceImage(selected, selected.name, selected.kind)} alt="" width={22} height={22}
+            onError={(event) => {
+              const image = event.currentTarget;
+              const fallback = placeholderImage(selected.kind);
+              if (image.getAttribute("src") !== fallback) image.src = fallback;
+            }} />
+        ) : <Mouse aria-hidden="true" />}
+        <span className="orbit-device-trigger-name">{selected?.name ?? t(locale, "nav.yourDevices")}</span>
+        {battery != null ? <span className="orbit-device-trigger-battery">{battery}%</span> : null}
+        <ChevronDown aria-hidden="true" className="orbit-device-trigger-chevron" />
+      </button>
+      {expanded ? (
+        <section className="orbit-device-menu" id="orbit-device-menu" aria-labelledby="orbit-device-menu-title">
+          <h2 id="orbit-device-menu-title">{t(locale, "nav.yourDevices")}</h2>
+          <ul>
+            {devices.map((device) => (
+              <DeviceMenuRowOutlet key={device.index} snapshot={snapshot} index={device.index} open={openDevice} />
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </div>
   );
 }
 
@@ -136,7 +207,6 @@ export function AppHeader({
   onOpenDevice: (index: number) => void;
 }): ReactNode {
   const locale = snapshot.preferences.locale;
-  const devices = snapshot.devices;
   const goHome = useCallback(() => onNavigate("home"), [onNavigate]);
   const goHardwareTest = useCallback(() => onNavigate("hardware-test"), [onNavigate]);
   const goGames = useCallback(() => onNavigate("games"), [onNavigate]);
@@ -160,21 +230,11 @@ export function AppHeader({
           <NavItem icon={SettingsIcon} label={t(locale, "nav.settings")} active={page === "settings"} onClick={goSettings} />
         </nav>
 
-        <div className="orbit-toolbar-bridge">
+        <div className="orbit-toolbar-status">
+          <ToolbarDevicePicker snapshot={snapshot} onOpenDevice={onOpenDevice} />
           <BridgeStatusButton locale={locale} />
         </div>
       </div>
-
-      {devices.length > 0 ? (
-        <section className="orbit-device-strip" aria-labelledby="orbit-device-strip-title">
-          <h2 id="orbit-device-strip-title">{t(locale, "nav.yourDevices")}</h2>
-          <ul>
-            {devices.map((device) => (
-              <DeviceStripRowOutlet key={device.index} snapshot={snapshot} index={device.index} open={onOpenDevice} />
-            ))}
-          </ul>
-        </section>
-      ) : null}
     </header>
   );
 }
