@@ -1,6 +1,6 @@
 import { displayText, t, type I18nKey } from "../../i18n/index";
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
-import { Download, Gamepad2, Plus } from "lucide-react";
+import { ExternalLink, Gamepad2, Plus } from "lucide-react";
 import { bridgeGames, bridgeLocalApplications, bridgeProfiles, BridgeHttpError, type BridgeGame, type BridgeStatus, type LocalApplication } from "../bridge/bridge";
 import { isBridgeHidActive, subscribeBridgeHidActive, tryInstallBridgeHid } from "../bridge/bridge-hid";
 import { currentBridgeStatus, subscribeBridgeStatus } from "../bridge/bridge-status-store";
@@ -9,7 +9,7 @@ import { fetchGamesCatalog, gameArtwork } from "./games-catalog";
 import { GameProfilePanel } from "./GameProfilePanel";
 import { gameIdentity, localGame, presetGames } from "./local-applications";
 import { AppIcon } from "./AppIcon";
-import { BRIDGE_RELEASES_URL } from "../bridge/BridgeStatus";
+import { BRIDGE_SETUP_URL } from "../../shared/project-links";
 
 const GameRequestDialog = lazy(() => import("./GameRequestDialog").then((module) => ({ default: module.GameRequestDialog })));
 const LocalApplicationDialog = lazy(() => import("./LocalApplicationDialog").then((module) => ({ default: module.LocalApplicationDialog })));
@@ -155,7 +155,7 @@ export function GamesPage({ snapshot }: { snapshot: ControlSnapshot }): ReactNod
     {!active || loadState === "unsupported" ? <section className="games-needs-bridge">
       <span className="games-needs-bridge-icon" aria-hidden="true"><Gamepad2 strokeWidth={1.8} /></span>
       <div><h2>{t(locale, !active ? "games.needsBridgeTitle" : "localApps.updateBridge")}</h2><p>{t(locale, !active ? "games.needsBridgeBody" : "localApps.privacy")}</p></div>
-      <a className="om-btn" href={BRIDGE_RELEASES_URL} target="_blank" rel="noreferrer"><Download size={15} strokeWidth={2} aria-hidden="true" />{t(locale, "bridge.download")}</a>
+      <a className="om-btn" href={BRIDGE_SETUP_URL} target="_blank" rel="noreferrer"><ExternalLink size={15} strokeWidth={2} aria-hidden="true" />{t(locale, "nav.docs")}</a>
     </section> : null}
     <section className="games-section" aria-labelledby="local-apps-heading">
       <div className="games-section-head">

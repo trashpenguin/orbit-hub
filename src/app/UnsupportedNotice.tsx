@@ -1,9 +1,9 @@
-import { Download } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { displayText, t } from "../i18n/index";
 import { useUiLocale } from "../shared/ui-locale";
 import type { ReactNode } from "react";
 import type { UnsupportedNotice as Notice } from "../platform/browser-support";
-import { BRIDGE_RELEASES_URL } from "../features/bridge/BridgeStatus";
+import { BRIDGE_SETUP_URL } from "../shared/project-links";
 
 export function UnsupportedNotice({ notice }: { notice: Notice }): ReactNode {
   const __uiLocale = useUiLocale();
@@ -13,9 +13,9 @@ export function UnsupportedNotice({ notice }: { notice: Notice }): ReactNode {
       <h1>{displayText(__uiLocale, notice.headline)}</h1>
       <p>{displayText(__uiLocale, notice.detail)}</p>
       {notice.offerBridge ? (
-        <a className="om-btn is-primary" href={BRIDGE_RELEASES_URL} target="_blank" rel="noreferrer">
-          <Download strokeWidth={1.9} aria-hidden="true" />
-          {t(__uiLocale, "bridge.download")}
+        <a className="om-btn is-primary" href={BRIDGE_SETUP_URL} target="_blank" rel="noreferrer">
+          <ExternalLink strokeWidth={1.9} aria-hidden="true" />
+          {t(__uiLocale, "nav.docs")}
         </a>
       ) : null}
     </section>

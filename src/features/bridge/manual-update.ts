@@ -3,14 +3,6 @@
 // once. Raising it needs the same prompt treatment for the next release.
 export const BRIDGE_MANUAL_UPDATE_BELOW = "1.0.0-beta.20";
 
-const LATEST_DOWNLOAD = "https://github.com/OpenMouse-Project/OpenMouse-Bridge/releases/latest/download";
-
-export const BRIDGE_LINUX_INSTALL_COMMAND = "curl -fsSL https://openmouse.app/bridge/download/install-linux.sh | bash";
-
-export type BridgeManualInstall =
-  | { platform: "macos" | "windows"; url: string }
-  | { platform: "linux"; command: string };
-
 interface Semver {
   core: number[];
   pre: string[];
@@ -52,17 +44,4 @@ export function needsManualBridgeUpdate(version: string | null | undefined): boo
   if (!version) return false;
   const order = compareSemver(version, BRIDGE_MANUAL_UPDATE_BELOW);
   return order !== null && order < 0;
-}
-
-export function manualInstallFor(platform: string): BridgeManualInstall | null {
-  switch (platform) {
-    case "macos":
-      return { platform, url: `${LATEST_DOWNLOAD}/OpenMouse-Bridge-macos-universal.dmg` };
-    case "windows":
-      return { platform, url: `${LATEST_DOWNLOAD}/openmouse-bridge-windows-x64.zip` };
-    case "linux":
-      return { platform, command: BRIDGE_LINUX_INSTALL_COMMAND };
-    default:
-      return null;
-  }
 }

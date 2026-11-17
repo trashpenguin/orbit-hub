@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { compareSemver, manualInstallFor, needsManualBridgeUpdate } from "./manual-update.ts";
+import { compareSemver, needsManualBridgeUpdate } from "./manual-update.ts";
 
 test("prerelease numbers compare numerically, not as text", () => {
   assert.equal(compareSemver("1.0.0-beta.9", "1.0.0-beta.20"), -1);
@@ -30,17 +30,4 @@ test("unknown versions stay quiet", () => {
   assert.equal(needsManualBridgeUpdate(null), false);
   assert.equal(needsManualBridgeUpdate(""), false);
   assert.equal(needsManualBridgeUpdate("dev"), false);
-});
-
-test("downloads are chosen by platform", () => {
-  assert.deepEqual(manualInstallFor("macos"), {
-    platform: "macos",
-    url: "https://github.com/OpenMouse-Project/OpenMouse-Bridge/releases/latest/download/OpenMouse-Bridge-macos-universal.dmg",
-  });
-  assert.deepEqual(manualInstallFor("windows"), {
-    platform: "windows",
-    url: "https://github.com/OpenMouse-Project/OpenMouse-Bridge/releases/latest/download/openmouse-bridge-windows-x64.zip",
-  });
-  assert.equal(manualInstallFor("linux")?.platform, "linux");
-  assert.equal(manualInstallFor("plan9"), null);
 });
