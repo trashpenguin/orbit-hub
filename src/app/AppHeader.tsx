@@ -1,3 +1,4 @@
+import orbitMark from "../shared/orbit-mark.png";
 import { PROJECT_URL } from "../shared/project-links";
 import { displayText, t } from "../i18n/index";
 import {
@@ -166,7 +167,7 @@ export function AppHeader({
       <div className="orbit-toolbar">
         <a className="om-brand" href={PROJECT_URL} target="_blank" rel="noreferrer"
           title={displayText(locale, "Orbit Hub on GitHub")}>
-          <img className="om-brand-mark" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={36} height={36} />
+          <img className="om-brand-mark" src={orbitMark} alt="" width={36} height={36} />
           <span className="om-brand-name">{displayText(locale, "Orbit Hub")}</span>
         </a>
 

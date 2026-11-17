@@ -1,3 +1,4 @@
+import orbitMark from "../shared/orbit-mark.png";
 import { ExternalLink } from "lucide-react";
 import { displayText, t } from "../i18n/index";
 import { useUiLocale } from "../shared/ui-locale";
@@ -9,7 +10,7 @@ export function UnsupportedNotice({ notice }: { notice: Notice }): ReactNode {
   const __uiLocale = useUiLocale();
   return (
     <section className="small-screen-blocker">
-      <img className="standalone-brand" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={42} height={42} />
+      <img className="standalone-brand" src={orbitMark} alt="" width={42} height={42} />
       <h1>{displayText(__uiLocale, notice.headline)}</h1>
       <p>{displayText(__uiLocale, notice.detail)}</p>
       {notice.offerBridge ? (

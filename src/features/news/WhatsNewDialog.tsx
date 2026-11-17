@@ -1,3 +1,4 @@
+import orbitMark from "../../shared/orbit-mark.png";
 import { useEffect, useRef, type ReactNode } from "react";
 import { t } from "../../i18n/index";
 import type { InterfaceLocale } from "../settings/interface-preferences";
@@ -47,7 +48,7 @@ export function WhatsNewDialog({ open, onClose, locale = "en" }: {
           <button className="om-icon-btn" type="button" onClick={onClose} aria-label={t(locale, "common.close")}>×</button>
         </header>
         <div className="om-dialog-body">
-          <img className="standalone-brand" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={42} height={42} />
+          <img className="standalone-brand" src={orbitMark} alt="" width={42} height={42} />
           <p className="whatsnew-body">{t(locale, "home.subtitle")}</p>
         </div>
         <div className="om-dialog-foot">
