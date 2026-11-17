@@ -1,5 +1,5 @@
 .page:has(> .om-home) { display: grid; min-height: 100%; }
-.om-home { gap: 22px; grid-template-rows: auto 1fr; padding-bottom: 48px; }
+.om-home { gap: 22px; grid-template-rows: auto auto; padding-bottom: 48px; }
 .om-home > .om-shelf { align-content: start; }
 
 .om-shelf { position: relative; display: grid; gap: 14px; min-width: 0; }
@@ -214,3 +214,10 @@
   .om-home.is-empty .is-add .om-device-block-art { grid-area: 3 / 1; min-height: 145px; }
   .om-home.is-empty .is-add .om-device-block-action { grid-area: 4 / 1; margin-top: 0; }
 }
+
+.orbit-connection-notice {
+  display: grid; justify-items: start; gap: 6px; padding: 10px 14px;
+  border-inline-start: 3px solid var(--accent-line); background: var(--surface-1);
+  border-radius: var(--r-sm); color: var(--text-2); overflow-wrap: anywhere;
+}
+.orbit-connection-notice[role="alert"] { border-inline-start-color: var(--bad); }

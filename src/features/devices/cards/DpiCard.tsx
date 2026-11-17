@@ -768,6 +768,16 @@ export function DpiCard({ snapshot }: { snapshot: ControlSnapshot }): ReactNode 
           editorView={stageCapable && singleDpiAvailable ? editorView : stageCapable ? "stage" : undefined}
         />
 
+        {snapshot.pending.dpiReadbacks?.length ? (
+          <ul className="dpi-readbacks" role="status">
+            {snapshot.pending.dpiReadbacks.map(({ key, label, result }) => (
+              <li key={key}>
+                {label}{" · "}{t(locale, result === "confirmed" ? "dpi.readbackConfirmed"
+                  : result === "mismatch" ? "dpi.readbackMismatch" : "dpi.readbackUnavailable")}
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <div className="setting-action">
           <span id="dpi-pending">
             {displayText(locale, staged ? tp(locale, "common.staged", { v: label(status) }) : tp(locale, "common.current", { v: label(deviceStatus) }))}

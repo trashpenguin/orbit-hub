@@ -385,3 +385,5 @@
   width: 100%;
 }
 #host-lod-row .segmented.lod-steps > button { min-width: 0; height: 30px; padding-inline: 4px; font-variant-numeric: tabular-nums; }
+
+.dpi-readbacks { list-style: none; display: grid; gap: 4px; padding: 8px var(--panel-pad); color: var(--text-2); }

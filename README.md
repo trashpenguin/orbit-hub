@@ -41,13 +41,15 @@ npm run dev
 npm run check
 ```
 
+To run the browser checks locally, build with `ORBIT_BASE_PATH=/orbit-hub/`, run `npx playwright install chromium`, and run `npm run test:browser`.
+
 Append `?preview=list` or `?preview=egg-op1-v2` to the development URL to explore the UI with simulated devices. Preview mode does not write to hardware.
 
 GitHub Pages builds and deploys pushes to `main` under `/orbit-hub/`. To reproduce the production build locally, set `ORBIT_BASE_PATH` to `/orbit-hub/` before running `npm run check`, then serve the output under that path.
 
 ## Feedback
 
-Report bugs through [Orbit Hub issues](https://github.com/trashpenguin/orbit-hub/issues). The **Games** page can download a reviewed game or app request as text to attach to an issue.
+Report bugs through [Orbit Hub issues](https://github.com/trashpenguin/orbit-hub/issues). Use the [device report form](https://github.com/trashpenguin/orbit-hub/issues/new?template=device-report.yml) for hardware and artwork, and see the [hardware verification checklist](docs/hardware-verification.md) for testing a model. The **Games** page can download a reviewed game or app request as text to attach to an issue.
 
 To enable direct submission on a self-hosted deployment, deploy the included Cloudflare Pages Functions and set the server-side `DISCORD_FEEDBACK_WEBHOOK` secret and `ORBIT_FEEDBACK_ORIGIN`. Configure rate limiting with the `SECURITY_KV` binding or a Cloudflare WAF rule. Then set `VITE_FEEDBACK_URL` to that deployment’s HTTPS `/api/feedback` URL and rebuild.
 

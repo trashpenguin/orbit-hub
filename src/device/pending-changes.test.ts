@@ -5,6 +5,7 @@ import {
   clearPendingChanges,
   hasPendingChanges,
   pendingChangeBatches,
+  pendingReadback,
   pendingChanges,
   restorePendingChanges,
   setStatusOverlay,
@@ -165,4 +166,16 @@ test("an overlay shows on top of the status and of the staged changes, and outli
   assert.equal(withPendingChanges(deviceStatus).hostBunnyHopMs, 40, "nothing is staged, the overlay still shows");
   setStatusOverlay(null);
   assert.equal(withPendingChanges(deviceStatus), deviceStatus);
+});
+
+test("a DPI write distinguishes matching, different and unavailable readback", () => {
+  const change = {
+    key: "dpi", label: "DPI 800", command: "", progress: "",
+    readback: (reported: MouseStatus) => reported.dpi === 800,
+    apply: async () => {},
+  };
+  assert.equal(pendingReadback(change, status()), "confirmed");
+  assert.equal(pendingReadback(change, { ...status(), dpi: 1600 }), "mismatch");
+  assert.equal(pendingReadback(change, null), "unavailable");
+  assert.equal(pendingReadback(change, { ...status(), ui: { valuesVerified: false } }), "unavailable");
 });
