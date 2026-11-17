@@ -210,7 +210,7 @@ function DeviceShelf({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
   const track = useRef<HTMLUListElement>(null);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   const [state, setState] = useState({ index: 0, overflow: false, start: true, end: true });
-  const devices = snapshot.devices;
+  const devices = [...snapshot.devices].sort((a, b) => Number(b.selected) - Number(a.selected));
   const count = devices.length + 1;
   const rtl = typeof document !== "undefined" && document.documentElement.dir === "rtl";
 
@@ -357,6 +357,31 @@ function DeviceShelf({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
   );
 }
 
+function ConnectionIssueNotice({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
+  const issue = snapshot.connectionIssue;
+  if (!issue) return null;
+  const locale = snapshot.preferences.locale;
+  const download = (): void => {
+    // Export only the failing step and the USB IDs we need to reproduce it.
+    const report = JSON.stringify({ stage: issue.stage, device: issue.device }, null, 2);
+    const url = URL.createObjectURL(new Blob([report], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "orbit-hub-connection.json";
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  return (
+    <div className="orbit-connection-notice" role={issue.cancelled ? "status" : "alert"}>
+      {!issue.cancelled ? <strong>{t(locale, "ctl.connFailed")}</strong> : null}
+      <p>{issue.cancelled ? t(locale, "ctl.noSelection") : displayText(locale, issue.detail)}</p>
+      {!issue.cancelled ? (
+        <button type="button" className="om-btn is-sm" onClick={download}>{t(locale, "diag.download")}</button>
+      ) : null}
+    </div>
+  );
+}
+
 export function DevicesHome({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
   const locale = snapshot.preferences.locale;
   const hasDevices = snapshot.devices.length > 0;
@@ -368,7 +393,9 @@ export function DevicesHome({ snapshot }: { snapshot: ControlSnapshot }): ReactN
           <p className="om-meta">{t(locale, hasDevices ? "home.subtitle" : "empty.title")}</p>
         </div>
       </header>
+      <ConnectionIssueNotice snapshot={snapshot} />
       <DeviceShelf snapshot={snapshot} />
+      {!hasDevices ? <a className="om-home-demo" href={import.meta.env.BASE_URL + "?demo=1"}>{t(locale, "demo.try")}</a> : null}
     </div>
   );
 }

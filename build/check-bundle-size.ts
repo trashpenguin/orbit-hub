@@ -48,10 +48,13 @@ import { join } from "node:path";
 // 1,413,917 bytes, below its cap. 3.95 MB leaves room for one more release.
 // Orbit Hub makes the game and app request dialog reachable from the Games page.
 // The separate request chunk and its entry point bring the JS total to 3,950,935 bytes.
+// Profile backups, Bridge retry, and the mouse activity lab measured
+// 173,088 bytes of CSS and 3,961,812 bytes of JS. The main cap stays the same.
 export const BUDGET_BYTES: Record<string, number> = {
   // Responsive toolbars, cards, and settings measured 171,171 bytes.
-  ".css": 172_500,
-  ".js": 3_960_000,
+  ".css": 174_000,
+  // Inline setting feedback and its translations add about 3 kB.
+  ".js": 3_968_000,
 };
 
 // main-*.js measured 1,511,619 bytes right after the split (posthog ~377 kB

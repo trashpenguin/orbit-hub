@@ -19,6 +19,7 @@ export interface PendingChange {
   // profile value, say); such a change renders itself and cannot be compared
   // against the device status.
   preview?(status: MouseStatus): void;
+  readback?(status: MouseStatus): boolean | null;
   apply(): Promise<void>;
 }
 
@@ -130,4 +131,11 @@ export function restorePendingChanges(stashed: PendingChange[]): void {
   changes.clear();
   for (const change of stashed) changes.set(change.key, change);
   notify();
+}
+
+export type ReadbackResult = "confirmed" | "unavailable" | "mismatch";
+
+export function pendingReadback(change: PendingChange, status: MouseStatus | null): ReadbackResult {
+  const matches = status && status.ui?.valuesVerified !== false ? change.readback?.(status) : null;
+  return matches == null ? "unavailable" : matches ? "confirmed" : "mismatch";
 }

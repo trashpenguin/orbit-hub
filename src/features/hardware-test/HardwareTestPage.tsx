@@ -20,6 +20,7 @@ import {
   type HardwareTestReport,
   type HardwareTestResult,
 } from "./hardware-test-report";
+import { MouseActivityLab } from "./MouseActivityLab";
 import { crosscheckSupportedDevices } from "./supported-devices-crosscheck";
 import { DeviceShowcaseSidebar } from "../devices/OverviewPage";
 import { PROJECT_ISSUES_URL } from "../../shared/project-links";
@@ -492,6 +493,8 @@ export function HardwareTestPage({ snapshot }: { snapshot: ControlSnapshot }): R
           ) : null}
         </div>
       </div>
+
+      <MouseActivityLab locale={locale} />
 
       <div className="hardware-test-layout">
         {/* ── Left: device showcase — the same card as the Overview

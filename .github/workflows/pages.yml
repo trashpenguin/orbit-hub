@@ -30,6 +30,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:

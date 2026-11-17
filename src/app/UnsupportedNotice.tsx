@@ -19,6 +19,7 @@ export function UnsupportedNotice({ notice }: { notice: Notice }): ReactNode {
           {t(__uiLocale, "nav.docs")}
         </a>
       ) : null}
+      <a className="om-btn" href={import.meta.env.BASE_URL + "?demo=1"}>{t(__uiLocale, "demo.try")}</a>
     </section>
   );
 }

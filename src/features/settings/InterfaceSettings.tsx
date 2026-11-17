@@ -1,8 +1,9 @@
 import { displayText } from "../../i18n/index";
 import { analyticsAvailable, analyticsEnabled, ANALYTICS_READY_EVENT, setAnalyticsEnabled, track } from "../../platform/analytics";
 import { ChevronRight, FlaskConical, Globe, KeyRound, Palette, RotateCcw, SlidersHorizontal, Info } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import * as control from "../../device/controller";
+import { decodeProfileKey } from "../../device/profile-key";
 import type { ControlSnapshot } from "../../device/types";
 import { LOCALE_NAME_KEYS, t } from "../../i18n/index";
 import { INTERFACE_THEMES, interfaceThemeSlug, type InterfaceTheme } from "./interface-preferences";
@@ -25,6 +26,8 @@ function themeName(theme: InterfaceTheme): string {
 export function ProfileKeyFields({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
   const [importText, setImportText] = useState("");
   const [copied, setCopied] = useState(false);
+  const [backupError, setBackupError] = useState(false);
+  const fileRead = useRef(0);
   const locale = snapshot.preferences.locale;
   const key = snapshot.hasActiveDevice ? control.exportProfileKey() : null;
 
@@ -55,14 +58,51 @@ export function ProfileKeyFields({ snapshot }: { snapshot: ControlSnapshot }): R
         >
           {displayText(locale, copied ? t(locale, "set.copied") : t(locale, "set.copyKey"))}
         </button>
+        <button type="button" className="om-btn" disabled={!key} onClick={() => {
+          if (!key) return;
+          const url = URL.createObjectURL(new Blob([key], { type: "text/plain;charset=utf-8" }));
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "orbit-hub-profile.txt";
+          link.click();
+          window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+        }}>
+          {t(locale, "set.downloadProfileKey")}
+        </button>
       </div>
+      <label className="profile-key-field">
+        <span className="om-label">{t(locale, "set.openProfileKey")}</span>
+        <input type="file" accept=".txt,text/plain" onChange={(event) => {
+          const file = event.currentTarget.files?.[0];
+          event.currentTarget.value = "";
+          if (!file) return;
+          const read = ++fileRead.current;
+          setBackupError(false);
+          setImportText("");
+          void (async () => {
+            try {
+              if (file.size === 0 || file.size > 65_536) throw new Error("Invalid profile file size");
+              const contents = (await file.text()).trim();
+              if (!decodeProfileKey(contents).ok) throw new Error("Invalid profile key");
+              if (read === fileRead.current) setImportText(contents);
+            } catch {
+              if (read === fileRead.current) setBackupError(true);
+            }
+          })();
+        }} />
+      </label>
+      {backupError ? <small role="alert">{t(locale, "set.profileFileError")}</small> : null}
       <label className="profile-key-field">
         <span className="om-label">{t(locale, "set.importKey")}</span>
         <textarea
           rows={3}
           placeholder={t(locale, "set.importPlaceholder")}
           value={importText}
-          onChange={(event) => setImportText(event.currentTarget.value)}
+          onChange={(event) => {
+            fileRead.current++;
+            setBackupError(false);
+            setImportText(event.currentTarget.value);
+          }}
         />
       </label>
       <div className="profile-key-actions">
@@ -71,13 +111,14 @@ export function ProfileKeyFields({ snapshot }: { snapshot: ControlSnapshot }): R
           className="om-btn"
           disabled={!importText.trim() || !snapshot.hasActiveDevice}
           onClick={() => {
+            fileRead.current++;
             control.importProfileKey(importText);
             setImportText("");
           }}
         >
           {t(locale, "set.import")}
         </button>
-        <small className="setting-description">{t(locale, "set.importNote")}</small>
+        <small className="setting-description">{t(locale, snapshot.preferences.instantFlash ? "set.importInstantNote" : "set.importNote")}</small>
       </div>
     </div>
   );

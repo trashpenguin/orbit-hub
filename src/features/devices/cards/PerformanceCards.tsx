@@ -1,3 +1,4 @@
+import { SettingWriteStatus } from "./SettingWriteStatus";
 import { displayText } from "../../../i18n/index";
 import { useUiLocale } from "../../../shared/ui-locale";
 import { useEffect, useState, type ReactNode } from "react";
@@ -131,6 +132,7 @@ export function PollingCard({ snapshot }: { snapshot: ControlSnapshot }): ReactN
           onChange={control.applyPollingRate}
         />
       )}
+      <SettingWriteStatus snapshot={snapshot} keyPrefix="polling-rate" />
     </article>
   );
 }

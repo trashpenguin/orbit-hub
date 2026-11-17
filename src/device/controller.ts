@@ -1,3 +1,4 @@
+import type { ConnectionIssue } from "./types";
 import { emptyKeyboardWorkspace } from "./keyboard-workspace.ts";
 import { track, deviceProps, scrubError } from "../platform/analytics";
 import type { KeyboardCommand } from "./keyboard-workspace.ts";
@@ -36,6 +37,7 @@ import {
   hasPendingChanges,
   isPendingChange,
   onPendingChanges,
+  pendingReadback,
   pendingChangeBatches,
   pendingChanges,
   restorePendingChanges,
@@ -155,7 +157,7 @@ import type {
   AnalogTuning,
   AnalogTuningState,
   MagneticCalibrationView,
-  ControlSnapshot,
+  ControlSnapshot, PendingView,
   KeyboardIdentityView,
   KeyboardKeyRef,
   KeyboardPollingView,
@@ -401,6 +403,7 @@ let previewListMessage: string | null = null;
 
 let deviceStatusText = st("ctl.noDevice");
 let readStatus = st("ctl.addSidebar");
+let connectionIssue: ConnectionIssue | null = null;
 let onboardStatus = st("ctl.onboardIdle");
 let connectDisabled = false;
 let connectLabel = "Add device";
@@ -480,7 +483,10 @@ export interface GameProfileOwner {
   readonly device: HIDDevice | null;
 }
 
+type SettingWriteFeedback = NonNullable<PendingView["writeFeedback"]>[number];
+
 let gameProfileOwner: GameProfileOwner | null = null;
+let writeFeedback: { owner: GameProfileOwner; entries: SettingWriteFeedback[] } | null = null;
 
 export function getGameProfileOwner(): GameProfileOwner | null {
   if (!active || !latestDeviceStatus) return null;
@@ -637,6 +643,7 @@ function buildSnapshot(): ControlSnapshot {
     settingsPending: status?.ui?.settingsReady === false,
     deviceStatusText,
     readStatus,
+    connectionIssue,
     onboardStatus,
     connectDisabled,
     connectLabel,
@@ -708,6 +715,7 @@ function buildSnapshot(): ControlSnapshot {
       labels: suppressedPending ? EMPTY_PENDING_LABELS : changes.map((change) => change.label),
       busy: pendingBusy,
       statusText: pendingStatusText,
+      writeFeedback: writeFeedback && isGameProfileOwner(writeFeedback.owner) ? writeFeedback.entries : undefined,
       suppressed: interfacePreferences.instantFlash || gameProfileDraft !== null,
       keys: changes.map((change) => change.key),
     },
@@ -1514,6 +1522,9 @@ function stageChange(change: PendingChange): void {
     if (settingInProgress) {
       setReadStatus(st("ctl.waitFlash"));
       return;
+    }
+    if (writeFeedback && isGameProfileOwner(writeFeedback.owner)) {
+      writeFeedback = { ...writeFeedback, entries: writeFeedback.entries.filter(({ key }) => key !== change.key) };
     }
     if (gameProfileDraft) {
       const fields = gameProfileFieldsOf(change);
@@ -2460,11 +2471,18 @@ async function flashStagedChanges(): Promise<FlashResult> {
     setReadStatus(st("ctl.waitFlash"));
     return "busy";
   }
+  const attemptedKeys = new Set(batches.flatMap((group) => group.map((change) => change.key)));
+  const feedback = writeFeedback?.owner === owner
+    ? writeFeedback.entries.filter(({ key }) => !attemptedKeys.has(key))
+    : [];
+  writeFeedback = { owner, entries: feedback };
   settingInProgress = true;
   pendingBusy = true;
   emit();
   let written = 0;
+  const checked: PendingChange[] = [];
   let failure: string | null = null;
+  let writing = batches[0] ?? [];
   // HID++ replies are matched by feature and function only, so a profile read
   // still running in the background would take the write's sector reads and
   // fail its checksum check. Let every read finish first.
@@ -2484,6 +2502,7 @@ async function flashStagedChanges(): Promise<FlashResult> {
   try {
     for (const group of batches) {
       if (failure) break;
+      writing = group;
       const writer = group[group.length - 1];
       if (!writer) continue;
       pendingStatusText = `${writer.progress} (${written + 1} of ${batches.length})`;
@@ -2500,6 +2519,7 @@ async function flashStagedChanges(): Promise<FlashResult> {
       batch(() => {
         for (const change of group) dropPendingChange(change.key);
       });
+      checked.push(...group.filter((change) => change.readback));
       written += group.length;
     }
   } catch (error) {
@@ -2509,7 +2529,29 @@ async function flashStagedChanges(): Promise<FlashResult> {
   await flashPause(FLASH_SETTLE_MS);
   const client = isGameProfileOwner(owner) ? activeSettingsClient() : null;
   const status = client ? await statusAfterWrite(client).catch(() => null) : null;
-  if (status && isGameProfileOwner(owner)) applyStatus(status);
+  if (isGameProfileOwner(owner)) {
+    if (status) applyStatus(status);
+    if (failure) {
+      for (const change of writing) {
+        if (change.readback) feedback.push({ key: change.key, label: change.label, result: "failed", detail: failure });
+      }
+    }
+    if (checked.length) {
+      const entries = checked.map((change) => ({
+        key: change.key, label: change.label, result: pendingReadback(change, status),
+      }));
+      feedback.push(...entries);
+      const mismatched = checked.filter((_, index) => entries[index]?.result === "mismatch");
+      if (mismatched.length) {
+        if (!gameProfileDraft) {
+          batch(() => {
+            for (const change of mismatched) stagePendingChange(change);
+          });
+        }
+        failure ??= st("ctl.writeReadbackMismatch");
+      }
+    }
+  }
   endDeviceWrite();
   pendingBusy = false;
   if (!isGameProfileOwner(owner)) {
@@ -3259,7 +3301,7 @@ export async function openDeviceOverview(index: number): Promise<void> {
     }
     if (latestDeviceStatus !== null || activeKeyboard !== null) {
       deviceListView = "device";
-      activeWorkspaceTab = "overview";
+      activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
       emit();
     }
     return;
@@ -3274,14 +3316,14 @@ export async function openDeviceOverview(index: number): Promise<void> {
   }
   if (group.some((device) => device === activeDevice) && (latestDeviceStatus !== null || activeKeyboard !== null)) {
     deviceListView = "device";
-    activeWorkspaceTab = "overview";
+    activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
     emit();
     return;
   }
   await selectAuthorizedDevice(index);
   if (latestDeviceStatus !== null || activeKeyboard !== null) {
     deviceListView = "device";
-    activeWorkspaceTab = "overview";
+    activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
     emit();
   }
 }
@@ -3511,7 +3553,7 @@ export async function showDeviceDashboard(): Promise<void> {
     return;
   }
   deviceListView = "device";
-  activeWorkspaceTab = "overview";
+  activeWorkspaceTab = activeKeyboard ? "overview" : "performance";
   emit();
 }
 
@@ -3774,7 +3816,7 @@ async function activateClientNow(client: SupportedClient, options: { rememberRec
   recordDiagnosticCommand("Read device status");
   lastRenderedStatusKey = null;
   active = client;
-  activeWorkspaceTab = "overview";
+  activeWorkspaceTab = "performance";
 
   try {
     if (C().isEggWeClient(client)) await C().eggWePrepare(client);
@@ -3987,6 +4029,7 @@ async function showPulsarExplorer(client: PulsarClient): Promise<void> {
 }
 
 function showDisconnectedState(): void {
+  writeFeedback = null;
   if (refreshTimer !== null) {
     window.clearInterval(refreshTimer);
     refreshTimer = null;
@@ -4216,21 +4259,26 @@ async function requestSupportedClient(
 
 /** Prompt the browser for a device, then activate the best keyboard or mouse. */
 export async function connect(): Promise<void> {
+  connectionIssue = null;
   setConnectionButtons(true, "Connecting…");
   deviceStatusText = st("ctl.requesting");
   readStatus = st("ctl.choosePrompt");
   emit();
 
+  let stage: ConnectionIssue["stage"] = "selection";
   let attempted: { vendorId: number; productId: number } | undefined;
   try {
     const client = await requestSupportedClient((device) => {
+      stage = "identification";
       attempted = { vendorId: device.vendorId, productId: device.productId };
     });
     if (!client) {
       deviceStatusText = st("ctl.notConnected");
       readStatus = st("ctl.noSelection");
+      connectionIssue = { stage, cancelled: true, detail: readStatus };
       return;
     }
+    stage = "opening";
     deviceStatusText = st("ctl.opening");
     readStatus = st("ctl.reading", {
       name: isKeyboardClient(client)
@@ -4241,6 +4289,12 @@ export async function connect(): Promise<void> {
     await activateClient(client);
     track("device_connected", deviceProps(attempted));
   } catch (error) {
+    if (stage === "selection" && !isBridgeHidActive() && error instanceof DOMException && error.name === "NotFoundError") {
+      deviceStatusText = st("ctl.notConnected");
+      readStatus = st("ctl.noSelection");
+      connectionIssue = { stage, cancelled: true, detail: readStatus };
+      return;
+    }
     const message = error instanceof Error ? error.message : "Unable to read the mouse.";
     const wrongDevice = isA(error, CM()?.NotAMouseError);
     if (!wrongDevice) recordDiagnosticError(error, message, false);
@@ -4254,6 +4308,7 @@ export async function connect(): Promise<void> {
     }
     deviceStatusText = wrongDevice ? st("ctl.notMouse") : st("ctl.connFailed");
     readStatus = message;
+    connectionIssue = { stage, detail: message, device: attempted };
     toastForError(wrongDevice ? "Not a mouse" : "Connection failed", error);
   } finally {
     setConnectionButtons(false, "Add device");
@@ -4389,6 +4444,7 @@ export function applyDpiValue(dpi: number): boolean {
     label: `DPI ${dpi.toLocaleString()}`,
     command: `Set DPI to ${dpi.toLocaleString()}`,
     progress: `Setting ${dpi.toLocaleString()} DPI…`,
+    readback: (status) => status.dpi > 0 ? status.dpi === dpi && (status.dpiY === undefined || status.dpiY === dpi) : null,
     preview: (status) => {
       status.dpi = dpi;
       if (status.dpiY !== undefined) status.dpiY = dpi;
@@ -4512,6 +4568,7 @@ export function applyDpiStageValue(stage: number, rawDpi: number): void {
     label: `Stage ${stage + 1} · ${dpi.toLocaleString()} DPI`,
     command: `Set DPI stage ${stage + 1} to ${dpi.toLocaleString()}`,
     progress: `Setting stage ${stage + 1} to ${dpi.toLocaleString()} DPI…`,
+    readback: (status) => status.dpiStages?.[stage] == null ? null : status.dpiStages[stage] === dpi,
     preview: (status) => {
       // Pad first so a newly added stage (only present via a staged count
       // increase) still diffs against the device snapshot in matchesDeviceStatus.
@@ -4571,6 +4628,8 @@ export function applyDpiStageAxes(stage: number, edit: { x?: number; y?: number 
     label: `Stage ${stage + 1} · ${axes} DPI`,
     command: `Set DPI stage ${stage + 1} to ${axes} DPI`,
     progress: `Setting stage ${stage + 1} to ${axes} DPI…`,
+    readback: (status) => status.dpiStages?.[stage] == null || status.dpiStagesY?.[stage] == null ? null
+      : status.dpiStages[stage] === nextX && status.dpiStagesY[stage] === nextY,
     preview: (status) => {
       // Preview the resolved pair rather than only the axis this edit moved: a
       // later edit to the same stage replaces this change, and `matchesDeviceStatus`
@@ -6042,6 +6101,7 @@ export function applyPollingRate(rate: number): void {
     label: `${rate.toLocaleString()} Hz`,
     command: `Set polling rate to ${rate.toLocaleString()} Hz`,
     progress: `Setting ${rate.toLocaleString()} Hz…`,
+    readback: (status) => nativeX11 || status.pollingRateHz <= 0 ? null : status.pollingRateHz === rate,
     preview: (status) => {
       status.pollingRateHz = rate;
     },
@@ -7533,6 +7593,7 @@ function previewClient(): LogitechHidppClient {
 
 function steelseriesStagePreviewClient(initial: MouseStatus): SupportedClient {
   const status = structuredClone(initial);
+  let failNextPollingWrite = new URLSearchParams(location.search).get("fault") === "write";
   const stages = (): number[] => status.dpiStages ?? [];
   const stagesY = (): number[] => status.dpiStagesY ?? [];
   const write = (stage: number, x: number | null, y: number | null): void => {
@@ -7568,6 +7629,10 @@ function steelseriesStagePreviewClient(initial: MouseStatus): SupportedClient {
       return stage;
     },
     setPollingRate: async (hz: number) => {
+      if (failNextPollingWrite) {
+        failNextPollingWrite = false;
+        throw new Error("Simulated polling write failed.");
+      }
       status.pollingRateHz = hz;
       return hz;
     },
@@ -7821,7 +7886,10 @@ export function start(): void {
     void showKeyboardPreview(previewMode);
   } else if (previewMode !== null && previewMode !== "list") {
     void showFixturePreview(previewMode).then(() => {
-      if (latestDeviceStatus !== null) deviceListView = "device";
+      if (latestDeviceStatus !== null) {
+        deviceListView = "device";
+        activeWorkspaceTab = "performance";
+      }
       emit();
     });
   } else if (previewMode === "list") {

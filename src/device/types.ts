@@ -85,6 +85,7 @@ export interface PendingView {
   labels: string[];
   busy: boolean;
   statusText: string | null;
+  writeFeedback?: readonly { key: string; label: string; result: "confirmed" | "unavailable" | "mismatch" | "failed"; detail?: string }[];
   suppressed: boolean;
   keys: readonly string[];
 }
@@ -236,6 +237,13 @@ export interface KeyboardView {
   workspace: KeyboardWorkspace;
 }
 
+export interface ConnectionIssue {
+  stage: "selection" | "identification" | "opening";
+  cancelled?: boolean;
+  detail: string;
+  device?: { vendorId: number; productId: number };
+}
+
 export interface ControlSnapshot {
   deviceStatus: MouseStatus | null;
   status: MouseStatus | null;
@@ -247,6 +255,7 @@ export interface ControlSnapshot {
 
   deviceStatusText: string;
   readStatus: string;
+  connectionIssue?: ConnectionIssue | null;
   onboardStatus: string;
   connectDisabled: boolean;
   connectLabel: string;

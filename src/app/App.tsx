@@ -154,7 +154,7 @@ export function App(): ReactNode {
       <main className="om-main full-desktop-main">
         <BridgeManualUpdate locale={locale} />
         <NewsBanner locale={locale} />
-        <div className="om-content full-desktop-content" ref={panel}>
+        <div className="om-content full-desktop-content" tabIndex={-1} ref={panel}>
           <Suspense fallback={null}>
             {showingSettings ? (
               <InterfaceSettings snapshot={snapshot} />

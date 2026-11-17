@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "test:browser": "playwright test",
     "test": "node --test \"src/**/*.test.ts\" \"test/**/*.test.ts\" \"build/**/*.test.ts\"",
     "size": "node build/check-bundle-size.ts",
     "sync:devices": "node scripts/sync-supported-devices.mjs",
@@ -21,6 +22,7 @@
     "preact": "^10.29.8"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.1",
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   }

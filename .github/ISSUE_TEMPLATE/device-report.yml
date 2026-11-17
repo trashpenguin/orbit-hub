@@ -1,0 +1,41 @@
+name: Device compatibility or artwork
+description: Report a device detection, settings, or artwork issue in Orbit Hub.
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Device model
+      placeholder: Attack Shark V5
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection
+      options:
+        - USB cable
+        - Wireless receiver
+        - Bluetooth
+        - Other or unknown
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware version (if available)
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, operating system, and Bridge version (if applicable)
+  - type: textarea
+    id: result
+    attributes:
+      label: What did you try and what happened?
+      description: Include the name Orbit Hub displayed and distinguish detection, reading a setting, and confirming a write.
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: Optional diagnostics or artwork reference
+      description: Review reports and screenshots for personal information before attaching them.
