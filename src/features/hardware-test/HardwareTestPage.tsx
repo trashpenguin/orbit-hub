@@ -22,7 +22,7 @@ import {
 } from "./hardware-test-report";
 import { crosscheckSupportedDevices } from "./supported-devices-crosscheck";
 import { DeviceShowcaseSidebar } from "../devices/OverviewPage";
-import { DISCORD_URL } from "../../shared/social-links";
+import { PROJECT_ISSUES_URL } from "../../shared/project-links";
 
 type StageKind = "start" | "check" | "sampling" | "flash";
 type StageState = "running" | "pass" | "fail" | "skip";
@@ -465,7 +465,6 @@ export function HardwareTestPage({ snapshot }: { snapshot: ControlSnapshot }): R
 
   const samplingPercent = Math.round((samplingElapsedMs / SAMPLE_WINDOW_MS) * 100);
 
-  const footerNoteParts = t(locale, "hw.footerNote").split("{discord}");
 
   return (
     <div className="om-page mouse-test-page hardware-test-page">
@@ -651,7 +650,7 @@ export function HardwareTestPage({ snapshot }: { snapshot: ControlSnapshot }): R
                 )}
                 <div className="mouse-test-device-row">
                   <span className="mouse-test-device-key">{t(locale, "hw.transport")}</span>
-                  <span className="mouse-test-device-val">{displayText(locale, info.transport === "bridge" ? "OpenMouse Bridge" : "WebHID")}</span>
+                  <span className="mouse-test-device-val">{displayText(locale, info.transport === "bridge" ? "Bridge" : "WebHID")}</span>
                 </div>
                 {info.connectionType && (
                   <div className="mouse-test-device-row">
@@ -751,11 +750,10 @@ export function HardwareTestPage({ snapshot }: { snapshot: ControlSnapshot }): R
 
       <footer className="hardware-test-footer">
         <p className="hardware-test-footer-note">
-          {displayText(locale, footerNoteParts[0])}
-          <a className="hardware-test-footer-link" href={DISCORD_URL} target="_blank" rel="noreferrer">
-            {t(locale, "hw.discord")}
+          {t(locale, "hw.subtitle")}{" "}
+          <a className="hardware-test-footer-link" href={PROJECT_ISSUES_URL} target="_blank" rel="noreferrer">
+            {t(locale, "nav.support")}
           </a>
-          {displayText(locale, footerNoteParts[1] ?? "")}
         </p>
       </footer>
     </div>

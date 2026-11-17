@@ -161,7 +161,7 @@ export function automaticChecks(info: HardwareDeviceInfo): HardwareTestResult[] 
     key: "connection",
     label: "Device connected",
     status: "pass",
-    detail: info.transport === "bridge" ? "Connected through OpenMouse Bridge" : "Connected through WebHID",
+    detail: info.transport === "bridge" ? "Connected through Bridge" : "Connected through WebHID",
   });
 
   // Control interface: a status read that produced the model name, connection

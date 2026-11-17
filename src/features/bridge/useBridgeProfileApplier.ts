@@ -2,7 +2,7 @@
 // for brands it has a driver for (currently Pulsar, plus whatever the
 // bundled Node helper covers — see OpenMouse-Bridge's drivers/mod.rs). For
 // every other brand it deliberately does nothing but fire an OS notification
-// telling the user to "open OpenMouse to apply it to this mouse" (see
+// telling the user to "open Orbit Hub to apply it to this mouse" (see
 // service.rs's Ok(false) branch) — this control panel, with a live WebHID
 // connection, has a driver for every supported brand. This hook is that
 // fallback, and the only place a profile's full settings snapshot is ever

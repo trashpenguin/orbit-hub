@@ -1,6 +1,5 @@
 {
-  "id": "2026-09-openmouse-bridge",
+  "id": "orbit-interface",
   "level": "info",
-  "message": "OpenMouse Bridge is here: Razer mice work on Windows again, plus game profiles, low-battery alerts and Firefox support. Read the announcement.",
-  "url": "https://openmouse.app/blog/openmouse-bridge"
+  "message": "Orbit Hub has a new workspace for your mice and keyboards."
 }

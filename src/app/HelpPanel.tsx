@@ -2,7 +2,7 @@ import { ChevronDown, CircleHelp, ExternalLink, X } from "lucide-react";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { t, type I18nKey } from "../i18n/index";
 import type { InterfaceLocale } from "../features/settings/interface-preferences";
-import { DISCORD_URL, DiscordIcon } from "../shared/social-links";
+import { PROJECT_ISSUES_URL, PROJECT_URL } from "../shared/project-links";
 
 const TOPICS: { question: I18nKey; answer: I18nKey }[] = [
   { question: "ai.topic1", answer: "ai.topic1Ans" },
@@ -12,7 +12,7 @@ const TOPICS: { question: I18nKey; answer: I18nKey }[] = [
   { question: "ai.linuxTopic", answer: "ai.linuxTopicAns" },
 ];
 
-const FAQ_URL = "https://openmouse.app/faq";
+const FAQ_URL = PROJECT_URL + "#development";
 
 export function HelpPanel({ locale = "en" }: { locale?: InterfaceLocale }): ReactNode {
   const [open, setOpen] = useState(false);
@@ -87,12 +87,12 @@ export function HelpPanel({ locale = "en" }: { locale?: InterfaceLocale }): Reac
             <span>{t(locale, "ai.other")}</span>
             <div className="om-help-links">
               <a className="om-btn" href={FAQ_URL} target="_blank" rel="noreferrer">
-                {t(locale, "help.faq")}
+                {t(locale, "nav.docs")}
                 <ExternalLink strokeWidth={2} aria-hidden="true" />
               </a>
-              <a className="om-btn om-help-discord" href={DISCORD_URL} target="_blank" rel="noreferrer">
-                <DiscordIcon />
-                {t(locale, "ai.joinDiscord")}
+              <a className="om-btn" href={PROJECT_ISSUES_URL} target="_blank" rel="noreferrer">
+                <ExternalLink strokeWidth={2} aria-hidden="true" />
+                {t(locale, "nav.support")}
               </a>
             </div>
           </footer>

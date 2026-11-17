@@ -7,8 +7,7 @@ import type { ControlSnapshot, WorkspaceTab } from "../../device/types";
 import { deviceImage, isUnknownDevice, placeholderImage } from "../../shared/device-images";
 import { ConnectionIcon } from "./DeviceStats";
 
-const ARTWORK_DISCUSSION_URL =
-  "https://github.com/OpenMouse-Project/openmouse/discussions/new?category=artwork-request";
+import { PROJECT_ISSUES_URL } from "../../shared/project-links";
 
 export function DeviceHero({
   snapshot,
@@ -37,7 +36,7 @@ export function DeviceHero({
     { vendorId: active.vendorId, productId: active.productId } as HIDDevice,
     status.name,
   )));
-  const artworkHref = `${ARTWORK_DISCUSSION_URL}${name ? `&title=${encodeURIComponent(`Artwork request: ${name}`)}` : ""}`;
+  const artworkHref = `${PROJECT_ISSUES_URL + "/new"}${name ? `?title=${encodeURIComponent(`Artwork request: ${name}`)}` : ""}`;
 
   const onTabKey = (event: KeyboardEvent<HTMLButtonElement>, current: WorkspaceTab): void => {
     const index = tabs.indexOf(current);

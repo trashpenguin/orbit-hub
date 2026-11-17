@@ -47,7 +47,7 @@ export interface SectorDiff {
   sector: number;
   changes: ByteChange[];
   /**
-   * Offsets our own encoder failed to reproduce. Empty means OpenMouse can
+   * Offsets our own encoder failed to reproduce. Empty means Orbit Hub can
    * write this change byte-for-byte as the vendor app did; undefined means no
    * verification was run.
    */
@@ -161,7 +161,7 @@ function capabilityLines(
 /** Recovery bundle copied before the first destructive verification write. */
 export function formatProfileWriteProbeBackupMarkdown(backup: ProfileContentWriteProbeBackup): string {
   return [
-    "## OpenMouse profile-write probe recovery backup",
+    "## Orbit Hub profile-write probe recovery backup",
     "",
     `- Profile format: ${backup.formatId}`,
     `- Sector: ${hexWord(backup.sector)}`,
@@ -183,14 +183,14 @@ export function formatProfileWriteProbeBackupMarkdown(backup: ProfileContentWrit
     hexBlock(backup.profile),
     "```",
     "",
-    "Keep this text until OpenMouse reports that the original profile and mode were restored.",
+    "Keep this text until Orbit Hub reports that the original profile and mode were restored.",
   ].join("\n");
 }
 
 export function formatProfileWriteProbeReportMarkdown(report: ProfileContentWriteProbeReport): string {
   const verdict = report.ok ? "PASSED" : "FAILED";
   return [
-    `## OpenMouse profile-write verification — ${verdict}`,
+    `## Orbit Hub profile-write verification — ${verdict}`,
     "",
     ...report.steps.flatMap((step) => [
       `### ${step.setting}`,
@@ -217,7 +217,7 @@ export function formatProfileVerificationMarkdown(capture: ProfileVerificationEx
     ...capabilityLines("Report rate", capture.reportRateCapabilities, "Hz"),
   ];
   const sections = [
-    "## OpenMouse profile-format verification",
+    "## Orbit Hub profile-format verification",
     "",
     `- Device: ${capture.device ?? "unknown"}`,
     `- Profile format: ${capture.profileFormat ?? info.profileFormatId}`,
@@ -251,7 +251,7 @@ export function formatProfileVerificationMarkdown(capture: ProfileVerificationEx
       `- Enabled: ${profile.enabled}`,
       `- Current: ${profile.isCurrent}`,
       `- CRC: ${profile.crcValid ? "valid" : "INVALID"}`,
-      "- Decoded by current OpenMouse layout:",
+      "- Decoded by current Orbit Hub layout:",
       "",
       "```json",
       JSON.stringify(profile.decoded, null, 2),
@@ -277,7 +277,7 @@ export function formatCaptureMarkdown(capture: CaptureExport): string {
     .sort();
 
   const sections = [
-    "## OpenMouse profile capture",
+    "## Orbit Hub profile capture",
     "",
     `- Device: ${capture.device ?? "unknown"}`,
     `- Profile format: ${capture.profileFormat ?? "not reported"}`,
@@ -315,7 +315,7 @@ export function formatCaptureMarkdown(capture: CaptureExport): string {
       sections.push(
         "",
         diff.unreproduced.length === 0
-          ? "**Write path verified** — OpenMouse reproduces this change byte for byte."
+          ? "**Write path verified** — Orbit Hub reproduces this change byte for byte."
           : `**Write path incomplete** — cannot reproduce ${diff.unreproduced.length} byte(s): `
             + diff.unreproduced.map(hexByte).join(", "),
       );

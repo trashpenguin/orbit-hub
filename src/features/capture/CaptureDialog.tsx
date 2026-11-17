@@ -116,8 +116,8 @@ export function CaptureDialog({ open, onClose, locale = "en" }: { open: boolean;
       setMessage(total === 0
         ? "No profile bytes changed."
         : failed === 0
-          ? `${total} byte(s) changed — write path verified, OpenMouse reproduces this exactly.`
-          : `${total} byte(s) changed, ${failed} not reproducible by OpenMouse yet.`);
+          ? `${total} byte(s) changed — write path verified, Orbit Hub reproduces this exactly.`
+          : `${total} byte(s) changed, ${failed} not reproducible by Orbit Hub yet.`);
     } catch (error) {
       if (run !== runRef.current) return;
       setMessage(error instanceof Error ? error.message : "Could not read profiles.");

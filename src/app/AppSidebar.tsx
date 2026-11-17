@@ -1,4 +1,4 @@
-import { DISCORD_URL, DiscordIcon } from "../shared/social-links";
+import { PROJECT_URL } from "../shared/project-links";
 import { displayText, t } from "../i18n/index";
 import {
   Activity,
@@ -19,7 +19,6 @@ import { BridgeStatusButton } from "../features/bridge/BridgeStatus";
 import { BatteryIcon } from "../shared/ui";
 import { useUiLocale } from "../shared/ui-locale";
 
-const ORBIT_HUB_SOURCE_URL = "https://github.com/trashpenguin/orbit-hub";
 
 export type DesktopPage = "home" | "dashboard" | "hardware-test" | "games" | "settings";
 
@@ -178,8 +177,8 @@ export function AppSidebar({
   return (
     <aside className={`om-sidebar${collapsed ? " is-collapsed" : ""}`}>
       <div className="om-sidebar-head">
-        <a className="om-brand" href={ORBIT_HUB_SOURCE_URL} target="_blank" rel="noreferrer" title={displayText(locale, "Orbit Hub on GitHub")}>
-          <img className="om-brand-mark" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={14} height={21} />
+        <a className="om-brand" href={PROJECT_URL} target="_blank" rel="noreferrer" title={displayText(locale, "Orbit Hub on GitHub")}>
+          <img className="om-brand-mark" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={36} height={36} />
           <span className="om-brand-text">
             <span className="om-brand-name">{displayText(locale, "Orbit Hub")}</span>
             <span className="om-brand-build">{displayText(locale, snapshot.buildLabel)}</span>
@@ -240,22 +239,8 @@ export function AppSidebar({
 
       <div className="om-sidebar-foot">
         <nav className="om-nav" aria-label={t(locale, "nav.more")}>
-          <NavItem icon={BookOpen} label={t(locale, "nav.docs")} href="https://docs.openmouse.app" external collapsed={collapsed} />
+          <NavItem icon={BookOpen} label={t(locale, "nav.docs")} href={PROJECT_URL + "#readme"} external collapsed={collapsed} />
           <NavItem icon={Megaphone} label={t(locale, "nav.whatsNew")} onClick={onOpenWhatsNew} collapsed={collapsed} />
-          <a
-            className="om-nav-item om-nav-discord"
-            href={DISCORD_URL}
-            target="_blank"
-            rel="noreferrer"
-            title={collapsed ? t(locale, "nav.help") : undefined}
-          >
-            <DiscordIcon className="om-nav-icon om-nav-icon-discord" />
-            <span className="om-nav-text">
-              <span className="om-nav-label">{t(locale, "nav.help")}</span>
-              <span className="om-nav-sub">{t(locale, "nav.helpSubtitle")}</span>
-            </span>
-            <span className="om-nav-ext" aria-hidden="true">↗</span>
-          </a>
           <NavItem
             icon={SettingsIcon}
             label={t(locale, "nav.settings")}

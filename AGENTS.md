@@ -5,14 +5,13 @@ Guidance for human contributors and AI agents working in this repository.
 ## Design
 
 Read [`DESIGN.md`](./DESIGN.md) before touching any UI. It is the source of truth for how
-OpenMouse looks: a calm, dark, instrument-like control panel where the device is the hero and
-settings read as numbers.
+Orbit Hub looks. The device workspace uses Orbit Hub’s visual identity, shared theme tokens, and capability-driven controls.
 
 Rules that must never be broken:
 
 - Colours come from the tokens in `src/styles/tokens.css`. No hex, `rgb()` literals or theme-name
   checks in TSX or area CSS; alpha mixes use the `-rgb` triples (`rgb(var(--accent-rgb) / 0.12)`).
-- Every theme (12 of them, Emerald default) is a full token set. A change must look right in
+- Every theme (12 of them, Orbit default) is a full token set. A change must look right in
   Emerald, Light and NieR, and mirror correctly in Arabic (RTL).
 - Sentence case everywhere. No uppercase micro labels, no category overlines, no em dashes in copy.
 - Real data only: every value comes from the device or the browser; anything unknown is left out

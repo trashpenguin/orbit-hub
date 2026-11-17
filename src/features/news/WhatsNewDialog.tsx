@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { t } from "../../i18n/index";
 import type { InterfaceLocale } from "../settings/interface-preferences";
 
-const DESKTOP_RELEASES_URL = "https://github.com/OpenMouse-Project/Desktop/releases";
+import { PROJECT_URL } from "../../shared/project-links";
 
 export function WhatsNewDialog({ open, onClose, locale = "en" }: {
   open: boolean;
@@ -42,19 +42,19 @@ export function WhatsNewDialog({ open, onClose, locale = "en" }: {
       <div className="support-dialog-inner whatsnew-dialog-inner">
         <header className="om-dialog-head">
           <div>
-            <h2 id="whatsnew-dialog-title">{t(locale, "wn.title")}</h2>
+            <h2 id="whatsnew-dialog-title">{t(locale, "nav.whatsNew")}</h2>
           </div>
           <button className="om-icon-btn" type="button" onClick={onClose} aria-label={t(locale, "common.close")}>×</button>
         </header>
         <div className="om-dialog-body">
-          <img className="standalone-brand" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={28} height={42} />
-          <p className="whatsnew-body">{t(locale, "wn.body")}</p>
+          <img className="standalone-brand" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={42} height={42} />
+          <p className="whatsnew-body">{t(locale, "home.subtitle")}</p>
         </div>
         <div className="om-dialog-foot">
           <button className="om-btn is-ghost" type="button" onClick={onClose}>{t(locale, "wn.close")}</button>
           <a
             className="om-btn is-primary whatsnew-download"
-            href={DESKTOP_RELEASES_URL}
+            href={PROJECT_URL + "/commits/main/"}
             target="_blank"
             rel="noreferrer"
           >
@@ -62,7 +62,7 @@ export function WhatsNewDialog({ open, onClose, locale = "en" }: {
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <path d="M7 10l5 5 5-5M12 15V3" />
             </svg>
-            {t(locale, "wn.download")}
+            {t(locale, "nav.docs")}
           </a>
         </div>
       </div>
