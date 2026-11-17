@@ -1,14 +1,15 @@
-import { Download, ExternalLink, X } from "lucide-react";
+import { ExternalLink, X } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { subscribeBridgeStatus } from "./bridge-status-store";
 import type { BridgeStatus } from "./bridge";
 import { displayText, t } from "../../i18n/index";
 import type { InterfaceLocale } from "../settings/interface-preferences";
+import { BRIDGE_SETUP_URL } from "../../shared/project-links";
 import { latestRelease } from "./updates";
 import { useBridgeActive } from "../games/GamesPage";
 
 export const BRIDGE_REPOSITORY = "OpenMouse-Project/OpenMouse-Bridge";
-export const BRIDGE_RELEASES_URL = `https://github.com/${BRIDGE_REPOSITORY}/releases/latest`;
+
 
 function useBridgeStatus(active: boolean): BridgeStatus | null {
   const [status, setStatus] = useState<BridgeStatus | null>(null);
@@ -100,9 +101,9 @@ export function BridgeStatusButton({ locale }: { locale: InterfaceLocale }): Rea
             </li>
           </ul>
           <footer className="om-bridge-pop-foot">
-            <a className={`om-btn${active && !outdated ? "" : " is-primary"}`} href={BRIDGE_RELEASES_URL} target="_blank" rel="noreferrer">
-              {active && !outdated ? <ExternalLink strokeWidth={1.9} aria-hidden="true" /> : <Download strokeWidth={1.9} aria-hidden="true" />}
-              {t(locale, active && !outdated ? "bridge.releaseNotes" : outdated ? "bridge.update" : "bridge.download")}
+            <a className={`om-btn${active && !outdated ? "" : " is-primary"}`} href={BRIDGE_SETUP_URL} target="_blank" rel="noreferrer">
+              <ExternalLink strokeWidth={1.9} aria-hidden="true" />
+              {t(locale, "nav.docs")}
             </a>
           </footer>
         </div>
