@@ -25,27 +25,21 @@ const px = (name: string): number => {
   return Number.parseFloat(value);
 };
 
-test("shell, page and rail geometry match the shared contract", () => {
-  assert.equal(px("sidebar-w"), contract.sidebar);
-  assert.equal(px("sidebar-w-collapsed"), contract.sidebarCollapsed);
-  assert.equal(px("sidebar-inline"), contract.sidebarInline);
+test("toolbar, settings index and device geometry match the shared contract", () => {
+  assert.equal(px("toolbar-h"), contract.toolbarHeight);
+  assert.equal(px("device-stage-w"), contract.deviceStageWidth);
+  assert.equal(px("settings-index-w"), contract.settingsIndexWidth);
   assert.equal(px("nav-h"), contract.navHeight);
   assert.equal(px("nav-inline"), contract.navInline);
   assert.equal(px("nav-icon"), contract.navIcon);
   assert.equal(px("page-x"), contract.pageX);
   assert.equal(px("page-top"), contract.pageTop);
   assert.equal(px("content-w"), contract.contentMax);
-  assert.equal(px("rail-w"), contract.railWide);
-  assert.equal(px("rail-w-medium"), contract.railMedium);
   assert.equal(px("rail-gap"), contract.railGap);
-  assert.equal(px("rail-art-inset"), contract.railArtInset);
-  assert.equal(px("rail-art-stacked"), contract.railArtStacked);
 });
 
 test("tabs, panels and controls match the shared contract", () => {
   assert.equal(px("tab-well-h"), contract.tabWell);
-  assert.equal(px("tab-h"), contract.tabHeight);
-  assert.equal(px("tab-pad"), contract.tabPad);
   assert.equal(px("tab-gap"), contract.tabGap);
   assert.equal(px("panel-pad"), contract.panelPad);
   assert.equal(px("panel-gap"), contract.panelGap);

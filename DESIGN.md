@@ -26,7 +26,7 @@ Orbit Hub uses a midnight-blue workspace, a warm accent, and an orbital stage fo
 | Layer | Recipe |
 |---|---|
 | Ground | `--ground`: dark page ink with a quiet surface under the device artwork. |
-| Chrome | Sidebar on `--ink-0` with a hairline edge. |
+| Chrome | App bar on `--ink-0` with a hairline edge. |
 | Panel | `.om-panel` (or the legacy `.setting-card`): `--sheen` over `--surface-1` over `--ink-1` , `--lit` edge, `--r-md`. Featured panel: `.om-panel.is-lit` (one or two per page). |
 | Row | Inside a panel: hairline `--line-1` separators. Don't nest panels. |
 | Well | Inset areas (segmented controls, inputs, render stages): `--well` + `--inset-shadow`. |
@@ -35,11 +35,7 @@ Orbit Hub uses a midnight-blue workspace, a warm accent, and an orbital stage fo
 
 ## App layout
 
-- **Sidebar** (`AppSidebar.tsx`, 226px, collapsible to a 68px icon rail, remembered; nav rows 40px, radius 8, 10px inline padding, 13/500):
-  brand + build; Devices, Hardware test, Games (without Bridge it lists the supported games under a download-Bridge panel); "Your devices" switcher
-  (thumbnail, name, battery icon + percent or "Not connected"); footer: Docs ↗, What's new,
-  Help & feedback, Settings; Bridge status line, which opens a small card with Bridge's
-  status, update notice and download link (`features/bridge/BridgeStatus.tsx`).
+- **App bar** (`AppHeader.tsx`): Orbit Hub’s mark, four primary destinations and project utilities share a horizontal toolbar. Authorized devices appear in a separate scrollable switcher with their connection or battery status. The Bridge button opens a popover below its trigger.
 - **Main column**: news strip on top, then the scrolling page (`.om-content` > `.om-page`: 36px
   top and 40px side padding around a content box of at most 1260px). The pending-changes bar floats at the bottom of the main column. A help button floats
   bottom right and opens a small panel of common questions with instant answers, plus links to
@@ -48,18 +44,11 @@ Orbit Hub uses a midnight-blue workspace, a warm accent, and an orbital stage fo
   one surface (render on a stage, name, connection badge, live stats with icons, Configure/Open,
   and a ⋯ menu to remove the device) ending in an Add device block with the supported mice
   crossfading. Drag, swipe, arrow buttons, dots and arrow keys all move it. The shelf aligns with the page title. With no devices, the pairing panel puts the action on the leading side and the device artwork on the trailing side.
-- **Device page** (`features/devices/DeviceHero.tsx`): the device rail on the left (breadcrumb, name,
-  "Connected" + connection type, then the contained render over its orbit outline), the
-  workspace beside it (tabs in a 40px well, then the panels). The rail is 280px when the page's
-  content box is at least 1000px wide, 220px from 760px, and stacks above the tabs below that
-  (container query on `.om-device-page`); 22px gap. Overview: Current setup figures + DPI stage
-  chips, Battery over time chart (recorded samples), Firmware.
+- **Device page** (`features/devices/DeviceHero.tsx`): a full-width identity panel pairs the device name, connection and contained artwork. An underline navigation row leads into the full-width control area.
 - **Setting cards** flow in a masonry column layout (`CardSlot`, `styles/instrument.css`) so there
   are no holes; every card heading carries a glyph, and feature switches are tiles
   (`SwitchRow` in `shared/ui.tsx`).
-- **Settings** (`features/settings/InterfaceSettings.tsx`): grouped panels of setting rows (title + description start, control end): Appearance
-  (theme gallery, each tile painted in its own theme; animations), Language (picker with native
-  names), Behaviour, Profile key, Driver previews (dev builds), About.
+- **Settings** (`features/settings/InterfaceSettings.tsx`): a section index opens one category at a time. Appearance pairs an active-theme preview with named swatches. Other categories retain their setting rows and the same interaction states.
 
 ## Tokens
 

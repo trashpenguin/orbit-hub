@@ -1,5 +1,5 @@
 import { Download, ExternalLink, X } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { subscribeBridgeStatus } from "./bridge-status-store";
 import type { BridgeStatus } from "./bridge";
 import { displayText, t } from "../../i18n/index";
@@ -29,30 +29,13 @@ function useLatestBridge(enabled: boolean): string | null | undefined {
   return latest;
 }
 
-export function BridgeStatusButton({ locale, collapsed }: { locale: InterfaceLocale; collapsed: boolean }): ReactNode {
+export function BridgeStatusButton({ locale }: { locale: InterfaceLocale }): ReactNode {
   const active = useBridgeActive();
   const status = useBridgeStatus(active);
   const [open, setOpen] = useState(false);
   const latest = useLatestBridge(open);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  const [place, setPlace] = useState<CSSProperties>({});
-
-  useLayoutEffect(() => {
-    if (!open || !trigger.current) return;
-    const measure = (): void => {
-      const rect = trigger.current!.getBoundingClientRect();
-      const rtl = getComputedStyle(trigger.current!).direction === "rtl";
-      const bottom = collapsed ? window.innerHeight - rect.bottom : window.innerHeight - rect.top + 8;
-      const edge = collapsed
-        ? (rtl ? window.innerWidth - rect.left + 12 : rect.right + 12)
-        : (rtl ? window.innerWidth - rect.right : rect.left);
-      setPlace(rtl ? { bottom, right: edge } : { bottom, left: edge });
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [open, collapsed]);
 
   useEffect(() => {
     if (!open) return;
@@ -84,7 +67,6 @@ export function BridgeStatusButton({ locale, collapsed }: { locale: InterfaceLoc
         className={`om-bridge-line${active ? " is-on" : ""}${open ? " is-open" : ""}`}
         aria-expanded={open}
         aria-haspopup="dialog"
-        title={collapsed ? label : undefined}
         onClick={() => setOpen((value) => !value)}
       >
         <span className={`om-dot${active ? " is-ok" : ""}`} aria-hidden="true" />
@@ -92,7 +74,7 @@ export function BridgeStatusButton({ locale, collapsed }: { locale: InterfaceLoc
         {outdated ? <span className="om-bridge-line-flag">{t(locale, "bridge.update")}</span> : null}
       </button>
       {open ? (
-        <div className="om-bridge-pop" role="dialog" aria-labelledby="om-bridge-pop-title" style={place}>
+        <div className="om-bridge-pop" role="dialog" aria-labelledby="om-bridge-pop-title">
           <header className="om-bridge-pop-head">
             <span className={`om-dot${active ? " is-ok" : ""}`} aria-hidden="true" />
             <h2 id="om-bridge-pop-title">{t(locale, "bridge.title")}</h2>

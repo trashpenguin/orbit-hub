@@ -1,28 +1,15 @@
 {
-  "sidebar": 226,
-  "sidebarCollapsed": 68,
-  "sidebarInline": 14,
   "navHeight": 40,
-  "navInline": 10,
+  "navInline": 12,
   "navGap": 11,
-  "navIcon": 17,
+  "navIcon": 16,
   "iconStroke": 1.8,
   "pageX": 40,
   "pageTop": 36,
   "contentMax": 1260,
-  "railWide": 280,
-  "railMedium": 220,
-  "railWideFrom": 1000,
-  "railMediumFrom": 760,
   "railGap": 22,
-  "railArtInset": 0,
-  "railArtStacked": 128,
   "tabWell": 40,
-  "tabHeight": 32,
-  "tabPad": 4,
   "tabGap": 4,
-  "tabWellRadius": 10,
-  "tabRadius": 6,
   "panelPad": 18,
   "panelGap": 16,
   "rowMin": 40,
@@ -73,5 +60,8 @@
       30,
       24
     ]
-  }
+  },
+  "toolbarHeight": 68,
+  "deviceStageWidth": 152,
+  "settingsIndexWidth": 208
 }

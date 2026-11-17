@@ -3,8 +3,6 @@ import { displayText, t } from "../i18n/index";
 import {
   Activity,
   BookOpen,
-  ChevronLeft,
-  ChevronRight,
   Gamepad2,
   LayoutGrid,
   Megaphone,
@@ -29,7 +27,6 @@ const NavItem = memo(function NavItem({
   external = false,
   href,
   onClick,
-  collapsed,
 }: {
   icon: LucideIcon;
   label: string;
@@ -37,7 +34,6 @@ const NavItem = memo(function NavItem({
   external?: boolean;
   href?: string;
   onClick?: () => void;
-  collapsed: boolean;
 }): ReactNode {
   const body = (
     <>
@@ -47,7 +43,7 @@ const NavItem = memo(function NavItem({
     </>
   );
   const className = `om-nav-item${active ? " is-active" : ""}`;
-  const title = collapsed ? label : undefined;
+  const title = label;
   if (href) {
     return (
       <a className={className} title={title} href={href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined}>
@@ -62,19 +58,17 @@ const NavItem = memo(function NavItem({
   );
 });
 
-const SidebarDeviceRow = memo(function SidebarDeviceRow({
+const DeviceStripRow = memo(function DeviceStripRow({
   device,
   live,
   batteryPercent,
   batteryState,
-  collapsed,
   open,
 }: {
   device: SidebarDevice;
   live: boolean;
   batteryPercent: number | null;
   batteryState: MouseStatus["batteryState"];
-  collapsed: boolean;
   open: (index: number) => void;
   // Bumps when a lazy locale table resolves; row text otherwise keeps the
   // English fallback because no other prop changes on table load.
@@ -88,7 +82,7 @@ const SidebarDeviceRow = memo(function SidebarDeviceRow({
       <button
         type="button"
         className={`om-side-device${live ? " is-active" : ""}`}
-        title={collapsed ? device.name : undefined}
+        title={device.name}
         onClick={openDevice}
       >
         <span className="om-side-device-art" aria-hidden="true">
@@ -122,15 +116,13 @@ const SidebarDeviceRow = memo(function SidebarDeviceRow({
   );
 });
 
-function SidebarDeviceRowOutlet({
+function DeviceStripRowOutlet({
   snapshot,
   index,
-  collapsed,
   open,
 }: {
   snapshot: ControlSnapshot;
   index: number;
-  collapsed: boolean;
   open: (index: number) => void;
 }): ReactNode {
   const device = snapshot.devices.find((entry) => entry.index === index);
@@ -138,31 +130,26 @@ function SidebarDeviceRowOutlet({
   const live = device.selected && (snapshot.deviceStatus !== null || snapshot.keyboard !== null);
   const status = live ? snapshot.deviceStatus : null;
   return (
-    <SidebarDeviceRow
+    <DeviceStripRow
       device={device}
       live={live}
       batteryPercent={status?.batteryPercent ?? null}
       batteryState={status?.batteryState ?? "Unknown"}
-      collapsed={collapsed}
       open={open}
       localeTableRevision={snapshot.localeTableRevision}
     />
   );
 }
 
-export function AppSidebar({
+export function AppHeader({
   snapshot,
   page,
-  collapsed,
-  onToggleCollapsed,
   onNavigate,
   onOpenWhatsNew,
   onOpenDevice,
 }: {
   snapshot: ControlSnapshot;
   page: DesktopPage;
-  collapsed: boolean;
-  onToggleCollapsed: () => void;
   onNavigate: (page: DesktopPage) => void;
   onOpenWhatsNew: () => void;
   onOpenDevice: (index: number) => void;
@@ -175,82 +162,40 @@ export function AppSidebar({
   const goSettings = useCallback(() => onNavigate("settings"), [onNavigate]);
 
   return (
-    <aside className={`om-sidebar${collapsed ? " is-collapsed" : ""}`}>
-      <div className="om-sidebar-head">
-        <a className="om-brand" href={PROJECT_URL} target="_blank" rel="noreferrer" title={displayText(locale, "Orbit Hub on GitHub")}>
+    <header className="orbit-header">
+      <div className="orbit-toolbar">
+        <a className="om-brand" href={PROJECT_URL} target="_blank" rel="noreferrer"
+          title={displayText(locale, "Orbit Hub on GitHub")}>
           <img className="om-brand-mark" src={import.meta.env.BASE_URL + "logo.png"} alt="" width={36} height={36} />
-          <span className="om-brand-text">
-            <span className="om-brand-name">{displayText(locale, "Orbit Hub")}</span>
-            <span className="om-brand-build">{displayText(locale, snapshot.buildLabel)}</span>
-          </span>
+          <span className="om-brand-name">{displayText(locale, "Orbit Hub")}</span>
         </a>
-        <button
-          type="button"
-          className="om-icon-btn om-sidebar-toggle"
-          aria-label={t(locale, collapsed ? "nav.expand" : "nav.collapse")}
-          title={t(locale, collapsed ? "nav.expand" : "nav.collapse")}
-          aria-expanded={!collapsed}
-          onClick={onToggleCollapsed}
-        >
-          {collapsed ? <ChevronRight strokeWidth={2} aria-hidden="true" /> : <ChevronLeft strokeWidth={2} aria-hidden="true" />}
-        </button>
+
+        <nav className="om-nav orbit-primary-nav" aria-label={t(locale, "nav.main")}>
+          <NavItem icon={LayoutGrid} label={t(locale, "nav.devices")}
+            active={page === "home" || page === "dashboard"} onClick={goHome} />
+          <NavItem icon={Activity} label={t(locale, "nav.hardwareTest")}
+            active={page === "hardware-test"} onClick={goHardwareTest} />
+          <NavItem icon={Gamepad2} label={t(locale, "nav.games")} active={page === "games"} onClick={goGames} />
+          <NavItem icon={SettingsIcon} label={t(locale, "nav.settings")} active={page === "settings"} onClick={goSettings} />
+        </nav>
+
+        <nav className="om-nav orbit-utility-nav" aria-label={t(locale, "nav.more")}>
+          <NavItem icon={BookOpen} label={t(locale, "nav.docs")} href={PROJECT_URL + "#readme"} external />
+          <NavItem icon={Megaphone} label={t(locale, "nav.whatsNew")} onClick={onOpenWhatsNew} />
+          <BridgeStatusButton locale={locale} />
+        </nav>
       </div>
 
-      <nav className="om-nav" aria-label={t(locale, "nav.main")}>
-        <NavItem
-          icon={LayoutGrid}
-          label={t(locale, "nav.devices")}
-          active={page === "home" || page === "dashboard"}
-          onClick={goHome}
-          collapsed={collapsed}
-        />
-        <NavItem
-          icon={Activity}
-          label={t(locale, "nav.hardwareTest")}
-          active={page === "hardware-test"}
-          onClick={goHardwareTest}
-          collapsed={collapsed}
-        />
-        <NavItem
-          icon={Gamepad2}
-          label={t(locale, "nav.games")}
-          active={page === "games"}
-          onClick={goGames}
-          collapsed={collapsed}
-        />
-      </nav>
-
       {devices.length > 0 ? (
-        <section className="om-side-devices" aria-labelledby="om-side-devices-title">
-          <h2 id="om-side-devices-title" className="om-side-heading">{t(locale, "nav.yourDevices")}</h2>
+        <section className="orbit-device-strip" aria-labelledby="orbit-device-strip-title">
+          <h2 id="orbit-device-strip-title">{t(locale, "nav.yourDevices")}</h2>
           <ul>
             {devices.map((device) => (
-              <SidebarDeviceRowOutlet
-                key={device.index}
-                snapshot={snapshot}
-                index={device.index}
-                collapsed={collapsed}
-                open={onOpenDevice}
-              />
+              <DeviceStripRowOutlet key={device.index} snapshot={snapshot} index={device.index} open={onOpenDevice} />
             ))}
           </ul>
         </section>
       ) : null}
-
-      <div className="om-sidebar-foot">
-        <nav className="om-nav" aria-label={t(locale, "nav.more")}>
-          <NavItem icon={BookOpen} label={t(locale, "nav.docs")} href={PROJECT_URL + "#readme"} external collapsed={collapsed} />
-          <NavItem icon={Megaphone} label={t(locale, "nav.whatsNew")} onClick={onOpenWhatsNew} collapsed={collapsed} />
-          <NavItem
-            icon={SettingsIcon}
-            label={t(locale, "nav.settings")}
-            active={page === "settings"}
-            onClick={goSettings}
-            collapsed={collapsed}
-          />
-        </nav>
-        <BridgeStatusButton locale={locale} collapsed={collapsed} />
-      </div>
-    </aside>
+    </header>
   );
 }
