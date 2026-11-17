@@ -6581,6 +6581,8 @@ export function applyTeevolutionDpiLighting(setting: "mode" | "brightness" | "sp
   if (!dpiLightingClient()) return;
   const hint = latestDeviceStatus?.ui?.dpiLighting;
   const allowed = setting === "mode" ? hint?.modes : setting === "brightness" ? hint?.brightness : hint?.speed;
+  if (setting === "brightness" && hint?.brightnessModes && latestDeviceStatus
+    && !hint.brightnessModes.includes(withPendingChanges(latestDeviceStatus).dpiLedMode ?? 0)) return;
   if (allowed && !allowed.includes(value)) return;
   const names = { mode: "effect", brightness: "brightness", speed: "speed" } as const;
   const display = setting === "mode" ? (["Off", "Steady", "Breathing"][value] ?? `${value}`) : `${value}`;
