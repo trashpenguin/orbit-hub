@@ -5,23 +5,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import * as control from "../../device/controller";
 import type { ControlSnapshot } from "../../device/types";
 import { LOCALE_NAME_KEYS, t } from "../../i18n/index";
-import { interfaceThemeSlug, type InterfaceTheme } from "./interface-preferences";
+import { INTERFACE_THEMES, interfaceThemeSlug, type InterfaceTheme } from "./interface-preferences";
 import { OptionMenu, SwitchButton } from "../../shared/ui";
-
-const THEME_ORDER: readonly InterfaceTheme[] = [
-  "Emerald",
-  "Matt",
-  "Violet",
-  "Ice",
-  "Ember",
-  "Mono",
-  "Miku",
-  "Catppuccin Mocha",
-  "Catppuccin Macchiato",
-  "Catppuccin Frappé",
-  "NieR: Automata",
-  "Light",
-];
 
 const SECTIONS = [
   { id: "settings-appearance", label: "set.groupAppearance", icon: Palette },
@@ -187,7 +172,7 @@ export function InterfaceSettings({ snapshot }: { snapshot: ControlSnapshot }): 
                   <strong>{displayText(locale, themeName(preferences.theme))}</strong>
                 </div>
                 <fieldset id="interface-theme" className="om-theme-grid" aria-label={t(locale, "set.themeTitle")}>
-                  {THEME_ORDER.map((name) => (
+                  {INTERFACE_THEMES.map((name) => (
                     <button key={name} type="button" className="om-theme-tile"
                       aria-pressed={preferences.theme === name}
                       onClick={() => control.setInterfaceTheme(name)}>

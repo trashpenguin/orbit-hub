@@ -23,7 +23,7 @@
         .replace("é", "e")
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
-    const themes = ["matt", "emerald", "violet", "ice", "ember", "mono", "miku", "catppuccin-mocha", "catppuccin-macchiato", "catppuccin-frappe", "nier-automata", "light"];
+    const themes = ["matt", "emerald", "violet", "ice", "ember", "mono", "miku", "catppuccin-mocha", "catppuccin-macchiato", "catppuccin-frappe", "nier-automata", "deep-ocean", "mulberry", "olive-dusk", "glacier", "light"];
     const themeSlug = toSlug(saved.theme);
     document.documentElement.dataset.interfaceTheme = themeSlug && themes.indexOf(themeSlug) !== -1 ? themeSlug : "emerald";
     const langs = { pt: "pt-BR", es: "es", fr: "fr", de: "de", zh: "zh-CN", ja: "ja", ko: "ko", ru: "ru", vi: "vi", ar: "ar", tr: "tr", en: "en" };

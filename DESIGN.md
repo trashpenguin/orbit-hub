@@ -65,8 +65,8 @@ Use tokens only; no hex in components or area CSS. Alpha mixes use the `-rgb` tr
 | `--ok`, `--bad`, `--warn`, `--info` | Real states only |
 | `--stage-light` | The light behind a device render |
 
-Themes: all 12 (Orbit default, Matt, Violet, Ice, Ember, Mono, Miku, Catppuccin Mocha /
-Macchiato / Frappé, NieR: Automata, Light) are full token sets in `tokens.css`, selected by
+Themes: all 16 (Orbit default, Matt, Violet, Ice, Ember, Mono, Miku, Catppuccin Mocha /
+Macchiato / Frappé, NieR: Automata, Deep Ocean, Mulberry, Olive Dusk, Glacier, Light) are full token sets in `tokens.css`, selected by
 `data-interface-theme` on the shell (and mirrored on `<html>`). Derived tokens are declared on every
 themed element, so any element carrying `data-interface-theme` paints itself in that theme.
 No component may fork on a theme name.

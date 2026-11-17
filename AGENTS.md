@@ -11,7 +11,7 @@ Rules that must never be broken:
 
 - Colours come from the tokens in `src/styles/tokens.css`. No hex, `rgb()` literals or theme-name
   checks in TSX or area CSS; alpha mixes use the `-rgb` triples (`rgb(var(--accent-rgb) / 0.12)`).
-- Every theme (12 of them, Orbit default) is a full token set. A change must look right in
+- Every theme (16 of them, Orbit default) is a full token set. A change must look right in
   Emerald, Light and NieR, and mirror correctly in Arabic (RTL).
 - Sentence case everywhere. No uppercase micro labels, no category overlines, no em dashes in copy.
 - Real data only: every value comes from the device or the browser; anything unknown is left out

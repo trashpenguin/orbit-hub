@@ -268,15 +268,15 @@ test("Noir S1 resolves to the reserved maintainer-hosted artwork filename", () =
   assert.equal(deviceImage(null, "Noir Gear / NOIR S1"), CDN + "noir-s1.png");
 });
 
-test("Attack Shark X11 does not inherit K-snake artwork", () => {
-  assert.equal(deviceImage(null, "Attack Shark X11"), CDN + "unknown-device.png");
-  assert.equal(deviceImage(null, "Attack Shark X11 SE"), CDN + "unknown-device.png");
+test("Attack Shark X11 and X11 SE use their own art", () => {
+  assert.equal(deviceImage(null, "Attack Shark X11"), "/devices/attackshark-x11.webp");
+  assert.equal(deviceImage(null, "Attack Shark X11 SE"), "/devices/attackshark-x11-se.webp");
 });
 
 test("Attack Shark X3 / X3 Pro resolve by name", () => {
   assert.equal(deviceImage(null, "Attack Shark X3"), CDN + "attackshark-x3.png");
   assert.equal(deviceImage(null, "Attack Shark X3 Pro"), CDN + "attackshark-x3.png");
-  assert.equal(deviceImage(null, "Attack Shark X11"), CDN + "unknown-device.png");
+  assert.equal(deviceImage(null, "Attack Shark X11"), "/devices/attackshark-x11.webp");
   assert.equal(deviceImage(null, "Pulsar X3 Medium"), CDN + "pulsar-x2-v2.png");
 });
 
@@ -377,8 +377,17 @@ test("the load-error placeholder follows the device kind", () => {
 
 test("the pairing artwork ships with Orbit Hub", () => {
   assert.deepEqual(showcaseDeviceImageUrls(), [
+    "/devices/attackshark-v5.webp",
+    "/devices/attackshark-x11-se.webp",
     "/devices/asus-rog-harpe-ace-aim-lab.png",
     "/devices/attackshark-r2.png",
     "/devices/delux-m800-mini.png",
   ]);
+});
+
+test("Attack Shark V5 variants resolve independently of the R5 Ultra", () => {
+  assert.equal(deviceImage(null, "ATTACKSHARK V5"), "/devices/attackshark-v5.webp");
+  assert.equal(deviceImage(null, "Attack Shark V5 Wireless Mouse White"), "/devices/attackshark-v5-white.webp");
+  assert.equal(deviceImage(null, "Attack Shark V50"), CDN + "unknown-device.png");
+  assert.equal(deviceImage(null, "Attack Shark X11 Pro V2"), CDN + "unknown-device.png");
 });

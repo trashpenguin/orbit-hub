@@ -1,16 +1,23 @@
-export type InterfaceTheme =
-  | "Matt"
-  | "Emerald"
-  | "Violet"
-  | "Ice"
-  | "Ember"
-  | "Mono"
-  | "Miku"
-  | "Catppuccin Mocha"
-  | "Catppuccin Macchiato"
-  | "Catppuccin Frappé"
-  | "NieR: Automata"
-  | "Light";
+export const INTERFACE_THEMES = [
+  "Emerald",
+  "Matt",
+  "Violet",
+  "Ice",
+  "Ember",
+  "Mono",
+  "Miku",
+  "Catppuccin Mocha",
+  "Catppuccin Macchiato",
+  "Catppuccin Frappé",
+  "NieR: Automata",
+  "Deep Ocean",
+  "Mulberry",
+  "Olive Dusk",
+  "Glacier",
+  "Light",
+] as const;
+
+export type InterfaceTheme = typeof INTERFACE_THEMES[number];
 export type InterfaceColorMode = "Light" | "Dark" | "System";
 export type InterfaceLocale =
    "en" | "pt" | "es" | "fr" | "de" | "zh" | "ja" | "ko" | "ru" | "vi" | "ar" | "tr";
@@ -46,21 +53,6 @@ export interface InterfacePreferences {
 }
 
 const STORAGE_KEY = "openmouse-interface-settings-v1";
-const THEMES: readonly InterfaceTheme[] = [
-  "Matt",
-  "Emerald",
-  "Violet",
-  "Ice",
-  "Ember",
-  "Mono",
-  "Miku",
-  "Catppuccin Mocha",
-  "Catppuccin Macchiato",
-  "Catppuccin Frappé",
-  "NieR: Automata",
-  "Light",
-];
-
 export const DEFAULT_INTERFACE_PREFERENCES: InterfacePreferences = {
   theme: "Emerald",
   colorMode: "System",
@@ -112,7 +104,7 @@ export function loadInterfacePreferences(storage: Storage): InterfacePreferences
   try {
     const saved = JSON.parse(storage.getItem(STORAGE_KEY) ?? "{}") as Partial<InterfacePreferences>;
     return {
-      theme: THEMES.includes(saved.theme as InterfaceTheme) ? saved.theme as InterfaceTheme : DEFAULT_INTERFACE_PREFERENCES.theme,
+      theme: INTERFACE_THEMES.includes(saved.theme as InterfaceTheme) ? saved.theme as InterfaceTheme : DEFAULT_INTERFACE_PREFERENCES.theme,
       colorMode: saved.colorMode === "Light" || saved.colorMode === "Dark" ? saved.colorMode : "System",
       locale: coerceLocale(saved.locale),
       reducedMotion:

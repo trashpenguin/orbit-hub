@@ -63,6 +63,11 @@ function computeDeviceImageFilename(displayName: string): string {
   if (/\bvxe\s+r1(?:\s+(?:se\+?|pro(?:\s+max)?))?\b/i.test(displayName)) {
     return "vxe-r1-series.png";
   }
+  if (/\battack\s*shark\s*v5\b/i.test(displayName)) {
+    return /\bwhite\b/i.test(displayName) ? "attackshark-v5-white.webp" : "attackshark-v5.webp";
+  }
+  if (/\battack\s*shark\s*x11\s*se\b/i.test(displayName)) return "attackshark-x11-se.webp";
+  if (/\battack\s*shark\s*x11\b(?![\s-]*(?:pro|ultra))/i.test(displayName)) return "attackshark-x11.webp";
   if (/\br5\s*ultra\b/i.test(displayName)) return "attackshark-r5-ultra.png";
   if (/\bfloat\s*88\b/i.test(displayName)) return "unknown-device.png";
   if (/\batk\s*zero\b/i.test(displayName)) return "atk-zero.png";
@@ -211,6 +216,10 @@ const DEVICE_IMAGE_BASE_URL = "https://img.openmouse.app/";
  * README note.
  */
 const LOCAL_OVERRIDES: Readonly<Record<string, string>> = {
+  "attackshark-v5.webp": "/devices/attackshark-v5.webp",
+  "attackshark-v5-white.webp": "/devices/attackshark-v5-white.webp",
+  "attackshark-x11.webp": "/devices/attackshark-x11.webp",
+  "attackshark-x11-se.webp": "/devices/attackshark-x11-se.webp",
   "attackshark-r2.png": "/devices/attackshark-r2.png",
   "delux-m800-mini.png": "/devices/delux-m800-mini.png",
   "asus-rog-harpe-ace-aim-lab.png": "/devices/asus-rog-harpe-ace-aim-lab.png",
@@ -255,6 +264,8 @@ export function deviceImageFilename(displayName = ""): string {
 }
 
 const SHOWCASE_DEVICE_FILENAMES = [
+  "attackshark-v5.webp",
+  "attackshark-x11-se.webp",
   "asus-rog-harpe-ace-aim-lab.png",
   "attackshark-r2.png",
   "delux-m800-mini.png",

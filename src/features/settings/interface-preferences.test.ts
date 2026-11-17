@@ -91,6 +91,10 @@ test("every interface theme persists and maps to its stylesheet slug", () => {
     ["Catppuccin Macchiato", "catppuccin-macchiato"],
     ["Catppuccin Frappé", "catppuccin-frappe"],
     ["NieR: Automata", "nier-automata"],
+    ["Deep Ocean", "deep-ocean"],
+    ["Mulberry", "mulberry"],
+    ["Olive Dusk", "olive-dusk"],
+    ["Glacier", "glacier"],
     ["Light", "light"],
   ];
 

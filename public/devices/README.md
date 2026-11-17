@@ -285,3 +285,11 @@ no colour, keycaps, legends or shading carried over. It is committed at
 `public/devices/unknown-keyboard.png` and served from the repo until a
 maintainer uploads it to the bucket; then drop its `LOCAL_OVERRIDES` entry in
 `src/shared/device-images.ts` and point the tests at `CDN + "unknown-keyboard.png"`.
+
+## Orbit Hub Attack Shark artwork
+
+The locally bundled WebP images use manufacturer product photography. The V5 artwork shows the black colorway by default and the white colorway when the device name specifies it.
+
+- [Attack Shark V5 product photography](https://attackshark.com/products/attack-shark-v5-ultra-light-tri-mode-gaming-mouse)
+- [Attack Shark X11 product photography](https://attackshark.com/products/attack-shark-x11-wireless-gaming-mouse-charging-dock)
+- [Attack Shark X11 SE product photography](https://attackshark.com/products/attack-shark-x11se-wireless-gaming-mouse)
