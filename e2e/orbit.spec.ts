@@ -7,7 +7,14 @@ test.beforeEach(async ({ page }) => {
     const hid = new EventTarget();
     Object.defineProperties(hid, {
       getDevices: { value: async () => [] },
-      requestDevice: { value: async () => {
+      requestDevice: { value: async ({ filters }: HIDDeviceRequestOptions) => {
+        if (new URL(location.href).searchParams.has("pg1-fixture")) {
+          if (!filters.some((filter) => filter.vendorId === 0x30fa && filter.productId === 0x1440)) {
+            throw new Error("The diagnostic USB ID is missing from the chooser.");
+          }
+          return [{ vendorId: 0x30fa, productId: 0x1440, productName: "USB GAMING MOUSE",
+            collections: [{ featureReports: [{ reportId: 7 }], children: [] }] }];
+        }
         if (new URL(location.href).searchParams.has("unsupported-fixture")) {
           return [{ vendorId: 65535, productId: 65534, productName: "Unknown fixture", collections: [] }];
         }
@@ -224,3 +231,18 @@ for (const locale of ["en", "ar"]) {
     });
   }
 }
+
+test("shared PG1 USB ID returns configuration-interface diagnostics", async ({ page }) => {
+  await page.goto("./?pg1-fixture");
+  await page.getByRole("button", { name: "Add device", exact: true }).click();
+  const issue = page.locator(".orbit-connection-notice");
+  await expect(issue.getByText(/Orbit Hub found USB device 30FA:1440/)).toBeVisible();
+  const download = page.waitForEvent("download");
+  await issue.getByRole("button", { name: "Download diagnostics" }).click();
+  const file = await (await download).path();
+  expect(JSON.parse(await readFile(file!, "utf8"))).toEqual({
+    stage: "identification",
+    device: { vendorId: 0x30fa, productId: 0x1440 },
+    configurationReport7: true,
+  });
+});

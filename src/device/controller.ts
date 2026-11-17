@@ -146,7 +146,7 @@ import type { WLMouseBeastX4kHidClient } from "@openmouse/protocol/drivers/wlmou
 import type { DareuHidClient } from "@openmouse/protocol/drivers/dareu/hid";
 import type { IncottHidClient } from "@openmouse/protocol/drivers/incott/hid";
 import type { IncottMacro } from "@openmouse/protocol/incott";
-import { BASILISK_V3_PRO_BLUETOOTH, HID_FILTERS } from "./hid-filters";
+import { BASILISK_V3_PRO_BLUETOOTH, HID_FILTERS, INSTANT_MOUSE_DIAGNOSTIC_FILTER } from "./hid-filters";
 import { VENDOR_ID } from "@openmouse/protocol/drivers/vendors";
 import { RAZER_PRODUCTS } from "@openmouse/protocol/razer-devices";
 import { parsePreviewMode, previewsEnabled, type FixturePreviewMode, type KeyboardPreviewMode, type PreviewMode } from "./preview/preview-modes";
@@ -4141,7 +4141,7 @@ function handleHidDisconnect(event: HIDConnectionEvent): void {
 
 /** Ask the browser for a device, then pick the best keyboard or mouse client. */
 async function requestSupportedClient(
-  onSelected?: (device: HIDDevice) => void,
+  onSelected?: (device: HIDDevice, configurationReport7?: boolean) => void,
 ): Promise<SupportedClient | KeyboardClient | null> {
   // Connect flows classify devices and read module-level tables (Razer probe,
   // egg-we control) from the lazy driver chunk below; load it before the picker.
@@ -4191,6 +4191,15 @@ async function requestSupportedClient(
   if (devices.some((device) => device.vendorId === BASILISK_V3_PRO_BLUETOOTH.vendorId
     && device.productId === BASILISK_V3_PRO_BLUETOOTH.productId)) {
     throw new Error(st("ctl.razerBluetooth"));
+  }
+
+  const instant = devices.filter(({ vendorId, productId }) => vendorId === INSTANT_MOUSE_DIAGNOSTIC_FILTER.vendorId
+    && productId === INSTANT_MOUSE_DIAGNOSTIC_FILTER.productId);
+  if (instant[0]) {
+    const hasReport7 = (collection: HIDCollectionInfo): boolean =>
+      collection.featureReports.some(({ reportId }) => reportId === 7) || collection.children.some(hasReport7);
+    onSelected?.(instant[0], instant.some((device) => device.collections.some(hasReport7)));
+    throw new Error("Orbit Hub found USB device 30FA:1440 (used by the Inphic PG1). Configuration support is pending. Download diagnostics to share the USB interface check.");
   }
 
   const details = devices.map((device) => describeHidDevice(device)).join(" · ");
@@ -4267,8 +4276,10 @@ export async function connect(): Promise<void> {
 
   let stage: ConnectionIssue["stage"] = "selection";
   let attempted: { vendorId: number; productId: number } | undefined;
+  let configurationReport7: boolean | undefined;
   try {
-    const client = await requestSupportedClient((device) => {
+    const client = await requestSupportedClient((device, report7) => {
+      configurationReport7 = report7;
       stage = "identification";
       attempted = { vendorId: device.vendorId, productId: device.productId };
     });
@@ -4308,7 +4319,7 @@ export async function connect(): Promise<void> {
     }
     deviceStatusText = wrongDevice ? st("ctl.notMouse") : st("ctl.connFailed");
     readStatus = message;
-    connectionIssue = { stage, detail: message, device: attempted };
+    connectionIssue = { stage, detail: message, device: attempted, configurationReport7 };
     toastForError(wrongDevice ? "Not a mouse" : "Connection failed", error);
   } finally {
     setConnectionButtons(false, "Add device");

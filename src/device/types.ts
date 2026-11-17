@@ -240,6 +240,7 @@ export interface KeyboardView {
 export interface ConnectionIssue {
   stage: "selection" | "identification" | "opening";
   cancelled?: boolean;
+  configurationReport7?: boolean;
   detail: string;
   device?: { vendorId: number; productId: number };
 }

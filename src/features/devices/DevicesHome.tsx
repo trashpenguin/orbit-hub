@@ -363,7 +363,7 @@ function ConnectionIssueNotice({ snapshot }: { snapshot: ControlSnapshot }): Rea
   const locale = snapshot.preferences.locale;
   const download = (): void => {
     // Export only the failing step and the USB IDs we need to reproduce it.
-    const report = JSON.stringify({ stage: issue.stage, device: issue.device }, null, 2);
+    const report = JSON.stringify({ stage: issue.stage, device: issue.device, configurationReport7: issue.configurationReport7 }, null, 2);
     const url = URL.createObjectURL(new Blob([report], { type: "application/json" }));
     const link = document.createElement("a");
     link.href = url;
