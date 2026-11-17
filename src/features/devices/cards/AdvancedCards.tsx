@@ -684,7 +684,7 @@ export function DpiLightingCard({ snapshot }: { snapshot: ControlSnapshot }): Re
               max={brightnessMax}
               step={1}
               value={status.dpiLedBrightness ?? brightnessMin}
-              disabled={lightMode === 0 || status.dpiLedBrightness == null}
+              disabled={lightMode === 0 || status.dpiLedBrightness == null || hint?.brightnessModes?.some((mode) => mode === lightMode) === false}
               style={{
                 "--fill": `${((status.dpiLedBrightness ?? brightnessMin) - brightnessMin)
                   / Math.max(1, brightnessMax - brightnessMin) * 100}%`,

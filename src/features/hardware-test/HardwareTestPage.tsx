@@ -1,3 +1,4 @@
+import { isVxeR1ProReadOnly, VXE_R1_PRO_READ_ONLY } from "../../device/vxe-r1-pro";
 import { displayText } from "../../i18n/index";
 import { track } from "../../platform/analytics";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
@@ -218,7 +219,12 @@ export function HardwareTestPage({ snapshot }: { snapshot: ControlSnapshot }): R
       }
 
       // ── Flash write round-trip (write → read-back → restore) ───────────
-      if (info.present && !aborted) {
+      if (info.present && !aborted && isVxeR1ProReadOnly(control.getSnapshot().deviceStatus)) {
+        const skipped = flashWriteResult({ skipped: true, skippedReason: VXE_R1_PRO_READ_ONLY });
+        results.push(skipped);
+        const id = addStage({ kind: "flash", label: skipped.label });
+        updateStage(id, { state: "skip", detail: skipped.detail });
+      } else if (info.present && !aborted) {
         // The stage animates as an indeterminate "writing" wave whose length
         // varies with how many settings are writable on the device.
         const flashId = addStage({

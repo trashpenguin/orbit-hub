@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@openmouse/keyboard-protocol": "1.6.1",
-    "@openmouse/protocol": "0.59.0",
+    "@openmouse/protocol": "git+https://github.com/oenderg/mouse-protocol.git#476d30eab15ea5b6d8ee7fb30a36d48430e6edce",
     "lucide-react": "^1.43.0",
     "posthog-js": "^1.438.17",
     "preact": "^10.29.8"

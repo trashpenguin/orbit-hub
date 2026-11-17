@@ -1,3 +1,4 @@
+import { isVxeR1ProReadOnly, VXE_R1_PRO_READ_ONLY } from "../../device/vxe-r1-pro";
 import { slotCards } from "../../shared/CardSlot";
 import { displayText } from "../../i18n/index";
 import { useUiLocale } from "../../shared/ui-locale";
@@ -599,6 +600,7 @@ export function OverviewPage({
     });
   }, [snapshot.workspaceTab, workspaceTab]);
 
+  const writeRestricted = isVxeR1ProReadOnly(status);
   const showingDeviceDashboard = (status !== null || snapshot.keyboard !== null)
     && snapshot.deviceView === "device";
 
@@ -616,9 +618,14 @@ export function OverviewPage({
             activeTab={workspaceTab}
             tabIcon={(tab) => <TabIcon tab={tab} />}
           >
+            {writeRestricted ? <p className="orbit-connection-notice" role="status">{displayText(preferences.locale, VXE_R1_PRO_READ_ONLY)}</p> : null}
             <div className="om-device-body" role="tabpanel" aria-labelledby={`workspace-tab-${workspaceTab}`}>
               {status === null && snapshot.keyboard !== null ? (
                 <KeyboardPanel snapshot={workspaceSnapshot} />
+              ) : writeRestricted && workspaceTab !== "overview" && workspaceTab !== "advanced" ? (
+                <fieldset className="orbit-read-only-workspace" disabled>
+                  <Workspace snapshot={workspaceSnapshot} onOpenCapture={onOpenCapture} onShareProfile={onShareProfile} />
+                </fieldset>
               ) : (
                 <Workspace snapshot={workspaceSnapshot} onOpenCapture={onOpenCapture} onShareProfile={onShareProfile} />
               )}

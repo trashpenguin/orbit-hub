@@ -11,6 +11,7 @@ Models outside this list may have experimental drivers or be awaiting verificati
 | --- | --- |
 | ASUS TUF Gaming M3 Gen II (USB `0b05:1a9b`) | Experimental wired DPI stages and polling rate. Physical verification is pending. |
 | Inphic PG1 | Driver needed. A Hardware Ids entry and a configuration report capture from a physical unit are needed to identify its protocol. |
+| VXE R1 Pro | Settings can be saved with the verified 1K receiver (USB `3554:f58a`). Wired operation is read-only. |
 
 | Brand | Mouse | Catalog status |
 | --- | --- | --- |

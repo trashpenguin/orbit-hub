@@ -1,3 +1,4 @@
+import { isVxeR1ProReadOnly, VXE_R1_PRO_READ_ONLY } from "./vxe-r1-pro";
 import type { ConnectionIssue } from "./types";
 import { emptyKeyboardWorkspace } from "./keyboard-workspace.ts";
 import { track, deviceProps, scrubError } from "../platform/analytics";
@@ -1516,6 +1517,10 @@ async function callClientMethod(method: string, setting: string, value: unknown)
 }
 
 function stageChange(change: PendingChange): void {
+  if (isVxeR1ProReadOnly(latestDeviceStatus)) {
+    setReadStatus(VXE_R1_PRO_READ_ONLY);
+    return;
+  }
   // stagePendingChange + onPendingChanges listener + setReadStatus each emit;
   // hold them so one edit renders once.
   batch(() => {
@@ -2462,6 +2467,7 @@ export async function flashPendingChanges(): Promise<FlashResult> {
 
 /** Writes every staged change. "Apply now" calls it directly to write a game profile draft. */
 async function flashStagedChanges(): Promise<FlashResult> {
+  if (isVxeR1ProReadOnly(latestDeviceStatus)) return "unchanged";
   const owner = getGameProfileOwner();
   if (!owner) return "stale";
   const batches = pendingChangeBatches();
@@ -6575,6 +6581,10 @@ export function applyTeevolutionDpiLighting(setting: "mode" | "brightness" | "sp
   if (!dpiLightingClient()) return;
   const hint = latestDeviceStatus?.ui?.dpiLighting;
   const allowed = setting === "mode" ? hint?.modes : setting === "brightness" ? hint?.brightness : hint?.speed;
+  if (setting === "brightness" && hint?.brightnessModes && latestDeviceStatus) {
+    const mode = withPendingChanges(latestDeviceStatus).dpiLedMode;
+    if (!hint.brightnessModes.some((available) => available === mode)) return;
+  }
   if (allowed && !allowed.includes(value)) return;
   const names = { mode: "effect", brightness: "brightness", speed: "speed" } as const;
   const display = setting === "mode" ? (["Off", "Steady", "Breathing"][value] ?? `${value}`) : `${value}`;

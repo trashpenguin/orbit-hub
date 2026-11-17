@@ -260,6 +260,7 @@ export const SUPPORTED_DEVICES: readonly SupportedDeviceEntry[] = [
   { brand: "Endgame Gear", model: "XM2we", status: "supported", pids: [0x1960] },
   { brand: "ATK", model: "F1 V2 Ultra Max", status: "supported" },
   { brand: "ATK", model: "VXE Dragonfly R1 Pro", status: "likely" },
+  { brand: "VXE", model: "VXE R1 Pro", status: "supported", pids: [0xf58a, 0xf58c] },
   { brand: "VXE", model: "R1 Pro Max", status: "supported", pids: [0xf58a, 0xf58c] },
   { brand: "VXE", model: "R1 (SE)", status: "likely" },
   { brand: "VXE", model: "R1 SE+", status: "supported", pids: [0xf58e, 0xf58f] },

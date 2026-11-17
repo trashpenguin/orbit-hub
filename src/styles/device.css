@@ -127,3 +127,5 @@
   .om-device-art { width: 78px; height: 84px; }
   .om-tab { gap: 5px; padding-inline: 7px; }
 }
+
+.orbit-read-only-workspace { display: grid; gap: 16px; min-inline-size: 0; padding: 0; margin: 0; border: 0; }
