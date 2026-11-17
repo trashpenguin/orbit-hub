@@ -55,7 +55,8 @@ export const BUDGET_BYTES: Record<string, number> = {
   ".css": 174_000,
   // Inline setting feedback and its translations add about 3 kB.
   // TUF M3 Gen II configuration reports bring the total to about 3.969 MB.
-  ".js": 3_970_000,
+  // VXE R1 Pro receiver support measures 3,971,119 bytes.
+  ".js": 3_972_000,
 };
 
 // main-*.js measured 1,511,619 bytes right after the split (posthog ~377 kB
